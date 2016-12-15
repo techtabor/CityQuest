@@ -1,6 +1,6 @@
 function loadQuestion() {
 	$.post(
-		"Challange.php",
+		"http://localhost:2017/Challange",
 		{Id: document.getElementById("TaskID").value, Code: document.getElementById("TaskCode").value},
 		function( data ) {
 			document.getElementById("Question").innerHTML = data;
@@ -12,7 +12,7 @@ function sendSolution(pos) {
 	//document.getElementById("Lat").innerHTML = pos.coords.latitude;
 	//document.getElementById("Long").innerHTML = pos.coords.longitude;
 	$.post(
-		"Solution.php",
+		"http://localhost:2017/Solution",
 		{Id: document.getElementById("TaskID").value, Code: document.getElementById("TaskCode").value, Sol: document.getElementById("Solution").value, Lat: pos.coords.latitude, Long: pos.coords.longitude},
 		function( data ) {
 			if(data) {
@@ -47,7 +47,7 @@ function submitSolution() {
 
 function getSuggestions(pos) {
 	$.post(
-		"Quest.php",
+		"http://localhost:2017/Quest",
 		{Latitude: pos.coords.latitude, Longitude: pos.coords.longitude},
 		function( data ) {
 			var JSONdata = JSON.parse(data);
