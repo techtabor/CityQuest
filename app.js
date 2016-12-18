@@ -34,7 +34,7 @@ server.listen(PORT, function(){
 function handleRequest(request, sqlresponse){
 	try {
 		//log the request on console
-		console.log(request.url);
+		console.log(request.url + " " + request.method);
 		//Disptach
 		dispatcher.dispatch(request, sqlresponse);
 	} catch(err) {
@@ -55,20 +55,26 @@ function makeId(len) {
 dispatcher.setStatic('/static');
 dispatcher.setStaticDirname('static');
 
-dispatcher.onOptions("", function(req, res) {
+dispatcher.beforeFilter(/\//, function(req, res, chain) {
+	res.writeHead(200, {
+		"Access-Control-Allow-Origin": "*",
+    "Access-Control-Request-Method": "POST,GET,PUT,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers": "X-Requested-With,Content-Type"});
+		chain.next(req,res,chain);
+});
+
+dispatcher.onOptions(/\//, function(req, res) {
 	res.writeHead(200, {
 		'Content-Type': 'text/plain',
 		"Access-Control-Allow-Origin": "*",
     "Access-Control-Request-Method": "POST,GET,PUT,DELETE,OPTIONS",
     "Access-Control-Allow-Headers": "X-Requested-With,Content-Type"});
-})
+	res.end();
+});
 
 dispatcher.onPost("/Solution", function(req, res) {
 	res.writeHead(200, {
-		'Content-Type': 'text/plain',
-		"Access-Control-Allow-Origin": "*",
-    "Access-Control-Request-Method": "POST,GET,PUT,DELETE,OPTIONS",
-    "Access-Control-Allow-Headers": "X-Requested-With,Content-Type"});
+		'Content-Type': 'text/plain'});
 	maindb.rquery(
 		"SELECT A.Answer, A.Next, A.Latitude, A.Longitude, B.HashID FROM Questions AS A INNER JOIN Questions AS B WHERE A.Id = ? AND A.HashID = ? AND A.Next = B.ID;",
 		function (err, sqlres) {
@@ -97,10 +103,7 @@ dispatcher.onPost("/Solution", function(req, res) {
 	dispatcher.onPost("/Challange", function(req, res) {
 		//console.log("ASD");
 		res.writeHead(200, {
-			'Content-Type': 'text/plain',
-			"Access-Control-Allow-Origin": "*",
-	    "Access-Control-Request-Method": "POST,GET,PUT,DELETE,OPTIONS",
-	    "Access-Control-Allow-Headers": "X-Requested-With,Content-Type"});
+			'Content-Type': 'text/plain'});
 		//res.write("a");
 		//res.write("b");
 		//res.end();
@@ -123,10 +126,7 @@ dispatcher.onPost("/Solution", function(req, res) {
 	dispatcher.onPost("/Quest", function(req, res) {
 
 		res.writeHead(200, {
-			'Content-Type': 'text/plain',
-			"Access-Control-Allow-Origin": "*",
-	    "Access-Control-Request-Method": "POST,GET,PUT,DELETE,OPTIONS",
-	    "Access-Control-Allow-Headers": "X-Requested-With,Content-Type"});
+			'Content-Type': 'text/plain'});
 		maindb.rquery(
 			"SELECT Start, Name, Description FROM Quests WHERE ? < Latitude AND Latitude < ? AND ? < Longitude AND Longitude < ?;",
 			function (err, sqlres) {
@@ -147,10 +147,7 @@ dispatcher.onPost("/Solution", function(req, res) {
 		//console.log(params);
 		//console.log(params.Questions[0]);
 		res.writeHead(200, {
-			'Content-Type': 'text/plain',
-			"Access-Control-Allow-Origin": "*",
-	    "Access-Control-Request-Method": "POST,GET,PUT,DELETE,OPTIONS",
-	    "Access-Control-Allow-Headers": "X-Requested-With,Content-Type"});
+			'Content-Type': 'text/plain'});
 		function fInsert(i,n) {
 			if(i==0) {
 				maindb.wquery(
@@ -202,5 +199,8 @@ dispatcher.onPost("/Solution", function(req, res) {
 	});
 
 	dispatcher.onPost("/Log", function(req, res) {
+		res.writeHead(200, {
+			'Content-Type': 'text/plain'});
 		console.log(req.params);
+		res.end();
 	});
