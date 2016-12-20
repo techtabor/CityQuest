@@ -2,11 +2,11 @@ import { Component, ViewChild } from '@angular/core';
 import { Platform, MenuController, Nav  } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
-import { MapPage } from '../pages/map/map';
-import { StatsPage } from '../pages/stats/stats';
-import { QuestPage } from '../pages/quest/quest';
+import { MapPage } from '../pages/MapPage/MapPage';
+import { StatsPage } from '../pages/StatsPage/StatsPage';
+import { QuestPage } from '../pages/QuestPage/QuestPage';
 
-import { QuestShareService } from '../pages/services/QuestShareService';
+import { QuestShareService } from '../services/QuestShareService';
 
 @Component({
   templateUrl: 'app.html',

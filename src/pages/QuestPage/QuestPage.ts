@@ -5,7 +5,7 @@ import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
 import { QuestionProvider } from '../../providers/QuestionProvider';
 
-import { QuestShareService } from '../services/QuestShareService';
+import { QuestShareService } from '../../services/QuestShareService';
 
 /*
   Generated class for the Quest page.
@@ -16,7 +16,7 @@ import { QuestShareService } from '../services/QuestShareService';
 
 @Component({
   selector: 'page-quest',
-  templateUrl: 'quest.html',
+  templateUrl: 'QuestPage.html',
 })
 export class QuestPage {
   currentQuestionIndex: number = 0;

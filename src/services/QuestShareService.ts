@@ -1,6 +1,9 @@
-import { Quest } from '../../models/quest'
-import { Question } from '../../models/question';
+import { Quest } from '../models/Quest'
+import { Question } from '../models/Question';
 
+import { Injectable } from '@angular/core';
+
+@Injectable()
 export class QuestShareService {
   quest: Quest;
   currentQuestion: Question;

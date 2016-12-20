@@ -61,9 +61,9 @@ function makeId(len) {
 dispatcher.setStatic('/static');
 dispatcher.setStaticDirname('static');
 
-dispatcher.onOptions("", function(req, res) {
+/*dispatcher.onOptions("", function(req, res) {
 	res.writeHead(200, head);
-})
+})*/
 
 dispatcher.onPost("/Questions", function(req,res) {
 	res.writeHead(200, head);

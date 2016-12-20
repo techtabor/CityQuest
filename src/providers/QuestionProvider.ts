@@ -3,6 +3,7 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Question } from '../models/Question';
 import { QuestHeader } from '../models/QuestHeader';
+
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -38,7 +39,7 @@ export class QuestionProvider {
     let options    = new RequestOptions({headers: headers});
 
     return this.http.post(`${this.serverUrl}/Questions`, questId, options)
-            .map(res => <Question[]>res.json());
+            .map(res => <Question[]>res.json()); 
   }
 
   private handleError (error: Response | any) {

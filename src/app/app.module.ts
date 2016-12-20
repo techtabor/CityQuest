@@ -4,9 +4,11 @@ import { MyApp } from './app.component';
 
 import { QuestionProvider } from '../providers/QuestionProvider';
 
-import { MapPage } from '../pages/map/map';
-import { StatsPage } from '../pages/stats/stats';
-import { QuestPage } from '../pages/quest/quest';
+import { MapPage } from '../pages/MapPage/MapPage';
+import { StatsPage } from '../pages/StatsPage/StatsPage';
+import { QuestPage } from '../pages/QuestPage/QuestPage';
+
+import { QuestShareService } from '../services/QuestShareService';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,6 @@ import { QuestPage } from '../pages/quest/quest';
     StatsPage,
     QuestPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService]
 })
 export class AppModule {}
