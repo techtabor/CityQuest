@@ -58,8 +58,8 @@ function makeId(len) {
 	return text;
 }
 
-dispatcher.setStatic('/static');
-dispatcher.setStaticDirname('static');
+//dispatcher.setStatic('/static');
+//dispatcher.setStaticDirname('static');
 
 /*dispatcher.onOptions("", function(req, res) {
 	res.writeHead(200, head);
