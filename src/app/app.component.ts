@@ -5,6 +5,7 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 import { MapPage } from '../pages/MapPage/MapPage';
 import { StatsPage } from '../pages/StatsPage/StatsPage';
 import { QuestPage } from '../pages/QuestPage/QuestPage';
+import { CreatePage } from '../pages/CreatePage/CreatePage';
 
 import { QuestShareService } from '../services/QuestShareService';
 
@@ -28,7 +29,8 @@ export class MyApp {
     this.pages = [
       {title: 'Quest', component: QuestPage, icon_name: 'navigate'},
       {title: 'Map', component: MapPage, icon_name: 'compass'},
-      {title: 'Stats', component: StatsPage, icon_name: 'stats'}
+      {title: 'Stats', component: StatsPage, icon_name: 'stats'},
+      {title: 'Create', component: CreatePage, icon_name: 'color-wand'}
     ];
   }
 
