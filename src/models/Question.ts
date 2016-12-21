@@ -5,8 +5,8 @@ export class Question {
 	Question: string;
 	Answer: string;
 
-	Next: string;
+	//Next: string;
 	Latitude: number;
 	Longitude: number;
-	QuestId: string;
+	//QuestId: string;
 }

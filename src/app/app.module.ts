@@ -3,6 +3,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
 import { QuestionProvider } from '../providers/QuestionProvider';
+import { GeoLocationProvider } from '../providers/GeoLocationProvider';
 
 import { MapPage } from '../pages/MapPage/MapPage';
 import { StatsPage } from '../pages/StatsPage/StatsPage';
@@ -27,6 +28,6 @@ import { QuestShareService } from '../services/QuestShareService';
     StatsPage,
     QuestPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider]
 })
 export class AppModule {}

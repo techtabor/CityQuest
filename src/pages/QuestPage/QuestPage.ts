@@ -19,7 +19,8 @@ import { QuestShareService } from '../../services/QuestShareService';
   templateUrl: 'QuestPage.html',
 })
 export class QuestPage {
-  currentQuestionIndex: number = 0;
+  //currentQuestionID: number = 0;
+  //currentQuestionCode: string = "00000000000000000000000000000000";
   currentQuestion: Question = new Question();
   quest: Quest = new Quest();
 
@@ -35,9 +36,20 @@ export class QuestPage {
     if (id != '') {
       console.log('Loading quest with id', id);
       this.questionProvider.loadQuestHeader(id).subscribe(
-        questHeader => this.quest.header = questHeader[0]
+        questHeader => {
+          if(questHeader.length) {
+            this.quest.header = questHeader[0];
+            this.questionProvider.loadQuestion(questHeader[0].Start, "00000000000000000000000000000000").subscribe(
+              question => {
+                this.currentQuestion = question;
+                this.shareService.setQuest(this.quest);
+                this.shareService.setCurrentQuestion(this.currentQuestion);
+              }
+            );
+          }
+        }
       );
-      this.questionProvider.loadQuestions(id).subscribe(
+      /*this.questionProvider.loadQuestions(id).subscribe(
         questions => {
           this.quest.questions = questions;
 
@@ -50,11 +62,11 @@ export class QuestPage {
             this.shareService.setCurrentQuestion(this.currentQuestion);
           }
         }
-      );
+      );*/
     }
   }
 
-  sortQuestions() {
+  /*sortQuestions() {
     let questId: string = this.quest.header.Start;
 
     for (let i = 0; i < this.quest.questions.length; ++i) {
@@ -68,9 +80,9 @@ export class QuestPage {
         }
       }
     }
-  }
+  }*/
 
-  nextQuestion() {
+  /*nextQuestion() {
     this.currentQuestionIndex++;
 
     if (this.currentQuestionIndex < this.quest.questions.length) {
@@ -86,7 +98,7 @@ export class QuestPage {
     }
 
     this.shareService.setCurrentQuestion(this.currentQuestion);
-  }
+  }*/
 
   ionViewDidLoad() {
     console.log('Hello QuestPage Page');
@@ -99,7 +111,45 @@ export class QuestPage {
   }
 
   checkAnswer() {
-  	let title:string, subTitle:string;
+    let title:string, subTitle:string;
+  	let buttons:Array<string> = ['OK'];
+
+
+    this.questionProvider.sendSolution(this.currentQuestion.Id, this.currentQuestion.HashID, this.ans).subscribe(
+      solutionRes => {
+        if(solutionRes.Correct) {
+          if(solutionRes.NextId == "0") {
+            title = 'You win!';
+            subTitle = 'Congratulations, you have won.';
+            let alert = this.alertCtrl.create({
+              title: title,
+              subTitle: subTitle,
+              buttons: buttons
+            });
+            alert.present();
+          } else {
+            this.currentQuestion.Id = solutionRes.NextId;
+            this.currentQuestion.HashID = solutionRes.NextCode;
+            this.questionProvider.loadQuestion(this.currentQuestion.Id, this.currentQuestion.HashID).subscribe(
+              question => {
+                this.currentQuestion = question;
+              }
+            );
+          }
+        } else {
+          title = 'Incorrect Answer';
+          subTitle = solutionRes.Response;
+          let alert = this.alertCtrl.create({
+            title: title,
+            subTitle: subTitle,
+            buttons: buttons
+          });
+          alert.present();
+        }
+      }
+    )
+
+  	/*let title:string, subTitle:string;
   	let buttons:Array<string> = ['OK'];
 
     if (this.ans == this.currentQuestion.Answer) {
@@ -116,6 +166,6 @@ export class QuestPage {
   		subTitle: subTitle,
   		buttons: buttons
   	});
-  	alert.present();
+  	alert.present();*/
   }
 }
