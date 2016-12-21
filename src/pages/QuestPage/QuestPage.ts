@@ -41,13 +41,14 @@ export class QuestPage {
         questions => {
           this.quest.questions = questions;
 
-          this.sortQuestions();
+          if (questions[0] != undefined) {
+            this.sortQuestions();
 
-          if (questions[0] != undefined)
             this.currentQuestion = questions[0];
 
-          this.shareService.setQuest(this.quest);
-          this.shareService.setCurrentQuestion(this.currentQuestion);
+            this.shareService.setQuest(this.quest);
+            this.shareService.setCurrentQuestion(this.currentQuestion);
+          }
         }
       );
     }
