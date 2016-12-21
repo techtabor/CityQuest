@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Question } from '../models/Question';
+import { Solution } from '../models/Solution';
 import { QuestHeader } from '../models/QuestHeader';
-
+import { GeoLocationProvider } from '../providers/GeoLocationProvider';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -18,18 +19,40 @@ export class QuestionProvider {
 
   private serverUrl: string = 'http://localhost:2017';
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private geoLocationProvider: GeoLocationProvider) {
+
     console.log('Hello QuestionProvider Provider');
   }
 
-  loadQuestHeader(questId: number): Observable<QuestHeader> {
+  loadQuestion(questionId, questionCode: string): Observable<Question> {
+    let head = {'Content-Type': 'text/plain'};
+
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+
+
+    return this.http.post(`${this.serverUrl}/Question`, JSON.stringify({Id: questionId, Code: questionCode}), options)
+            .map(res => <Question>res.json());
+  }
+
+  sendSolution(questionId, questionCode, solution: string): Observable<Solution> {
+    let head = {'Content-Type': 'text/plain'};
+
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+    let geoData    = this.geoLocationProvider.getLocation();
+    return this.http.post(`${this.serverUrl}/Solution`, JSON.stringify({Id: questionId, Code: questionCode, Sol: solution, Lat: geoData.latitude, Long: geoData.longitude}), options)
+    .map(res => <Solution>res.json());
+  }
+
+  loadQuestHeader(questId: number): Observable<QuestHeader[]> {
     let head = {'Content-Type': 'text/plain'};
 
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 
     return this.http.post(`${this.serverUrl}/QuestHeader`, questId, options)
-            .map(res => <QuestHeader>res.json());
+            .map(res => <QuestHeader[]>res.json());
   }
 
   loadQuestions(questId: number): Observable<Question[]> {
@@ -39,7 +62,7 @@ export class QuestionProvider {
     let options    = new RequestOptions({headers: headers});
 
     return this.http.post(`${this.serverUrl}/Questions`, questId, options)
-            .map(res => <Question[]>res.json()); 
+            .map(res => <Question[]>res.json());
   }
 
   private handleError (error: Response | any) {

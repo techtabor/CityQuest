@@ -1,0 +1,35 @@
+<!--
+  Generated template for the CreatePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Create quest
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-row baseline>
+  	<ion-col width-30>
+  	  <h1>Name of new quest:</h1>
+  	</ion-col>
+  	<ion-col width-50>
+  	  <ion-input placeholder="Name" type="text" [(ngModel)]="name"></ion-input>
+  	</ion-col>
+  	<ion-col width-20>
+  	  <button ion-button>Submit</button>
+  	</ion-col>
+  </ion-row>
+  <div #map id="map" (click)="onClick()"></div>
+  <ion-list>
+  	<create-question *ngFor="let q of questions"></create-question>
+  </ion-list>
+</ion-content>
