@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Quest
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item>
+    <ion-input type="number" placeholder="Quest ID" [(ngModel)]="questId" (input)="loadQuest(questId)"></ion-input>
+  </ion-item>
+  <ion-item>
+    <h2>Quest Id: {{quest?.header?.Id}}</h2>
+    <h2>Description: {{quest?.header?.Description}}</h2>
+  </ion-item>
+  <ion-list>
+    <ion-card>
+      <ion-card-content>
+        <ion-card-title>
+          {{currentQuestion?.Question}}
+        </ion-card-title>
+        <p>
+          {{currentQuestion?.Question}}
+        </p>
+        <ion-row center>
+        	<ion-col width-75>
+        	  <ion-list inset>
+              <ion-item>
+        	      <ion-input type="text" placeholder="Answer" [(ngModel)]="ans"></ion-input>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+          <ion-col>
+            <button ion-fab (click)="checkAnswer()"><ion-icon name="arrow-forward"></ion-icon></button>
+          </ion-col>
+         </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>
