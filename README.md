@@ -1,8 +1,8 @@
 # CityQuest
 
-This is the source code of a sightseeing app written in Ionic 2 and AngularJS
+This is the source code of a sightseeing app written in Ionic 2, AngularJS and NodeJS.
 
-Currently, there are two versions of the app on the GitHub repository. On the **master** branch, you can find a core framework of the application, with basic HTML interface and Node.js server, whereas on the **ionic** branch you can find the Ionic 2 app along with the code of the server.
+The GitHub repository has 4 actively used branches. The **master** branch has the latest stable version, while the **ionic** and **backend** branches have the new updates for the front and backend respectively. The **cleanup** branch is used to merge backend and frontend modifications, and to clean the source code before uploading to **master**.
 
 How to test the Ionic 2 app:
 
