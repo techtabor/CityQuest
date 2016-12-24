@@ -165,8 +165,8 @@ dispatcher.onPost("/Quest", function(req, res) {
 
 dispatcher.onPost("/Create", function(req, res) {
   //console.log(req.params);
-  var params = JSON.parse(req.params.Params);
-  //console.log(params);
+  var params = JSON.parse(req.body);
+  console.log(params);
   //console.log(params.Questions[0]);
   res.writeHead(200, head);
 
@@ -179,20 +179,20 @@ dispatcher.onPost("/Create", function(req, res) {
           maindb.wquery(
             "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
             null, [
-              params.Name,
-              params.Desc,
+              params.header.Name,
+              params.header.Description,
               this.lastID,
-              params.Latitude,
-              params.Longitude
+              params.header.Latitude,
+              params.header.Longitude
             ]
           );
         }, [
           "00000000000000000000000000000000",
-          params.Questions[i].Question,
-          params.Questions[i].Answer,
+          params.questions[i].Question,
+          params.questions[i].Answer,
           n,
-          params.Questions[i].Latitude,
-          params.Questions[i].Longitude
+          params.questions[i].Latitude,
+          params.questions[i].Longitude
         ]
       );
     }
@@ -203,16 +203,16 @@ dispatcher.onPost("/Create", function(req, res) {
           fInsert(i - 1, this.lastID);
         }, [
           makeId(32),
-          params.Questions[i].Question,
-          params.Questions[i].Answer,
+          params.questions[i].Question,
+          params.questions[i].Answer,
           n,
-          params.Questions[i].Latitude,
-          params.Questions[i].Longitude
+          params.questions[i].Latitude,
+          params.questions[i].Longitude
         ]
       );
     }
   }
-  fInsert(params.Questions.length - 1, 0);
+  fInsert(params.questions.length - 1, 0);
   res.write("OK");
   res.end();
 });

@@ -10,8 +10,6 @@ import { StatsPage } from '../pages/StatsPage/StatsPage';
 import { QuestPage } from '../pages/QuestPage/QuestPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
 
-import { CreateQuestionComponent } from '../pages/CreatePage/CreateQuestionComponent';
-
 import { QuestShareService } from '../services/QuestShareService';
 
 @NgModule({
@@ -20,8 +18,7 @@ import { QuestShareService } from '../services/QuestShareService';
     MapPage,
     StatsPage,
     QuestPage,
-    CreatePage,
-    CreateQuestionComponent
+    CreatePage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -32,7 +29,7 @@ import { QuestShareService } from '../services/QuestShareService';
     MapPage,
     StatsPage,
     QuestPage,
-    CreatePage,
+    CreatePage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider]
 })
