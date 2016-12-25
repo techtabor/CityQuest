@@ -8,7 +8,7 @@ var dispatcher = new httpdispatcher();
 var GoogleAuth = require('google-auth-library');
 var GAuth = new GoogleAuth;
 const GOOGLE_CLIENT_ID = '316471932564-cbrncdi9fp37k95aco8g94vo0e16mfc3.apps.googleusercontent.com';
-var GoogleClient = new GAuth.OAuth2(CLIENT_ID, '', '');
+var GoogleClient = new GAuth.OAuth2(GOOGLE_CLIENT_ID, '', '');
 
 var head = {
   'Content-Type': 'text/plain',
@@ -40,7 +40,9 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  //maindb.query("DROP TABLE Asd", null, [[]]);
+  logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", null, [
+    []
+  ]);
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
 });
@@ -68,7 +70,7 @@ function makeId(len) {
 function createAccount(type, foreignid, callback) {
   switch (type) {
     case "GOOGLE":
-      maindb.wquery(
+      logindb.wquery(
         "INSERT INTO Google (SubId) VALUES (?)",
         function(err, sqlres) {
           callback(true, this.lastID);
@@ -77,7 +79,6 @@ function createAccount(type, foreignid, callback) {
         ]
       );
       break;
-    case
     default:
       callback(false, 0);
       break;
@@ -90,7 +91,7 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
     case "GOOGLE":
       GoogleClient.verifyIdToken(
         token,
-        CLIENT_ID,
+        GOOGLE_CLIENT_ID,
         function(e, login) {
           if (e != null && e != undefined && e != "") {
             //Invalid login
@@ -138,12 +139,14 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
               ]
             );
           }
-        );
-        break;
-        default:
-        callbackerr();
-        break;
-      }
+        }
+      );
+
+      break;
+    default:
+      callbackerr();
+      break;
+
   }
 }
 dispatcher.onPost("/Questions", function(req, res) {
