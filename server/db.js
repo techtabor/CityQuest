@@ -26,7 +26,7 @@ module.exports = {
 			this.db.serialize(function() {
 				var stmt = this.prepare(query);
 				for(var i=0;i<params.length;i++) {
-					console.log(params[i]);
+					//console.log(params[i]);
 					stmt.all.apply(stmt, params[i].concat(callback));
 				}
 				stmt.finalize();

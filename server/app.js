@@ -31,7 +31,9 @@ function latlongdist(lat1, lon1, lat2, lon2) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  //maindb.query("DROP TABLE Asd", null, [[]]);
+  //maindb.query("CREATE TABLE Quests (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TINYTEXT, Description TEXT, Start BIGINT UNSIGNED, Latitude FLOAT, Longitude FLOAT)", null, [[]]);
+  //maindb.query("CREATE TABLE Questions (Id INTEGER PRIMARY KEY AUTOINCREMENT, HashID VARCHAR(32), Question TEXT, Answer INT(10), Next BIGINT(20), Latitude FLOAT, Longitude FLOAT)", null, [[]]);
+  //maindb.query("INSERT INTO Questions (Id, HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?, ?)", null, [[0, "00000000000000000000000000000000", "Congratulations, you have won", 0, 0, 0, 0]]);
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
 });
@@ -166,7 +168,7 @@ dispatcher.onPost("/Quest", function(req, res) {
 dispatcher.onPost("/Create", function(req, res) {
   //console.log(req.params);
   var params = JSON.parse(req.body);
-  console.log(params);
+  //console.log(params);
   //console.log(params.Questions[0]);
   res.writeHead(200, head);
 
