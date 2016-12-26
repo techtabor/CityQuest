@@ -40,9 +40,12 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", null, [
+  /*logindb.query("DROP TABLE Google", null, [
     []
   ]);
+  logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", null, [
+    []
+  ]);*/
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
 });
@@ -74,9 +77,8 @@ function createAccount(type, foreignid, callback) {
         "INSERT INTO Google (SubId) VALUES (?)",
         function(err, sqlres) {
           callback(true, this.lastID);
-        }, [
-          [foreignid]
-        ]
+        },
+        [[foreignid]]
       );
       break;
     default:
@@ -117,7 +119,7 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
                   //New user
                   createAccount(
                     type,
-                    payload['sub'],
+                    userid,
                     function(accepted, newid) {
                       if (accepted) {
                         callbackok({
@@ -134,9 +136,8 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
                     }
                   );
                 }
-              }, [
-                [userid]
-              ]
+              },
+              [[userid]]
             );
           }
         }
@@ -161,7 +162,7 @@ dispatcher.onPost("/Questions", function(req, res) {
           res.write(JSON.stringify(sqlres));
           res.end();
         },
-        req.body
+        [[req.params.Id]]
       );
     },
     function() {
@@ -176,13 +177,14 @@ dispatcher.onPost("/QuestHeader", function(req, res) {
   getProfile(
     params.id_token, params.id_token_type,
     function(user) {
+      console.log(params.Id);
       maindb.rquery(
         "SELECT Id, Name, Description, Start, Latitude, Longitude FROM Quests WHERE Id = ?",
         function(err, sqlres) {
           res.write(JSON.stringify(sqlres));
           res.end();
         },
-        req.body
+        [[params.Id]]
       );
     },
     function() {
@@ -218,7 +220,7 @@ dispatcher.onPost("/Solution", function(req, res) {
             res.write('{"Correct": false, "Response":"Incorrect question", "NextId": 0, "NextCode": 0}');
           }
           res.end();
-        }, [params.Id, params.Code]
+        }, [[params.Id, params.Code]]
       );
     },
     function() {
@@ -245,7 +247,7 @@ dispatcher.onPost("/Question", function(req, res) {
             res.write("Server error...");
           }
           res.end();
-        }, [params.Id, params.Code]);
+        }, [[params.Id, params.Code]]);
     },
     function() {
       res.end();
@@ -272,7 +274,16 @@ dispatcher.onPost("/Quest", function(req, res) {
           }
           res.write(JSON.stringify(resp));
           res.end();
-        }, [(+req.params.Latitude) - 0.0904, (+req.params.Latitude) + 0.0904, (+req.params.Longitude) - 0.0898 / Math.cos(+req.params.Latitude * Math.PI / 180.0), (+req.params.Longitude) + 0.0898 / Math.cos(+req.params.Latitude * Math.PI / 180.0)]);
+        },
+        [
+          [
+            (+params.Latitude) - 0.0904,
+            (+params.Latitude) + 0.0904,
+            (+params.Longitude) - 0.0898 / Math.cos(+params.Latitude * Math.PI / 180.0),
+            (+params.Longitude) + 0.0898 / Math.cos(+params.Latitude * Math.PI / 180.0)
+          ]
+        ]
+      );
     },
     function() {
       res.end();
@@ -302,14 +313,14 @@ dispatcher.onPost("/Create", function(req, res) {
                   params.Longitude
                 ]
               );
-            }, [
+            }, [[
               "00000000000000000000000000000000",
               params.Questions[i].Question,
               params.Questions[i].Answer,
               n,
               params.Questions[i].Latitude,
               params.Questions[i].Longitude
-            ]
+            ]]
           );
         }
         if (i > 0) {
@@ -317,14 +328,14 @@ dispatcher.onPost("/Create", function(req, res) {
             "INSERT INTO Questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               fInsert(i - 1, this.lastID);
-            }, [
+            }, [[
               makeId(32),
               params.Questions[i].Question,
               params.Questions[i].Answer,
               n,
               params.Questions[i].Latitude,
               params.Questions[i].Longitude
-            ]
+            ]]
           );
         }
       }
