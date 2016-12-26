@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Question } from '../models/Question';
+import { Quest } from '../models/Quest';
 import { Solution } from '../models/Solution';
 import { QuestHeader } from '../models/QuestHeader';
 import { GeoLocationProvider } from '../providers/GeoLocationProvider';
@@ -64,6 +65,16 @@ export class QuestionProvider {
 
     return this.http.post(`${this.serverUrl}/Questions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
             .map(res => <Question[]>res.json());
+  }
+
+  createQuest(quest:Quest): Observable<string> {
+    let head = {'Content-Type': 'text/plain'};
+
+    let headers = new Headers(head);
+    let options = new RequestOptions({headers: headers});
+
+    return this.http.post(`${this.serverUrl}/Create`, JSON.stringify(quest), options)
+            .map(res => JSON.stringify(res))
   }
 
   private handleError (error: Response | any) {

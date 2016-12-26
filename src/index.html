@@ -16,6 +16,9 @@
   <script src="cordova.js"></script>
   <script src="../ng-cordova-oauth/dist/ng-cordova-oauth.min.js"></script>
 
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id" content="316471932564-cbrncdi9fp37k95aco8g94vo0e16mfc3.apps.googleusercontent.com">
+
   <!-- un-comment this code to enable service worker
   <script>
     if ('serviceWorker' in navigator) {
@@ -29,7 +32,10 @@
 
 </head>
 <body>
-  
+  <!-- Way to send data from native javascript into ionic -->
+  <div id="GoogleData">
+  </div>
+
   <!-- Ionic's root component and where the app will load -->
   <ion-app></ion-app>
 
@@ -38,6 +44,12 @@
 
   <!-- The bundle js is generated during the build process -->
   <script src="build/main.js"></script>
+
+  <script>
+    function SaveGoogleData(d) {
+      document.getElementById('GoogleData').innerText = d.Zi.id_token;
+    }
+  </script>
 
 </body>
 </html>
