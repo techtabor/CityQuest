@@ -294,9 +294,12 @@ dispatcher.onPost("/Quest", function(req, res) {
 
 dispatcher.onPost("/Create", function(req, res) {
   res.writeHead(200, head);
-  let params = JSON.parse(req.body);
+  let paramsg = JSON.parse(req.body);
+  console.log(paramsg);
+  let params = JSON.parse(paramsg.CreateData);
+  console.log(params);
   getProfile(
-    params.id_token, params.id_token_type,
+    paramsg.id_token, paramsg.id_token_type,
     function(user) {
       function fInsert(i, n) {
         if (i == 0) {
@@ -307,20 +310,20 @@ dispatcher.onPost("/Create", function(req, res) {
               maindb.wquery(
                 "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
                 null, [
-                  params.Name,
-                  params.Desc,
+                  params.header.Name,
+                  params.header.Desc,
                   this.lastID,
-                  params.Latitude,
-                  params.Longitude
+                  params.header.Latitude,
+                  params.header.Longitude
                 ]
               );
             }, [[
               "00000000000000000000000000000000",
-              params.Questions[i].Question,
-              params.Questions[i].Answer,
+              params.questions[i].Question,
+              params.questions[i].Answer,
               n,
-              params.Questions[i].Latitude,
-              params.Questions[i].Longitude
+              params.questions[i].Latitude,
+              params.questions[i].Longitude
             ]]
           );
         }
@@ -331,16 +334,16 @@ dispatcher.onPost("/Create", function(req, res) {
               fInsert(i - 1, this.lastID);
             }, [[
               makeId(32),
-              params.Questions[i].Question,
-              params.Questions[i].Answer,
+              params.questions[i].Question,
+              params.questions[i].Answer,
               n,
-              params.Questions[i].Latitude,
-              params.Questions[i].Longitude
+              params.questions[i].Latitude,
+              params.questions[i].Longitude
             ]]
           );
         }
       }
-      fInsert(params.Questions.length - 1, 0);
+      fInsert(params.questions.length - 1, 0);
       res.write("OK");
       res.end();
     },
