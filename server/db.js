@@ -10,9 +10,11 @@ module.exports = {
 			if(params && (params != undefined)) {
 				if(!Array.isArray(params)) {
 					params = [].concat(params);
-				}
+				}//[val] [vals] [[vals][..]]
 				if(params.length) {
-					params = [params];
+					if(!Array.isArray(params[0])) {
+						params = [params];
+					}
 				} else {
 					params=[[]]
 				};

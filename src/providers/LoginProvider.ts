@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Geolocation } from 'ionic-native';
+import { Login } from '../models/Login';
 import 'rxjs/add/operator/map';
-
 /*
   Generated class for the GeoLocation provider.
 
@@ -10,17 +9,15 @@ import 'rxjs/add/operator/map';
   for more info on providers and Angular 2 DI.
 */
 @Injectable()
-export class GeoLocationProvider {
-  watchId: any = Geolocation.watchPosition()
-                              .subscribe(position => {
-  this.geoData = position.coords;
-});
-  geoData: any;
+export class LoginProvider {
   constructor(public http: Http) {
-    console.log('Hello GeoLocation Provider');
   }
 
-  getLocation(): any {
-    return this.geoData;
+  getToken(): string {
+    return document.getElementById('GoogleData').innerText;
+  }
+
+  getType(): string {
+    return "GOOGLE";
   }
 }

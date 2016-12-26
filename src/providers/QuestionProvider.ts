@@ -6,6 +6,7 @@ import { Quest } from '../models/Quest';
 import { Solution } from '../models/Solution';
 import { QuestHeader } from '../models/QuestHeader';
 import { GeoLocationProvider } from '../providers/GeoLocationProvider';
+import { LoginProvider } from '../providers/LoginProvider';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -20,7 +21,7 @@ export class QuestionProvider {
 
   private serverUrl: string = 'http://localhost:2017';
 
-  constructor(private http: Http, private geoLocationProvider: GeoLocationProvider) {
+  constructor(private http: Http, private geoLocationProvider: GeoLocationProvider, private loginProvider: LoginProvider) {
 
     console.log('Hello QuestionProvider Provider');
   }
@@ -32,8 +33,8 @@ export class QuestionProvider {
     let options    = new RequestOptions({headers: headers});
 
 
-    return this.http.post(`${this.serverUrl}/Question`, JSON.stringify({Id: questionId, Code: questionCode}), options)
-            .map(res => <Question>res.json())
+    return this.http.post(`${this.serverUrl}/Question`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode}), options)
+            .map(res => <Question>res.json());
   }
 
   sendSolution(questionId, questionCode, solution: string): Observable<Solution> {
@@ -42,8 +43,8 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
     let geoData    = this.geoLocationProvider.getLocation();
-    return this.http.post(`${this.serverUrl}/Solution`, JSON.stringify({Id: questionId, Code: questionCode, Sol: solution, Lat: geoData.latitude, Long: geoData.longitude}), options)
-    .map(res => <Solution>res.json())
+    return this.http.post(`${this.serverUrl}/Solution`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode, Sol: solution, Lat: geoData.latitude, Long: geoData.longitude}), options)
+    .map(res => <Solution>res.json());
   }
 
   loadQuestHeader(questId: number): Observable<QuestHeader[]> {
@@ -52,8 +53,8 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverUrl}/QuestHeader`, questId, options)
-            .map(res => <QuestHeader[]>res.json())
+    return this.http.post(`${this.serverUrl}/QuestHeader`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
+            .map(res => <QuestHeader[]>res.json());
   }
 
   loadQuestions(questId: number): Observable<Question[]> {
@@ -62,8 +63,8 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverUrl}/Questions`, questId, options)
-            .map(res => <Question[]>res.json())
+    return this.http.post(`${this.serverUrl}/Questions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
+            .map(res => <Question[]>res.json());
   }
 
   createQuest(quest:Quest): Observable<string> {

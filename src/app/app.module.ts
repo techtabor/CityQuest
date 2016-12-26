@@ -4,6 +4,7 @@ import { MyApp } from './app.component';
 
 import { QuestionProvider } from '../providers/QuestionProvider';
 import { GeoLocationProvider } from '../providers/GeoLocationProvider';
+import { LoginProvider } from '../providers/LoginProvider';
 
 import { MapPage } from '../pages/MapPage/MapPage';
 import { StatsPage } from '../pages/StatsPage/StatsPage';
@@ -31,6 +32,6 @@ import { QuestShareService } from '../services/QuestShareService';
     QuestPage,
     CreatePage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider]
 })
 export class AppModule {}
