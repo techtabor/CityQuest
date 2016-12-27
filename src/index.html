@@ -35,6 +35,7 @@
   <!-- Way to send data from native javascript into ionic -->
   <div id="GoogleData">
   </div>
+  <button id="GoogleLogout" onclick="googleSignOut();"></button>
 
   <!-- Ionic's root component and where the app will load -->
   <ion-app></ion-app>
@@ -48,6 +49,20 @@
   <script>
     function SaveGoogleData(d) {
       document.getElementById('GoogleData').innerText = d.Zi.id_token;
+    }
+  </script>
+  <script>
+    function onBeginLogin() {
+      document.getElementById('GoogleData').innerText = "Loading";
+    }
+  </script>
+  <script>
+    function googleSignOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      console.log('Begin sign out');
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+      });
     }
   </script>
 

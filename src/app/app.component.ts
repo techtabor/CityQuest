@@ -5,6 +5,8 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 import { MapPage } from '../pages/MapPage/MapPage';
 import { StatsPage } from '../pages/StatsPage/StatsPage';
 import { QuestPage } from '../pages/QuestPage/QuestPage';
+import { LoginPage } from '../pages/LoginPage/LoginPage';
+import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
 
 import { QuestShareService } from '../services/QuestShareService';
@@ -16,7 +18,7 @@ import { QuestShareService } from '../services/QuestShareService';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = QuestPage;
+  rootPage: any = LoginPage;
   pages: Array<{title: string, component: any, icon_name: string}>;
 
   constructor(
@@ -30,7 +32,8 @@ export class MyApp {
       {title: 'Quest', component: QuestPage, icon_name: 'navigate'},
       {title: 'Map', component: MapPage, icon_name: 'compass'},
       {title: 'Stats', component: StatsPage, icon_name: 'stats'},
-      {title: 'Create', component: CreatePage, icon_name: 'color-wand'}
+      {title: 'Create', component: CreatePage, icon_name: 'color-wand'},
+      {title: 'Logout', component: LogoutPage, icon_name: 'exit'}
     ];
   }
 

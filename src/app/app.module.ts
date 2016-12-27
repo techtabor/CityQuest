@@ -9,6 +9,8 @@ import { LoginProvider } from '../providers/LoginProvider';
 import { MapPage } from '../pages/MapPage/MapPage';
 import { StatsPage } from '../pages/StatsPage/StatsPage';
 import { QuestPage } from '../pages/QuestPage/QuestPage';
+import { LoginPage } from '../pages/LoginPage/LoginPage';
+import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
 
 import { QuestShareService } from '../services/QuestShareService';
@@ -19,6 +21,8 @@ import { QuestShareService } from '../services/QuestShareService';
     MapPage,
     StatsPage,
     QuestPage,
+    LoginPage,
+    LogoutPage,
     CreatePage
   ],
   imports: [
@@ -30,6 +34,8 @@ import { QuestShareService } from '../services/QuestShareService';
     MapPage,
     StatsPage,
     QuestPage,
+    LoginPage,
+    LogoutPage,
     CreatePage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider]
