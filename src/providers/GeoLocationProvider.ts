@@ -20,17 +20,6 @@ export class GeoLocationProvider {
     console.log('Hello GeoLocation Provider');
   }
 
-  onSuccess(position) {
-    this.geoData = position;
-  }
-
-  // onError Callback receives a PositionError object
-  //
-  onError(error) {
-    alert('code: '    + error.code    + '\n' +
-          'message: ' + error.message + '\n');
-  }
-
   getLocation(): any {
     return this.geoData;
   }

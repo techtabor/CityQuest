@@ -10,9 +10,11 @@ module.exports = {
 			if(params && (params != undefined)) {
 				if(!Array.isArray(params)) {
 					params = [].concat(params);
-				}
+				}//[val] [vals] [[vals][..]]
 				if(params.length) {
-					params = [params];
+					if(!Array.isArray(params[0])) {
+						params = [params];
+					}
 				} else {
 					params=[[]]
 				};
@@ -26,7 +28,7 @@ module.exports = {
 			this.db.serialize(function() {
 				var stmt = this.prepare(query);
 				for(var i=0;i<params.length;i++) {
-					console.log(params[i]);
+					//console.log(params[i]);
 					stmt.all.apply(stmt, params[i].concat(callback));
 				}
 				stmt.finalize();

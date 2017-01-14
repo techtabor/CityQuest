@@ -1,11 +1,18 @@
 page-create {
 	.scroll-content {
-	  width: 100%;
-      height: 90%
-    }
+		width: 100%;
+		height: 90%;
+	}
 
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+	#map {
+		float:right;
+		width: 50%;
+		height: 100%;
+	}
+
+	#params {
+		float: left;
+		width: 45%;
+		height: 100%;
+	}
 }

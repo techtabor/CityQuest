@@ -17,19 +17,43 @@
 
 
 <ion-content padding>
-  <ion-row baseline>
-  	<ion-col width-30>
-  	  <h1>Name of new quest:</h1>
-  	</ion-col>
-  	<ion-col width-50>
-  	  <ion-input placeholder="Name" type="text" [(ngModel)]="name"></ion-input>
-  	</ion-col>
-  	<ion-col width-20>
-  	  <button ion-button>Submit</button>
-  	</ion-col>
-  </ion-row>
-  <div #map id="map" (click)="onClick()"></div>
-  <ion-list>
-  	<create-question *ngFor="let q of questions"></create-question>
-  </ion-list>
+  <div id="params">
+    <ion-row baseline>
+      <ion-col width-33>
+        <h1>Name:</h1>
+      </ion-col>
+      <ion-col width-33>
+        <ion-input placeholder="Name" type="text" [(ngModel)]="name"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row baseline>
+      <ion-col width-33>
+        <h1>Description:</h1>
+      </ion-col>
+      <ion-col width-33>
+        <ion-input placeholder="Description" type="text" [(ngModel)]="description"></ion-input>
+      </ion-col>
+      <ion-col offset-10>
+        <button ion-button (click)="onSubmit()">Submit</button>
+      </ion-col>
+    </ion-row>
+    <ion-list>
+      <ion-item-divider></ion-item-divider>
+      <ion-row baseline *ngFor="let q of questions">
+        <ion-col width-40>
+          <ion-input placeholder="Question" type="text" [(ngModel)]="q.Question"></ion-input>
+        </ion-col>
+        <ion-col width-40>
+          <ion-input placeholder="Answer" type="text" [(ngModel)]="q.Answer"></ion-input>
+        </ion-col>
+        <ion-col width-20>
+          <button ion-button icon-only (click)="deleteQuestion(q)">
+            <ion-icon name="trash">
+            </ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+  </div>
+  <div #map id="map" (click)="onMapClick()"></div>
 </ion-content>
