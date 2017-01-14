@@ -1,0 +1,24 @@
+{
+  "name": "cityquest",
+  "version": "1.0.0",
+  "description": "City Quest game",
+  "main": "app.js",
+  "dependencies": {
+    "sqlite3": "^3.1.8",
+    "httpdispatcher": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techtabor/CityQuest.git"
+  },
+  "author": "Balazs Nemeth, Marcell Szakaly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/techtabor/CityQuest/issues"
+  },
+  "homepage": "https://github.com/techtabor/CityQuest#readme"
+}
