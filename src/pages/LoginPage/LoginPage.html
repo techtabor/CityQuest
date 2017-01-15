@@ -14,9 +14,7 @@
 
 
 <ion-content padding>
-  <div onclick="onBeginLogin()">
-    <div class="g-signin2" data-onsuccess="SaveGoogleData" data-theme="dark"></div>
-  </div>
+  <button ion-button block color="danger" (click)="doGoogleLogin()">Google Login</button>
   <ion-item>
     <ion-item id="LoginLoading">
       Please log in!

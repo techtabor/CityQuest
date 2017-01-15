@@ -10,14 +10,33 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class LoginProvider {
+  token: string;
+  type: string;
+  pair: string;
   constructor(public http: Http) {
   }
 
-  getToken(): string {
-    return document.getElementById('GoogleData').innerText;
+  getType(): string {
+    return this.type;
   }
 
-  getType(): string {
-    return "GOOGLE";
+  getToken(): string {
+    return this.token;
+  }
+
+  getPairCode(): string {
+    return this.pair;
+  }
+
+  setType(s): void {
+    this.type=s;
+  }
+
+  setToken(s): void {
+    this.token=s;
+  }
+
+  setPairCode(s): void {
+    this.pair=s;
   }
 }

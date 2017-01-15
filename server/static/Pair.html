@@ -1,0 +1,52 @@
+<html lang="en">
+  <head>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="316471932564-lua2b3k1dih7ta9ommf9tumimupe03bc.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  </head>
+  <body>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+    <div id="Resp1"></div>
+    <div id="Resp2"></div>
+    <script>
+      function findGetParameter(parameterName) {
+        var result = null,
+            tmp = [];
+        var items = location.search.substr(1).split("&");
+        for (var index = 0; index < items.length; index++) {
+            tmp = items[index].split("=");
+            if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        }
+        return result;
+      }
+      function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        //console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        //console.log('Full Name: ' + profile.getName());
+        document.getElementById("Resp1").innerText = "Welcome " + profile.getName() + "!";
+        //console.log('Given Name: ' + profile.getGivenName());
+        //console.log('Family Name: ' + profile.getFamilyName());
+        //console.log("Image URL: " + profile.getImageUrl());
+        //console.log("Email: " + profile.getEmail());
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/../PairResp', true);
+
+        xhr.onload = function () {
+          var resp = JSON.parse(xhr.response);
+          if(resp.ok) {
+            document.getElementById("Resp1").innerText = "You may now go back to the app.";
+            window.close();
+          } else {
+            document.getElementById("Resp1").innerText = "There was an error. Try again!";
+          }
+        };
+
+        xhr.send(JSON.stringify({token: id_token, type: "GOOGLE", stoken: findGetParameter("c")}));
+      };
+    </script>
+  </body>
+</html>

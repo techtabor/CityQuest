@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { LoginPage } from '../LoginPage/LoginPage';
 import { NavController, NavParams } from 'ionic-angular';
-
+import {InAppBrowser} from 'ionic-native';
+import { ServerIpProvider } from '../../providers/ServerIpProvider';
 /*
   Generated class for the Logout page.
 
@@ -13,15 +14,17 @@ import { NavController, NavParams } from 'ionic-angular';
   templateUrl: 'LogoutPage.html'
 })
 export class LogoutPage {
-  nav: NavController;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.nav = navCtrl;
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public serverIpProvider: ServerIpProvider
+  ) {
   }
 
-  logout() {
-    document.getElementById("GoogleLogout").click();
-    document.getElementById("GoogleData").innerText = "";
-    this.nav.setRoot(LoginPage);
+  doGoogleLogout() {
+    //this.googleAuth.logout();
+    let browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Logout.html`), '_system');
+    this.navCtrl.setRoot(LoginPage);
   }
 
   ionViewDidLoad() {

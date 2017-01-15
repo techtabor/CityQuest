@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+//import { GoogleAuth, User } from '@ionic/cloud-angular';
 import { Platform, MenuController, Nav  } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 

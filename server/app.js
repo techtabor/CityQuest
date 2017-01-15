@@ -7,7 +7,7 @@ var dispatcher = new httpdispatcher();
 
 var GoogleAuth = require('google-auth-library');
 var GAuth = new GoogleAuth;
-const GOOGLE_CLIENT_ID = '316471932564-cbrncdi9fp37k95aco8g94vo0e16mfc3.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '316471932564-lua2b3k1dih7ta9ommf9tumimupe03bc.apps.googleusercontent.com';
 var GoogleClient = new GAuth.OAuth2(GOOGLE_CLIENT_ID, '', '');
 
 var head = {
@@ -40,15 +40,32 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  /*logindb.query("DROP TABLE Google", null, [
+  /*/logindb.query("DROP TABLE IF EXISTS Google",
+    null,
+    [[]]
+  );//*/
+  /*/logindb.query("DROP TABLE IF EXISTS Tokens",
+    null,
+    [[]]
+  );//*/
+  /*/logindb.query("DROP TABLE IF EXISTS Pair", null, [
     []
-  ]);
-  logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", null, [
+  ]);//*/
+  /*/logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", function(){}, [
+    []
+  ]);//*/
+  /*/logindb.query("CREATE TABLE Tokens (SessionToken TINYTEXT, AuthToken TINYTEXT, AuthType TINYTEXT, Expires TIMESTAMP)", function(){}, [
+    []
+  ]);//*/
+  /*logindb.query("CREATE TABLE Pair (PairToken TINYTEXT, PairType TINYTEYT, Expires TIMESTAMP)", null, [
     []
   ]);*/
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
 });
+
+dispatcher.setStatic('/static');
+dispatcher.setStaticDirname('static');
 
 function latlongdist(lat1, lon1, lat2, lon2) {
   var dlon = (lon2 - lon1) * Math.PI / 180;
@@ -89,7 +106,7 @@ function createAccount(type, foreignid, callback) {
 
 function getProfile(token, type, callbackok, callbackerr) { //Check login
   //callback(accepted, internal ID, name, email, language, email verified, image)
-  switch (type) {
+  switch(type) {
     case "GOOGLE":
       GoogleClient.verifyIdToken(
         token,
@@ -142,14 +159,22 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
           }
         }
       );
-
-      break;
+    break;
     default:
       callbackerr();
-      break;
-
+    break;
   }
 }
+
+dispatcher.beforeFilter(/\//, function(req, res, chain) {
+  res.writeHead(200, head);
+  chain.next(req,res,chain);
+});
+
+dispatcher.onOptions(/\//, function(req, res) {
+  res.writeHead(200, head);
+  res.end();
+});
 
 dispatcher.onPost("/Questions", function(req, res) {
   res.writeHead(200, head);
@@ -292,65 +317,102 @@ dispatcher.onPost("/Quest", function(req, res) {
   );
 });
 
-dispatcher.onPost("/Create", function(req, res) {
+dispatcher.onPost("/PairReq", function(req, res) {
   res.writeHead(200, head);
-  let paramsg = JSON.parse(req.body);
-  console.log(paramsg);
-  let params = JSON.parse(paramsg.CreateData);
-  console.log(params);
-  getProfile(
-    paramsg.id_token, paramsg.id_token_type,
-    function(user) {
-      function fInsert(i, n) {
-        if (i == 0) {
-          maindb.wquery(
-            "INSERT INTO Questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
-            function(err, sqlres) {
-              //console.log(this);
-              maindb.wquery(
-                "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
-                null, [
-                  params.header.Name,
-                  params.header.Desc,
-                  this.lastID,
-                  params.header.Latitude,
-                  params.header.Longitude
-                ]
-              );
-            }, [[
-              "00000000000000000000000000000000",
-              params.questions[i].Question,
-              params.questions[i].Answer,
-              n,
-              params.questions[i].Latitude,
-              params.questions[i].Longitude
-            ]]
-          );
-        }
-        if (i > 0) {
-          maindb.wquery(
-            "INSERT INTO Questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
-            function(err, sqlres) {
-              fInsert(i - 1, this.lastID);
-            }, [[
-              makeId(32),
-              params.questions[i].Question,
-              params.questions[i].Answer,
-              n,
-              params.questions[i].Latitude,
-              params.questions[i].Longitude
-            ]]
-          );
-        }
-      }
-      fInsert(params.questions.length - 1, 0);
-      res.write("OK");
+  //let params = JSON.parse(req.body);
+  let stoken = makeId(64);
+  /*logindb.query(
+    "INSERT INTO Tokens (SessionToken, PairToken, PairType) VALUES (?,?,?)",
+    function(err, sqlres) {
+      res.write(stoken);
       res.end();
     },
-    function() {
-      res.end();
-    }
+    [[stoken, "", "GOOGLE"]]
+  );*/
+  res.write(JSON.stringify({code:stoken}));
+  res.end();
+});
+
+dispatcher.onPost("/PairResp", function(req, res) {
+  res.writeHead(200, head);
+  let params = JSON.parse(req.body);
+  //console.log(params);
+  switch(params.type) {
+    case "GOOGLE":
+      GoogleClient.verifyIdToken(
+        params.token,
+        GOOGLE_CLIENT_ID,
+        function(e, login) {
+          if (e != null && e != undefined && e != "") {
+            res.write(JSON.stringify({ok: false}));
+            res.end();
+          } else {
+            logindb.query(
+              "INSERT INTO Tokens (SessionToken, AuthToken, AuthType, Expires) VALUES (?,?,?,date('now', '+1 hour'))",
+              function(err, sqlres) {
+                res.write(JSON.stringify({ok: true}));
+                res.end();
+              },
+              [[params.stoken, params.token, params.type]]
+            );
+          }
+        }
+      );
+    break;
+    default:
+
+    break;
+  }
+});
+
+dispatcher.onPost("/PairCheck", function(req, res) {
+  res.writeHead(200, head);
+  let params = JSON.parse(req.body);
+  //console.log(params);
+  //logindb.query(
+  //"DELETE FROM Tokens WHERE DATE_SUB(Expires",
+  //function(err, sqlres) {
+  logindb.query(
+    "SELECT SessionToken, AuthToken, AuthType FROM Tokens WHERE SessionToken = ? AND AuthType = ?",
+    function(err, sqlres) {
+      logindb.query(
+        "DELETE FROM Tokens WHERE SessionToken = ? AND AuthType = ?",
+        function(errd, sqlresd) {
+          if(sqlres.length == 1) {
+            switch(params.type) {
+              case "GOOGLE":
+                GoogleClient.verifyIdToken(
+                  sqlres[0].AuthToken,
+                  GOOGLE_CLIENT_ID,
+                  function(e, login) {
+                    if (e != null && e != undefined && e != "") {
+                      res.write(JSON.stringify({Ok: 0}));
+                      res.end();
+                    } else {
+                      res.write(JSON.stringify({Ok: 2, Token: sqlres[0].AuthToken}));
+                      res.end();
+                    }
+                  }
+                );
+              break;
+              default:
+              res.write(JSON.stringify({Ok: 0}));
+              res.end();
+              break;
+            }
+          } else {
+            res.write(JSON.stringify({Ok: 1}));
+            res.end();
+          }
+        },
+        [[params.stoken, params.type]]
+      );
+    },
+    [[params.stoken, params.type]]
   );
+  //},
+  //[[]]
+  //);
 });
 
 dispatcher.onPost("/Log", function(req, res) {

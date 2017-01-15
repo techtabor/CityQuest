@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
 
 /*
   Generated class for the Stats page.
@@ -12,9 +13,24 @@ import { NavController } from 'ionic-angular';
   templateUrl: 'StatsPage.html'
 })
 export class StatsPage {
+  geo: GeoLocationProvider;
+  constructor(public navCtrl: NavController, public geoLocationProvider: GeoLocationProvider) {
+    this.geo = geoLocationProvider;
+    setInterval(
+      (
+        function(self) {         //Self-executing func which takes 'this' as self
+         return function() {   //Return a function in the context of 'self'
+           self.GeoC(); //Thing you wanted to run as non-window 'this'
+         }
+       }
+     )(this),
+    1000);
+  }
 
-  constructor(public navCtrl: NavController) {
-
+  GeoC() {
+    if(document.getElementById("gdiv") != null) {
+      document.getElementById("gdiv").innerText = this.geo.getLocation().latitude + " " + this.geo.getLocation().longitude;
+    }
   }
 
   ionViewDidLoad() {

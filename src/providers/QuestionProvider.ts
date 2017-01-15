@@ -7,6 +7,7 @@ import { Solution } from '../models/Solution';
 import { QuestHeader } from '../models/QuestHeader';
 import { GeoLocationProvider } from '../providers/GeoLocationProvider';
 import { LoginProvider } from '../providers/LoginProvider';
+import { ServerIpProvider } from '../providers/ServerIpProvider';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -19,9 +20,12 @@ import 'rxjs/add/operator/catch';
 @Injectable()
 export class QuestionProvider {
 
-  private serverUrl: string = 'http://localhost:2017';
-
-  constructor(private http: Http, private geoLocationProvider: GeoLocationProvider, private loginProvider: LoginProvider) {
+  constructor(
+    private http: Http,
+    private geoLocationProvider: GeoLocationProvider,
+    private loginProvider: LoginProvider,
+    public serverIpProvider: ServerIpProvider
+  ) {
 
     console.log('Hello QuestionProvider Provider');
   }
@@ -33,7 +37,7 @@ export class QuestionProvider {
     let options    = new RequestOptions({headers: headers});
 
 
-    return this.http.post(`${this.serverUrl}/Question`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode}), options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/Question`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode}), options)
             .map(res => <Question>res.json());
   }
 
@@ -43,7 +47,7 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
     let geoData    = this.geoLocationProvider.getLocation();
-    return this.http.post(`${this.serverUrl}/Solution`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode, Sol: solution, Lat: geoData.latitude, Long: geoData.longitude}), options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/Solution`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode, Sol: solution, Lat: geoData.latitude, Long: geoData.longitude}), options)
     .map(res => <Solution>res.json());
   }
 
@@ -53,7 +57,7 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverUrl}/QuestHeader`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/QuestHeader`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
             .map(res => <QuestHeader[]>res.json());
   }
 
@@ -63,7 +67,7 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverUrl}/Questions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/Questions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
             .map(res => <Question[]>res.json());
   }
 
@@ -73,7 +77,7 @@ export class QuestionProvider {
     let headers = new Headers(head);
     let options = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverUrl}/Create`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), CreateData: JSON.stringify(quest)}, options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/Create`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), CreateData: JSON.stringify(quest)}, options)
             .map(res => JSON.stringify(res))
   }
 
