@@ -166,6 +166,16 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
   }
 }
 
+dispatcher.beforeFilter(/\//, function(req, res, chain) {
+  res.writeHead(200, head);
+  chain.next(req,res,chain);
+});
+
+dispatcher.onOptions(/\//, function(req, res) {
+  res.writeHead(200, head);
+  res.end();
+});
+
 dispatcher.onPost("/Questions", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
