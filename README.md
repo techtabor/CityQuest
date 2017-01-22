@@ -9,8 +9,9 @@ How to test the Ionic 2 app:
 1. First of all, you should have `npm` installed.
 2. Clone the repository to a directory in your local environment
 3. Run the `npm install` command to install all required dependencies
-4. Change the server location in `src/providers/ServerIpProvider/ServerIpProvider.ts`
-5. Run the server by opening a command-line interface in the `server` folder and typing `node app.js`
-6. Run the Ionic app by typing `ionic serve` in your local directory
+4. Re-download the `node_modules/httpdispatcher.js` file, and overwrite the local copy
+5. Change the server location in `src/providers/ServerIpProvider.ts`
+6. Run the server by opening a command-line interface in the `server` folder and typing `node app.js`
+7. Run the Ionic app by typing `ionic serve` in your local directory
 
 **Techtábor project of Balázs Németh and Marcell Szakály, 2016**
