@@ -54,6 +54,9 @@ server.listen(PORT, function() {
             logindb.query("CREATE TABLE Tokens (SessionToken TINYTEXT, AuthToken TINYTEXT, AuthType TINYTEXT, Expires TIMESTAMP)", function(){}, [
               []
             ]);
+            logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", function(){}, [
+              []
+            ]);
           }
         )
       }

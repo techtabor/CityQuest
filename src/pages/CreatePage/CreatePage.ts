@@ -5,6 +5,7 @@ import { Quest } from '../../models/Quest';
 import { Question } from '../../models/Question';
 import { QuestHeader } from '../../models/QuestHeader'
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
 
 declare var google;
 
@@ -29,11 +30,12 @@ export class CreatePage {
   constructor(public navCtrl: NavController,
   			      public navParams: NavParams,
               public alertCtrl: AlertController,
+              public geoLocationProvider: GeoLocationProvider,
               private questionProvider: QuestionProvider) {}
 
   loadMap() {
   	console.log('Loading map');
-    let latLng = new google.maps.LatLng(47.48, 19.07);
+    let latLng = new google.maps.LatLng(this.geoLocationProvider.getLocation().Latitude, this.geoLocationProvider.getLocation().Longitude);
 
     let mapOptions = {
       center: latLng,
