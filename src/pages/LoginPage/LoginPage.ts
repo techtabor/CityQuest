@@ -53,7 +53,7 @@ export class LoginPage {
         let resp = res.json();
         console.log(resp);
         this.loginProvider.setPairCode(resp.code);
-        this.browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Pair.html?c=` + resp.code), '_system');
+        this.browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Pair.html?c=` + resp.code), '_system', 'hardwareback=no');
         document.getElementById('LoginLoading').innerText = "Verifying login...";
         this.watch = setInterval(
           (
