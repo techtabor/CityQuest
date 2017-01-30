@@ -60,7 +60,7 @@
                 </ion-row>
                 <ion-row baseline *ngFor="let o of q.Options">
                   <ion-col width-40>
-                    <ion-input placeholder="Answer" type="text" [(ngModel)]="o.Option"></ion-input>
+                    <ion-input placeholder="Answer option" type="text" [(ngModel)]="o.Choice"></ion-input>
                   </ion-col>
                   <ion-col width-20>
                     <button ion-button icon-only (click)="deleteOption(q,o)">

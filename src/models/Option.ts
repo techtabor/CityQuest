@@ -1,3 +1,4 @@
 export class Option {
-  string: Option;
+  Choice: string;
+  Value: number;
 }
