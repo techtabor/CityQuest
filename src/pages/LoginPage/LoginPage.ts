@@ -47,7 +47,7 @@ export class LoginPage {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/PairReq`, "", options)
+    this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCode`, "", options)
     .subscribe(res =>
       {
         let resp = res.json();
@@ -72,7 +72,7 @@ export class LoginPage {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/PairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
+    this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
     .subscribe(res =>
       {
 

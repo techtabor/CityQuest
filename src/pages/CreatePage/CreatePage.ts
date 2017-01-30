@@ -35,8 +35,8 @@ export class CreatePage {
 
   loadMap() {
   	console.log('Loading map');
-    let latLng = new google.maps.LatLng(this.geoLocationProvider.getLocation().Latitude, this.geoLocationProvider.getLocation().Longitude);
-
+    //let latLng = new google.maps.LatLng(this.geoLocationProvider.getLocation().Latitude, this.geoLocationProvider.getLocation().Longitude);
+    let latLng = new google.maps.LatLng(46.15,19);
     let mapOptions = {
       center: latLng,
       zoom: 13,

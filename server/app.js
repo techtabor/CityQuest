@@ -200,7 +200,7 @@ dispatcher.onOptions(/\//, function(req, res) {
   res.end();
 });
 
-dispatcher.onPost("/Questions", function(req, res) {
+dispatcher.onPost("/GetAllQuestions", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -221,7 +221,7 @@ dispatcher.onPost("/Questions", function(req, res) {
   );
 });
 
-dispatcher.onPost("/QuestHeader", function(req, res) {
+dispatcher.onPost("/GetQuestHeader", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -243,7 +243,7 @@ dispatcher.onPost("/QuestHeader", function(req, res) {
   );
 });
 
-dispatcher.onPost("/Solution", function(req, res) {
+dispatcher.onPost("/SubmitQuestionSolution", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -279,7 +279,7 @@ dispatcher.onPost("/Solution", function(req, res) {
   );
 });
 
-dispatcher.onPost("/Question", function(req, res) {
+dispatcher.onPost("/GetOneQuestion", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -305,7 +305,7 @@ dispatcher.onPost("/Question", function(req, res) {
   );
 });
 
-dispatcher.onPost("/Quest", function(req, res) {
+dispatcher.onPost("/GetSuggestions", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -341,7 +341,7 @@ dispatcher.onPost("/Quest", function(req, res) {
   );
 });
 
-dispatcher.onPost("/PairReq", function(req, res) {
+dispatcher.onPost("/LoginPairCode", function(req, res) {
   res.writeHead(200, head);
   //let params = JSON.parse(req.body);
   let stoken = makeId(64);
@@ -357,7 +357,7 @@ dispatcher.onPost("/PairReq", function(req, res) {
   res.end();
 });
 
-dispatcher.onPost("/PairResp", function(req, res) {
+dispatcher.onPost("/LoginPairResp", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   //console.log(params);
@@ -389,7 +389,7 @@ dispatcher.onPost("/PairResp", function(req, res) {
   }
 });
 
-dispatcher.onPost("/PairCheck", function(req, res) {
+dispatcher.onPost("/LoginPairCheck", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   //console.log(params);
@@ -437,6 +437,60 @@ dispatcher.onPost("/PairCheck", function(req, res) {
   //},
   //[[]]
   //);
+});
+
+dispatcher.onPost("/Create", function(req, res) {
+  //console.log(req.params);
+  var params = JSON.parse(req.params.Params);
+  //console.log(params);
+  //console.log(params.Questions[0]);
+  res.writeHead(200, head);
+
+  function fInsert(i, n) {
+    if (i == 0) {
+      maindb.wquery(
+        "INSERT INTO Questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
+        function(err, sqlres) {
+          //console.log(this);
+          maindb.wquery(
+            "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
+            null, [
+              params.Name,
+              params.Desc,
+              this.lastID,
+              params.Latitude,
+              params.Longitude
+            ]
+          );
+        }, [
+          "00000000000000000000000000000000",
+          params.Questions[i].Question,
+          params.Questions[i].Answer,
+          n,
+          params.Questions[i].Latitude,
+          params.Questions[i].Longitude
+        ]
+      );
+    }
+    if (i > 0) {
+      maindb.wquery(
+        "INSERT INTO Questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
+        function(err, sqlres) {
+          fInsert(i - 1, this.lastID);
+        }, [
+          makeId(32),
+          params.Questions[i].Question,
+          params.Questions[i].Answer,
+          n,
+          params.Questions[i].Latitude,
+          params.Questions[i].Longitude
+        ]
+      );
+    }
+  }
+  fInsert(params.Questions.length - 1, 0);
+  res.write("OK");
+  res.end();
 });
 
 dispatcher.onPost("/Log", function(req, res) {
