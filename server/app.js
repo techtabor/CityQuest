@@ -1,9 +1,10 @@
 var dbapi = require('./db.js');
-var maindb = new dbapi.database("main.db");
-var logindb = new dbapi.database("login.db");
+var maindb;
+var logindb;
 var http = require('http');
-var httpdispatcher = require('httpdispatcher');
+var httpdispatcher = require('./httpdispatcher.js');
 var dispatcher = new httpdispatcher();
+var fs = require("fs");
 
 var GoogleAuth = require('google-auth-library');
 var GAuth = new GoogleAuth;
@@ -40,26 +41,46 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  /*/logindb.query("DROP TABLE IF EXISTS Google",
-    null,
-    [[]]
-  );//*/
-  /*/logindb.query("DROP TABLE IF EXISTS Tokens",
-    null,
-    [[]]
-  );//*/
-  /*/logindb.query("DROP TABLE IF EXISTS Pair", null, [
-    []
-  ]);//*/
-  /*/logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", function(){}, [
-    []
-  ]);//*/
-  /*/logindb.query("CREATE TABLE Tokens (SessionToken TINYTEXT, AuthToken TINYTEXT, AuthType TINYTEXT, Expires TIMESTAMP)", function(){}, [
-    []
-  ]);//*/
-  /*logindb.query("CREATE TABLE Pair (PairToken TINYTEXT, PairType TINYTEYT, Expires TIMESTAMP)", null, [
+  logindb = new dbapi.database("login.db");
+  //console.log(logindb);
+  if(false) { //set to true if you crashed.
+    console.log("Login database corrupt!!!");
+    logindb.db.close(
+      function(){
+        fs.unlink(
+          "login.db",
+          function(){
+            logindb = new dbapi.database("login.db");
+            logindb.query("CREATE TABLE Tokens (SessionToken TINYTEXT, AuthToken TINYTEXT, AuthType TINYTEXT, Expires TIMESTAMP)", function(){}, [
+              []
+            ]);
+          }
+        )
+      }
+    );
+  } else {
+    logindb.query("DELETE FROM Tokens WHERE 1=1", function(){}, [
+      []
+    ]);
+  }
+  maindb = new dbapi.database("main.db");
+  /*if(!maindb.db.open) {
+    console.log("Main database corrupt!!!");
+    maindb.db.close(
+      function(){
+        fs.unlink(
+          "main.db",
+          function(){
+            maindb = new dbapi.database("main.db");
+          }
+        )
+      }
+    );
+  }*/
+  /*logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", function(){}, [
     []
   ]);*/
+
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
 });
