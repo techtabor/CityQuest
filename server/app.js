@@ -312,11 +312,12 @@ dispatcher.onPost("/GetSuggestions", function(req, res) {
     params.id_token, params.id_token_type,
     function(user) {
       maindb.rquery(
-        "SELECT Start, Name, Description FROM Quests WHERE ? < Latitude AND Latitude < ? AND ? < Longitude AND Longitude < ?;",
+        "SELECT Start, Name, Description, Id FROM Quests",
         function(err, sqlres) {
           var resp = [];
           for (var i = 0; i < sqlres.length; i++) {
             resp.push({
+              Id: sqlres[i].Id,
               Name: sqlres[i].Name,
               Description: sqlres[i].Description,
               Start: sqlres[i].Start
@@ -325,14 +326,7 @@ dispatcher.onPost("/GetSuggestions", function(req, res) {
           res.write(JSON.stringify(resp));
           res.end();
         },
-        [
-          [
-            (+params.Latitude) - 0.0904,
-            (+params.Latitude) + 0.0904,
-            (+params.Longitude) - 0.0898 / Math.cos(+params.Latitude * Math.PI / 180.0),
-            (+params.Longitude) + 0.0898 / Math.cos(+params.Latitude * Math.PI / 180.0)
-          ]
-        ]
+        []
       );
     },
     function() {

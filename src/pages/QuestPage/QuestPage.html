@@ -11,13 +11,13 @@
 
 
 <ion-content padding>
-  <ion-item>
-    <ion-input type="number" placeholder="Quest ID" [(ngModel)]="questId" (input)="loadQuest(questId)"></ion-input>
-  </ion-item>
-  <ion-item>
-    <h2>Quest Id: {{quest?.header?.Id}}</h2>
-    <h2>Description: {{quest?.header?.Description}}</h2>
-  </ion-item>
+  <!--<button ion-button (click)="getSuggestions()">Get suggestions</button>-->
+  <ion-list *ngFor="let q of availableQuests">
+    <ion-item (click)="openQuest(q)">
+      <h1>({{q?.header.Id}}) {{q?.header.Name}}</h1>
+      <p>{{q?.header.Description}}</p>
+    </ion-item>
+  </ion-list>
   <ion-list>
     <ion-card>
       <ion-card-content>

@@ -61,6 +61,16 @@ export class QuestionProvider {
             .map(res => <QuestHeader[]>res.json());
   }
 
+  loadSuggestions(): Observable<QuestHeader[]> {
+    let head = {'Content-Type': 'text/plain'};
+
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/GetSuggestions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}, options)
+    .map(res => <QuestHeader[]>res.json());
+  }
+
   loadQuestions(questId: number): Observable<Question[]> {
     let head = {'Content-Type': 'text/plain'};
 
