@@ -286,13 +286,17 @@ dispatcher.onPost("/GetOneQuestion", function(req, res) {
     params.id_token, params.id_token_type,
     function(user) {
       maindb.rquery(
-        "SELECT Question, Latitude, Longitude, Id, HashID FROM Questions WHERE Id = ? AND HashID = ?;",
+        "SELECT Question, Answers, Latitude, Longitude, Id, HashID FROM Questions WHERE Id = ? AND HashID = ?;",
         function(err, sqlres) {
           //console.log(sqlres.length);
           //console.log(res);
           if (sqlres.length == 1) {
             //console.log(sqlres);
-            res.write(JSON.stringify(sqlres[0]));
+            var options = JSON.parse(sqlres[0].Answers);
+            var quest = sqlres[0];
+            delete quest["Answers"];
+            quest.Options = options;
+            res.write(JSON.stringify(quest));
           } else {
             res.write("Server error...");
           }
@@ -483,8 +487,26 @@ dispatcher.onPost("/Create", function(req, res) {
     }
   }
   fInsert(params.Questions.length - 1, 0);
-  res.write("OK");
+  res.write("{'Ok':0}");
   res.end();
+});
+
+dispatcher.onPost("/VerifyLogin", function(req, res) {
+  res.writeHead(200, head);
+  let params = JSON.parse(req.body);
+  getProfile(
+    params.id_token, params.id_token_type,
+    function(user) {
+      var resp = user;
+      resp.Ok = 0;
+      res.write(JSON.stringify(resp));
+      res.end();
+    },
+    function() {
+      res.write(JSON.stringify({Ok:1}));
+      res.end();
+    }
+  );
 });
 
 dispatcher.onPost("/Log", function(req, res) {

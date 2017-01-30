@@ -95,13 +95,24 @@ export class CreatePage {
   }
 
   addOption(q:Question) {
-    q.Options.push(new Option());
+    var opt = new Option();
+    var lid = q.Options.length;
+    if(lid == 0) {
+      opt.Value = 1;
+    } else {
+      opt.Value = q.Options[lid-1].Value + 1;
+    }
+    q.Options.push(opt);
     console.log("Option added");
   }
 
   deleteOption(q:Question, o:Option) {
     let ind:number = q.Options.indexOf(o);
     q.Options.splice(ind,1);
+  }
+
+  setOption(q:Question, o:Option) {
+    q.Answer = o.Value + "";
   }
 
   onSubmit() {
@@ -121,7 +132,23 @@ export class CreatePage {
       };
 
       this.questionProvider.createQuest(quest).subscribe(
-        res => console.log(res)
+        res => {
+          let alert;
+          if(JSON.parse(res).Ok == 0) {
+            alert = this.alertCtrl.create({
+              title: 'Success',
+              subTitle: 'The quest was submitted successfully',
+              buttons: ['OK']
+            });
+          } else{
+            alert = this.alertCtrl.create({
+              title: 'Error',
+              subTitle: 'There was an error with submitting the quest. The server sent this message: ' + 'res',
+              buttons: ['OK']
+            });
+          }
+          alert.present();
+        }
       );
     }
   }
@@ -164,6 +191,27 @@ export class CreatePage {
             buttons: ['OK']
           });
           alert.present();
+        } else {
+          if(this.questions[i].Options.length == 1) {
+            valid = false;
+            let alert = this.alertCtrl.create({
+              title: 'Error',
+              subTitle: 'In question number ' + i + ' you adeed only one option.',
+              buttons: ['OK']
+            });
+            alert.present();
+          }
+          for (let j in this.questions[i].Options) {
+            if (valid && (this.questions[i].Options[j].Choice == null || this.questions[i].Options[j].Value == null)) {
+              valid = false;
+              let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'In question number ' + i + ', option ' + j + ' is invalid!',
+                buttons: ['OK']
+              });
+              alert.present();
+            }
+          }
         }
       }
     }
