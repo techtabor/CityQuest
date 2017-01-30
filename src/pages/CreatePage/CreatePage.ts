@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { CreateQuestionComponent } from './CreateQuestionComponent';
 import { Quest } from '../../models/Quest';
+import { Option } from '../../models/Option';
 import { Question } from '../../models/Question';
 import { QuestHeader } from '../../models/QuestHeader'
 import { QuestionProvider } from '../../providers/QuestionProvider';
@@ -35,8 +36,8 @@ export class CreatePage {
 
   loadMap() {
   	console.log('Loading map');
-    //let latLng = new google.maps.LatLng(this.geoLocationProvider.getLocation().Latitude, this.geoLocationProvider.getLocation().Longitude);
-    let latLng = new google.maps.LatLng(46.15,19);
+    let latLng = new google.maps.LatLng(this.geoLocationProvider.getLocation().latitude, this.geoLocationProvider.getLocation().longitude);
+    //let latLng = new google.maps.LatLng(46.15,19);
     let mapOptions = {
       center: latLng,
       zoom: 13,
@@ -49,6 +50,7 @@ export class CreatePage {
       let q: Question = new Question();
       q.Latitude  = e.latLng.lat();
       q.Longitude = e.latLng.lng();
+      q.Options = new Array<Option>();
 
       this.questions.push(q);
 
@@ -90,6 +92,16 @@ export class CreatePage {
     this.questions.splice(ind,1);
     this.markers[ind].setVisible(false);
     this.markers.splice(ind,1);
+  }
+
+  addOption(q:Question) {
+    q.Options.push(new Option());
+    console.log("Option added");
+  }
+
+  deleteOption(q:Question, o:Option) {
+    let ind:number = q.Options.indexOf(o);
+    q.Options.splice(ind,1);
   }
 
   onSubmit() {
