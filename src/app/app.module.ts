@@ -15,6 +15,7 @@ import { QuestPage } from '../pages/QuestPage/QuestPage';
 import { LoginPage } from '../pages/LoginPage/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
+import { QuestionPage } from '../pages/QuestionPage/QuestionPage';
 
 import { QuestShareService } from '../services/QuestShareService';
 
@@ -38,7 +39,8 @@ import { QuestShareService } from '../services/QuestShareService';
     QuestPage,
     LoginPage,
     LogoutPage,
-    CreatePage
+    CreatePage,
+    QuestionPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -52,7 +54,8 @@ import { QuestShareService } from '../services/QuestShareService';
     QuestPage,
     LoginPage,
     LogoutPage,
-    CreatePage
+    CreatePage,
+    QuestionPage
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]
 })

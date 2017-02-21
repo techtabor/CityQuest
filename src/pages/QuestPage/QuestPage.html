@@ -18,28 +18,4 @@
       <p>{{q?.header.Description}}</p>
     </ion-item>
   </ion-list>
-  <ion-list>
-    <ion-card>
-      <ion-card-content>
-        <ion-card-title>
-          {{currentQuestion?.Question}}
-        </ion-card-title>
-        <p>
-          {{currentQuestion?.Question}}
-        </p>
-        <ion-row center>
-        	<ion-col width-75>
-        	  <ion-list inset>
-              <ion-item>
-        	      <ion-input type="text" placeholder="Answer" [(ngModel)]="ans"></ion-input>
-              </ion-item>
-            </ion-list>
-          </ion-col>
-          <ion-col>
-            <button ion-fab (click)="checkAnswer()"><ion-icon name="arrow-forward"></ion-icon></button>
-          </ion-col>
-         </ion-row>
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
 </ion-content>

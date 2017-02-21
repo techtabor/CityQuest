@@ -49,6 +49,7 @@ export class QuestPage {
                 this.shareService.setCurrentQuestion(this.currentQuestion);
               }
             );
+            //this.navCtrl.
           }
         }
       );
