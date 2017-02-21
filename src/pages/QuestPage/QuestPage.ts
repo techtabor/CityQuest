@@ -48,9 +48,10 @@ export class QuestPage {
                 this.currentQuestion = question;
                 this.shareService.setQuest(this.quest);
                 this.shareService.setCurrentQuestion(this.currentQuestion);
+                this.navCtrl.setRoot(QuestionPage);
+                console.log('Our current question: ' + this.currentQuestion.Question);
               }
             );
-            this.navCtrl.setRoot(QuestionPage);
           }
         }
       );
@@ -81,45 +82,5 @@ export class QuestPage {
       this.currentQuestion = this.shareService.getCurrentQuestion();
       this.questId = this.quest.header.Id;
     }
-  }
-
-  checkAnswer() {
-    let title:string, subTitle:string;
-  	let buttons:Array<string> = ['OK'];
-
-
-    this.questionProvider.sendSolution(this.currentQuestion.Id, this.currentQuestion.HashID, this.ans).subscribe(
-      solutionRes => {
-        if(solutionRes.Correct) {
-          if(solutionRes.NextId == "0") {
-            title = 'You win!';
-            subTitle = 'Congratulations, you have won.';
-            let alert = this.alertCtrl.create({
-              title: title,
-              subTitle: subTitle,
-              buttons: buttons
-            });
-            alert.present();
-          } else {
-            this.currentQuestion.Id = solutionRes.NextId;
-            this.currentQuestion.HashID = solutionRes.NextCode;
-            this.questionProvider.loadQuestion(this.currentQuestion.Id, this.currentQuestion.HashID).subscribe(
-              question => {
-                this.currentQuestion = question;
-              }
-            );
-          }
-        } else {
-          title = 'Incorrect Answer';
-          subTitle = solutionRes.Response;
-          let alert = this.alertCtrl.create({
-            title: title,
-            subTitle: subTitle,
-            buttons: buttons
-          });
-          alert.present();
-        }
-      }
-    )
   }
 }

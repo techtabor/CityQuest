@@ -32,11 +32,11 @@ export class MyApp {
 
     this.pages = [
       {title: 'Quest', component: QuestPage, icon_name: 'navigate'},
+      {title: 'Question', component: QuestionPage, icon_name: 'help'},
       {title: 'Map', component: MapPage, icon_name: 'compass'},
       {title: 'Stats', component: StatsPage, icon_name: 'stats'},
       {title: 'Create', component: CreatePage, icon_name: 'color-wand'},
-      {title: 'Logout', component: LogoutPage, icon_name: 'exit'},
-      {title: 'Question', component: QuestionPage, icon_name: 'help'}
+      {title: 'Logout', component: LogoutPage, icon_name: 'exit'}
     ];
   }
 

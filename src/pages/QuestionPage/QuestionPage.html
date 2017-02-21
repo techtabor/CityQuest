@@ -29,12 +29,12 @@
       </ion-card-content>
     </ion-card>
 	<ion-list *ngFor="let o of currentQuestion?.Options">
-      <ion-card>
+      <ion-card (click)="checkAnswer(o)">
         <ion-card-content>
           <p>
-            o?.Choice
+            {{o?.Choice}}
           </p>
         </ion-card-content>
       </ion-card>
-    </ion-list>
+  </ion-list>
 </ion-content>

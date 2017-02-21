@@ -13,9 +13,9 @@
 <ion-content padding>
   <!--<button ion-button (click)="getSuggestions()">Get suggestions</button>-->
   <ion-list *ngFor="let q of availableQuests">
-    <ion-item (click)="openQuest(q)">
-      <h1>({{q?.header.Id}}) {{q?.header.Name}}</h1>
+    <ion-card ion-item (click)="openQuest(q)">
+      <h1>{{q?.header.Name}}</h1>
       <p>{{q?.header.Description}}</p>
-    </ion-item>
+    </ion-card>
   </ion-list>
 </ion-content>

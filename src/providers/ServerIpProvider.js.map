@@ -1,0 +1,1 @@
+{"version":3,"file":"ServerIpProvider.js","sourceRoot":"","sources":["ServerIpProvider.ts"],"names":[],"mappings":";;;;;;;;;AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAE3C,OAAO,uBAAuB,CAAC;AAC/B;;;;;EAKE;AAEF,IAAa,gBAAgB;IAC3B;IACA,CAAC;IAED,sCAAW,GAAX;QACE,MAAM,CAAC,uBAAuB,CAAC;IACjC,CAAC;IACH,uBAAC;AAAD,CAAC,AAPD,IAOC;AAPY,gBAAgB;IAD5B,UAAU,EAAE;;GACA,gBAAgB,CAO5B;SAPY,gBAAgB"}
