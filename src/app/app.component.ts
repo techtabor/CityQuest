@@ -9,6 +9,7 @@ import { QuestPage } from '../pages/QuestPage/QuestPage';
 import { LoginPage } from '../pages/LoginPage/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
+import { QuestionPage } from '../pages/QuestionPage/QuestionPage';
 
 import { QuestShareService } from '../services/QuestShareService';
 
@@ -31,6 +32,7 @@ export class MyApp {
 
     this.pages = [
       {title: 'Quest', component: QuestPage, icon_name: 'navigate'},
+      {title: 'Question', component: QuestionPage, icon_name: 'help'},
       {title: 'Map', component: MapPage, icon_name: 'compass'},
       {title: 'Stats', component: StatsPage, icon_name: 'stats'},
       {title: 'Create', component: CreatePage, icon_name: 'color-wand'},
