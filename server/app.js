@@ -445,14 +445,15 @@ dispatcher.onPost("/Create", function(req, res) {
   var params = (pall.CreateData);
   console.log(params);
   console.log(params.questions);
+  console.log(params.questions[0].Options);
   res.writeHead(200, head);
   getProfile(
-    params.id_token, params.id_token_type,
+    pall.id_token, pall.id_token_type,
     function(user) {
       function fInsert(i, n) {
         if (i == 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Answers) VALUES (?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               //console.log(this);
               maindb.wquery(
@@ -474,13 +475,14 @@ dispatcher.onPost("/Create", function(req, res) {
               params.questions[i].Answer,
               n,
               params.questions[i].Latitude,
-              params.questions[i].Longitude
+              params.questions[i].Longitude,
+              JSON.stringify(params.questions[i].Options)
             ]
           );
         }
         if (i > 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Answers) VALUES (?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               fInsert(i - 1, this.lastID);
             }, [
@@ -489,7 +491,8 @@ dispatcher.onPost("/Create", function(req, res) {
               params.questions[i].Answer,
               n,
               params.questions[i].Latitude,
-              params.questions[i].Longitude
+              params.questions[i].Longitude,
+              JSON.stringify(params.questions[i].Options)
             ]
           );
         }
