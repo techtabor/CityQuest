@@ -33,6 +33,12 @@
       <ion-col width-33>
         <ion-input placeholder="Description" type="text" [(ngModel)]="description"></ion-input>
       </ion-col>
+      <ion-col width-33>
+        <ion-input placeholder="Modify" type="number" [(ngModel)]="modifyid"></ion-input>
+      </ion-col>
+       <ion-col offset-10>
+        <button ion-button (click)="onModifyLoad()">Load</button>
+      </ion-col>
       <ion-col offset-10>
         <button ion-button (click)="onSubmit()">Submit</button>
       </ion-col>

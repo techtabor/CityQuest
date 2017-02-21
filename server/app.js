@@ -209,8 +209,11 @@ dispatcher.onPost("/GetAllQuestions", function(req, res) {
       maindb.rquery(
         "SELECT * FROM Questions WHERE QuestId = ?",
         function(err, sqlres) {
-          res.write(JSON.stringify(sqlres));
-          res.end();
+          var options = JSON.parse(sqlres[0].Answers);
+          var quest = sqlres[0];
+          delete quest["Answers"];
+          quest.Options = options;
+          res.write(JSON.stringify(quest));
         },
         [[req.params.Id]]
       );

@@ -25,6 +25,7 @@ export class CreatePage {
   map: any;
   name: string;
   description: string;
+  modifyid: number;
   markers: any[] = Array<any>();
   questions: Question[] = Array<Question>();
 
@@ -151,6 +152,22 @@ export class CreatePage {
         }
       );
     }
+  }
+
+  onModify() {
+     this.questionProvider.loadQuestHeader(this.modifyid).subscribe(
+        questHeader => {
+          if(questHeader.length) {
+            this.name = questHeader[0].Name;
+            this.description = questHeader[0].Description;
+            this.questionProvider.loadQuestions(this.modifyid).subscribe(
+              question => {
+                this.questions = question;
+              }
+            );
+          }
+        }
+      );
   }
 
   isQuestValid():boolean {
