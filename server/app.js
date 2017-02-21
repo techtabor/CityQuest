@@ -439,8 +439,8 @@ dispatcher.onPost("/LoginPairCheck", function(req, res) {
 
 dispatcher.onPost("/Create", function(req, res) {
   //console.log(req.params);
-  var params = JSON.parse(req.params.Params);
-  //console.log(params);
+  var params = JSON.parse(req.body).createData;
+  console.log(params);
   //console.log(params.Questions[0]);
   res.writeHead(200, head);
 
