@@ -154,7 +154,7 @@ export class CreatePage {
     }
   }
 
-  onModify() {
+  onModifyLoad() {
      this.questionProvider.loadQuestHeader(this.modifyid).subscribe(
         questHeader => {
           if(questHeader.length) {

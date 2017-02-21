@@ -20,20 +20,6 @@
   <div id="params">
     <ion-row baseline>
       <ion-col width-33>
-        <h1>Name:</h1>
-      </ion-col>
-      <ion-col width-33>
-        <ion-input placeholder="Name" type="text" [(ngModel)]="name"></ion-input>
-      </ion-col>
-    </ion-row>
-    <ion-row baseline>
-      <ion-col width-33>
-        <h1>Description:</h1>
-      </ion-col>
-      <ion-col width-33>
-        <ion-input placeholder="Description" type="text" [(ngModel)]="description"></ion-input>
-      </ion-col>
-      <ion-col width-33>
         <ion-input placeholder="Modify" type="number" [(ngModel)]="modifyid"></ion-input>
       </ion-col>
        <ion-col offset-10>
@@ -41,6 +27,22 @@
       </ion-col>
       <ion-col offset-10>
         <button ion-button (click)="onSubmit()">Submit</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col width-33>
+        <h1>Name:</h1>
+      </ion-col>
+      <ion-col width-33>
+        <ion-input placeholder="Name" type="text" [(ngModel)]="name"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col width-33>
+        <h1>Description:</h1>
+      </ion-col>
+      <ion-col width-33>
+        <ion-input placeholder="Description" type="text" [(ngModel)]="description"></ion-input>
       </ion-col>
     </ion-row>
     <ion-list>

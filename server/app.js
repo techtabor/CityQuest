@@ -209,13 +209,13 @@ dispatcher.onPost("/GetAllQuestions", function(req, res) {
       maindb.rquery(
         "SELECT * FROM Questions WHERE QuestId = ?",
         function(err, sqlres) {
-          var options = JSON.parse(sqlres[0].Answers);
-          var quest = sqlres[0];
-          delete quest["Answers"];
-          quest.Options = options;
-          res.write(JSON.stringify(quest));
+          for(var i=0; i<sqlres.length; i++) {
+            sqlres[i].Options = JSON.parse(sqlres[i].Options);
+          }
+          res.write(JSON.stringify(sqlres));
+          res.end();
         },
-        [[req.params.Id]]
+        [[params.Id]]
       );
     },
     function() {
@@ -289,17 +289,14 @@ dispatcher.onPost("/GetOneQuestion", function(req, res) {
     params.id_token, params.id_token_type,
     function(user) {
       maindb.rquery(
-        "SELECT Question, Answers, Latitude, Longitude, Id, HashID FROM Questions WHERE Id = ? AND HashID = ?;",
+        "SELECT Question, Options, Latitude, Longitude, Id, HashID FROM Questions WHERE Id = ? AND HashID = ?;",
         function(err, sqlres) {
           //console.log(sqlres.length);
           //console.log(res);
           if (sqlres.length == 1) {
             //console.log(sqlres);
-            var options = JSON.parse(sqlres[0].Answers);
-            var quest = sqlres[0];
-            delete quest["Answers"];
-            quest.Options = options;
-            res.write(JSON.stringify(quest));
+            sqlres[0].Options = JSON.parse(sqlres[0].Options);
+            res.write(JSON.stringify(sqlres[0]));
           } else {
             res.write("Server error...");
           }
@@ -456,7 +453,7 @@ dispatcher.onPost("/Create", function(req, res) {
       function fInsert(i, n) {
         if (i == 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Answers) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               //console.log(this);
               maindb.wquery(
@@ -485,7 +482,7 @@ dispatcher.onPost("/Create", function(req, res) {
         }
         if (i > 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Answers) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               fInsert(i - 1, this.lastID);
             }, [
