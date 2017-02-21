@@ -23,7 +23,7 @@ export class LogoutPage {
 
   doGoogleLogout() {
     //this.googleAuth.logout();
-    let browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Logout.html`), '_system');
+    let browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Logout.html`), '_system', 'hardwareback=no');
     this.navCtrl.setRoot(LoginPage);
   }
 

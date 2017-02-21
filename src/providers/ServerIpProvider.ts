@@ -13,6 +13,6 @@ export class ServerIpProvider {
   }
 
   getServerIp(): string {
-    return "http://188.166.63.247.xip.io:2017";
+    return "http://localhost:2017";
   }
 }

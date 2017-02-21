@@ -47,13 +47,13 @@ export class LoginPage {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/PairReq`, "", options)
+    this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCode`, "", options)
     .subscribe(res =>
       {
         let resp = res.json();
         console.log(resp);
         this.loginProvider.setPairCode(resp.code);
-        this.browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Pair.html?c=` + resp.code), '_system');
+        this.browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Pair.html?c=` + resp.code), '_system', 'hardwareback=no');
         document.getElementById('LoginLoading').innerText = "Verifying login...";
         this.watch = setInterval(
           (
@@ -72,16 +72,16 @@ export class LoginPage {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/PairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
+    this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
     .subscribe(res =>
       {
-
         let resp = res.json();
-        console.log(resp);
         if(resp.Ok == 2) {
           clearInterval(this.watch);
           this.loginProvider.setToken(resp.Token);
           this.loginProvider.setType("GOOGLE");
+          localStorage.setItem("AuthToken", resp.Token);
+          localStorage.setItem("AuthType", "GOOGLE");
           document.getElementById('LoginLoading').innerText = "Verified";
           //this.browser.close();
           this.navCtrl.setRoot(QuestPage);
@@ -94,35 +94,25 @@ export class LoginPage {
       }
     );
   }
-/*
-  loginWatch(t): void {
-    //console.log("L" + t.state);
-    //console.log("L" + document.getElementById('GoogleData').innerText && t.state < 2);
-    if(document.getElementById('GoogleData').innerText != "") {
-      if(document.getElementById('GoogleData').innerText == "Loading" && t.state == 0) {
-        document.getElementById('LoginLoading').innerText = "Verifying login...";
-        t.state = 1;
-        //console.log("U" + t.state);
-      }
-      if(document.getElementById('GoogleData').innerText != "Loading") {
-        document.getElementById('LoginLoading').innerText = "Verified!";
-        t.state = 2;
-        //console.log("U" + t.state);
-        document.getElementById('GoogleSignInContainer1').appendChild(document.getElementById('GoogleSignIn'));
-        clearInterval(t.watch);
-        t.nav.setRoot(QuestPage);
-      }
-    }
-  }
-*/
+
   ionViewDidLoad() {
-    /*document.getElementById('GoogleSignInContainer2').appendChild(document.getElementById('GoogleSignIn'));
-    let node = document.createElement('script');
-    node.src = "https://apis.google.com/js/platform.js";
-    node.type = 'text/javascript';
-    node.async = true;
-    node.charset = 'utf-8';
-    document.getElementsByTagName('head')[0].appendChild(node);*/
+    let head = {'Content-Type': 'text/plain'};
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+    this.http.post(`${this.serverIpProvider.getServerIp()}/VerifyLogin`, JSON.stringify({id_token: localStorage.getItem("AuthToken"), id_token_type: localStorage.getItem("AuthType")}), options)
+    .subscribe(res =>
+      {
+        let resp = res.json();
+        if(resp.Ok == 0) {
+          this.loginProvider.setToken(localStorage.getItem("AuthToken"));
+          this.loginProvider.setType(localStorage.getItem("AuthType"));
+          document.getElementById('LoginLoading').innerText = "Success! Redirecting...";
+          this.navCtrl.setRoot(QuestPage);
+        } else {
+          document.getElementById('LoginLoading').innerText = "Please log in!";
+        }
+      }
+    );
     console.log('ionViewDidLoad LoginPage');
   }
 

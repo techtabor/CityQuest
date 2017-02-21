@@ -20,38 +20,81 @@
   <div id="params">
     <ion-row baseline>
       <ion-col width-33>
+        <ion-input placeholder="Modify" type="number" [(ngModel)]="modifyid"></ion-input>
+      </ion-col>
+       <ion-col offset-10>
+        <button ion-button (click)="onModifyLoad()">Load</button>
+      </ion-col>
+      <ion-col offset-10>
+        <button ion-button (click)="onSubmit()">Submit</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col width-33>
         <h1>Name:</h1>
       </ion-col>
       <ion-col width-33>
         <ion-input placeholder="Name" type="text" [(ngModel)]="name"></ion-input>
       </ion-col>
     </ion-row>
-    <ion-row baseline>
+    <ion-row>
       <ion-col width-33>
         <h1>Description:</h1>
       </ion-col>
       <ion-col width-33>
         <ion-input placeholder="Description" type="text" [(ngModel)]="description"></ion-input>
       </ion-col>
-      <ion-col offset-10>
-        <button ion-button (click)="onSubmit()">Submit</button>
-      </ion-col>
     </ion-row>
     <ion-list>
       <ion-item-divider></ion-item-divider>
       <ion-row baseline *ngFor="let q of questions">
-        <ion-col width-40>
-          <ion-input placeholder="Question" type="text" [(ngModel)]="q.Question"></ion-input>
-        </ion-col>
-        <ion-col width-40>
-          <ion-input placeholder="Answer" type="text" [(ngModel)]="q.Answer"></ion-input>
-        </ion-col>
-        <ion-col width-20>
-          <button ion-button icon-only (click)="deleteQuestion(q)">
-            <ion-icon name="trash">
-            </ion-icon>
-          </button>
-        </ion-col>
+        <ion-list>
+          <ion-row>
+            <ion-col>
+              <ion-list>
+                <ion-row>
+                  <ion-col width-40>
+                    <ion-input placeholder="Question" type="text" [(ngModel)]="q.Question"></ion-input>
+                  </ion-col>
+                  <ion-col width-40>
+                    <ion-input placeholder="Answer" type="number" [(ngModel)]="q.Answer"></ion-input>
+                  </ion-col>
+                  <ion-col width-20>
+                    <button ion-button icon-only (click)="addOption(q)">
+                      <ion-icon name="add">
+                      </ion-icon>
+                    </button>
+                  </ion-col>
+                </ion-row>
+                <ion-row baseline *ngFor="let o of q.Options">
+                  <ion-col width-40>
+                    <ion-input placeholder="Answer option" type="text" [(ngModel)]="o.Choice"></ion-input>
+                  </ion-col>
+                  <ion-col width-20>
+                    <button ion-button icon-only (click)="deleteOption(q,o)">
+                      <ion-icon name="trash">
+                      </ion-icon>
+                    </button>
+                  </ion-col>
+                  <ion-col width-20>
+                    <button ion-button icon-only (click)="setOption(q,o)" >
+                      <ion-icon name="square-outline" *ngIf="0 + o.Value != 0 + q.Answer">
+                      </ion-icon>
+                      <ion-icon name="square" *ngIf="0 + o.Value == 0 + q.Answer">
+                      </ion-icon>
+                    </button>
+                  </ion-col>
+                </ion-row>
+              </ion-list>
+            </ion-col>
+            <ion-col width-20>
+              <button ion-button icon-only (click)="deleteQuestion(q)">
+                <ion-icon name="trash">
+                </ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-list>
       </ion-row>
     </ion-list>
   </div>

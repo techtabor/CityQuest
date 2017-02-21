@@ -1,0 +1,40 @@
+<!--
+  Generated template for the QuestionPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Quest
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+
+<ion-content padding>
+	<ion-card>
+      <ion-card-content>
+        <ion-card-title>
+          {{currentQuestion?.Question}}
+        </ion-card-title>
+        <p>
+          {{currentQuestion?.Question}}
+        </p>
+      </ion-card-content>
+    </ion-card>
+	<ion-list *ngFor="let o of currentQuestion?.Options">
+      <ion-card (click)="checkAnswer(o)">
+        <ion-card-content>
+          <p>
+            {{o?.Choice}}
+          </p>
+        </ion-card-content>
+      </ion-card>
+  </ion-list>
+</ion-content>

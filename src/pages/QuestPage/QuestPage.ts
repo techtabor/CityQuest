@@ -3,7 +3,9 @@ import { NavController, AlertController } from 'ionic-angular';
 
 import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
+import { QuestHeader } from '../../models/QuestHeader';
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { QuestionPage } from '../QuestionPage/QuestionPage';
 
 import { QuestShareService } from '../../services/QuestShareService';
 
@@ -23,6 +25,7 @@ export class QuestPage {
   //currentQuestionCode: string = "00000000000000000000000000000000";
   currentQuestion: Question = new Question();
   quest: Quest = new Quest();
+  availableQuests: Quest[] = new Array<Quest>();
 
   questId: string;
   ans: string;
@@ -30,7 +33,8 @@ export class QuestPage {
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               private questionProvider: QuestionProvider,
-              private shareService: QuestShareService)  { }
+              private shareService: QuestShareService) {
+  }
 
   loadQuest(id) {
     if (id != '') {
@@ -44,128 +48,39 @@ export class QuestPage {
                 this.currentQuestion = question;
                 this.shareService.setQuest(this.quest);
                 this.shareService.setCurrentQuestion(this.currentQuestion);
+                this.navCtrl.setRoot(QuestionPage);
+                console.log('Our current question: ' + this.currentQuestion.Question);
               }
             );
           }
         }
       );
-      /*this.questionProvider.loadQuestions(id).subscribe(
-        questions => {
-          this.quest.questions = questions;
-
-          if (questions[0] != undefined) {
-            this.sortQuestions();
-
-            this.currentQuestion = questions[0];
-
-            this.shareService.setQuest(this.quest);
-            this.shareService.setCurrentQuestion(this.currentQuestion);
-          }
-        }
-      );*/
     }
   }
 
-  /*sortQuestions() {
-    let questId: string = this.quest.header.Start;
+  openQuest(q:Quest) {
+    this.loadQuest(q.header.Id);
+  }
 
-    for (let i = 0; i < this.quest.questions.length; ++i) {
-      for (let j = 0; j < this.quest.questions.length; ++j) {
-        if (this.quest.questions[j].Id == questId) {
-          questId = this.quest.questions[j].Next;
-
-          let tmp = this.quest.questions[i];
-          this.quest.questions[i] = this.quest.questions[j];
-          this.quest.questions[j] = tmp;
+  getSuggestions() {
+    this.questionProvider.loadSuggestions().subscribe(
+      suggestions => {
+        for (let i = 0; i < suggestions.length; ++i) {
+          this.availableQuests[i] = new Quest();
+          this.availableQuests[i].header = suggestions[i];
         }
       }
-    }
-  }*/
-
-  /*nextQuestion() {
-    this.currentQuestionIndex++;
-
-    if (this.currentQuestionIndex < this.quest.questions.length) {
-      this.currentQuestion = this.quest.questions[this.currentQuestionIndex];
-    } else {
-      this.currentQuestionIndex = 0;
-      let alert = this.alertCtrl.create({
-    		title: 'Congratulations',
-    		subTitle: 'You have successfully completed this quest!',
-    		buttons: ['OK']
-    	});
-    	alert.present();
-    }
-
-    this.shareService.setCurrentQuestion(this.currentQuestion);
-  }*/
+    );
+  }
 
   ionViewDidLoad() {
     console.log('Hello QuestPage Page');
+    this.getSuggestions();
 
     if (this.shareService.getQuest() != undefined) {
       this.quest = this.shareService.getQuest();
       this.currentQuestion = this.shareService.getCurrentQuestion();
       this.questId = this.quest.header.Id;
     }
-  }
-
-  checkAnswer() {
-    let title:string, subTitle:string;
-  	let buttons:Array<string> = ['OK'];
-
-
-    this.questionProvider.sendSolution(this.currentQuestion.Id, this.currentQuestion.HashID, this.ans).subscribe(
-      solutionRes => {
-        if(solutionRes.Correct) {
-          if(solutionRes.NextId == "0") {
-            title = 'You win!';
-            subTitle = 'Congratulations, you have won.';
-            let alert = this.alertCtrl.create({
-              title: title,
-              subTitle: subTitle,
-              buttons: buttons
-            });
-            alert.present();
-          } else {
-            this.currentQuestion.Id = solutionRes.NextId;
-            this.currentQuestion.HashID = solutionRes.NextCode;
-            this.questionProvider.loadQuestion(this.currentQuestion.Id, this.currentQuestion.HashID).subscribe(
-              question => {
-                this.currentQuestion = question;
-              }
-            );
-          }
-        } else {
-          title = 'Incorrect Answer';
-          subTitle = solutionRes.Response;
-          let alert = this.alertCtrl.create({
-            title: title,
-            subTitle: subTitle,
-            buttons: buttons
-          });
-          alert.present();
-        }
-      }
-    )
-
-  	/*let title:string, subTitle:string;
-  	let buttons:Array<string> = ['OK'];
-
-    if (this.ans == this.currentQuestion.Answer) {
-      title = 'Correct Answer';
-      subTitle = 'Your answer was correct';
-      this.nextQuestion();
-    } else {
-      title = 'Incorrect Answer';
-      subTitle = 'Your answer was not correct!';
-    }
-
-  	let alert = this.alertCtrl.create({
-  		title: title,
-  		subTitle: subTitle,
-  		buttons: buttons
-  	});
-  	alert.present();*/
   }
 }

@@ -37,7 +37,7 @@ export class QuestionProvider {
     let options    = new RequestOptions({headers: headers});
 
 
-    return this.http.post(`${this.serverIpProvider.getServerIp()}/Question`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode}), options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/GetOneQuestion`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode}), options)
             .map(res => <Question>res.json());
   }
 
@@ -47,7 +47,7 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
     let geoData    = this.geoLocationProvider.getLocation();
-    return this.http.post(`${this.serverIpProvider.getServerIp()}/Solution`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode, Sol: solution, Lat: geoData.latitude, Long: geoData.longitude}), options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/SubmitQuestionSolution`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questionId, Code: questionCode, Sol: solution, Lat: geoData.latitude, Long: geoData.longitude}), options)
     .map(res => <Solution>res.json());
   }
 
@@ -57,8 +57,18 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverIpProvider.getServerIp()}/QuestHeader`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/GetQuestHeader`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
             .map(res => <QuestHeader[]>res.json());
+  }
+
+  loadSuggestions(): Observable<QuestHeader[]> {
+    let head = {'Content-Type': 'text/plain'};
+
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/GetSuggestions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}, options)
+    .map(res => <QuestHeader[]>res.json());
   }
 
   loadQuestions(questId: number): Observable<Question[]> {
@@ -67,7 +77,7 @@ export class QuestionProvider {
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverIpProvider.getServerIp()}/Questions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/GetAllQuestions`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), Id: questId}, options)
             .map(res => <Question[]>res.json());
   }
 
@@ -77,7 +87,7 @@ export class QuestionProvider {
     let headers = new Headers(head);
     let options = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverIpProvider.getServerIp()}/Create`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), CreateData: JSON.stringify(quest)}, options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/Create`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), CreateData: quest}, options)
             .map(res => JSON.stringify(res))
   }
 

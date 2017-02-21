@@ -33,7 +33,7 @@
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/../PairResp', true);
+        xhr.open('POST', '/../LoginPairResp', true);
 
         xhr.onload = function () {
           var resp = JSON.parse(xhr.response);

@@ -2,9 +2,11 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
 import { CreateQuestionComponent } from './CreateQuestionComponent';
 import { Quest } from '../../models/Quest';
+import { Option } from '../../models/Option';
 import { Question } from '../../models/Question';
 import { QuestHeader } from '../../models/QuestHeader'
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
 
 declare var google;
 
@@ -23,18 +25,20 @@ export class CreatePage {
   map: any;
   name: string;
   description: string;
+  modifyid: number;
   markers: any[] = Array<any>();
   questions: Question[] = Array<Question>();
 
   constructor(public navCtrl: NavController,
   			      public navParams: NavParams,
               public alertCtrl: AlertController,
+              public geoLocationProvider: GeoLocationProvider,
               private questionProvider: QuestionProvider) {}
 
   loadMap() {
   	console.log('Loading map');
-    let latLng = new google.maps.LatLng(47.48, 19.07);
-
+    let latLng = new google.maps.LatLng(this.geoLocationProvider.getLocation().latitude, this.geoLocationProvider.getLocation().longitude);
+    //let latLng = new google.maps.LatLng(46.15,19);
     let mapOptions = {
       center: latLng,
       zoom: 13,
@@ -47,6 +51,7 @@ export class CreatePage {
       let q: Question = new Question();
       q.Latitude  = e.latLng.lat();
       q.Longitude = e.latLng.lng();
+      q.Options = new Array<Option>();
 
       this.questions.push(q);
 
@@ -90,6 +95,27 @@ export class CreatePage {
     this.markers.splice(ind,1);
   }
 
+  addOption(q:Question) {
+    var opt = new Option();
+    var lid = q.Options.length;
+    if(lid == 0) {
+      opt.Value = 1;
+    } else {
+      opt.Value = q.Options[lid-1].Value + 1;
+    }
+    q.Options.push(opt);
+    console.log("Option added");
+  }
+
+  deleteOption(q:Question, o:Option) {
+    let ind:number = q.Options.indexOf(o);
+    q.Options.splice(ind,1);
+  }
+
+  setOption(q:Question, o:Option) {
+    q.Answer = o.Value + "";
+  }
+
   onSubmit() {
     if (this.isQuestValid()) {
       let questHeader:QuestHeader = {
@@ -107,9 +133,41 @@ export class CreatePage {
       };
 
       this.questionProvider.createQuest(quest).subscribe(
-        res => console.log(res)
+        res => {
+          let alert;
+          if(JSON.parse(res).Ok != 0) {
+            alert = this.alertCtrl.create({
+              title: 'Success',
+              subTitle: 'The quest was submitted successfully',
+              buttons: ['OK']
+            });
+          } else{
+            alert = this.alertCtrl.create({
+              title: 'Error',
+              subTitle: 'There was an error with submitting the quest. The server sent this message: ' + JSON.parse(res).Ok,
+              buttons: ['OK']
+            });
+          }
+          alert.present();
+        }
       );
     }
+  }
+
+  onModifyLoad() {
+     this.questionProvider.loadQuestHeader(this.modifyid).subscribe(
+        questHeader => {
+          if(questHeader.length) {
+            this.name = questHeader[0].Name;
+            this.description = questHeader[0].Description;
+            this.questionProvider.loadQuestions(this.modifyid).subscribe(
+              question => {
+                this.questions = question;
+              }
+            );
+          }
+        }
+      );
   }
 
   isQuestValid():boolean {
@@ -150,6 +208,27 @@ export class CreatePage {
             buttons: ['OK']
           });
           alert.present();
+        } else {
+          if(this.questions[i].Options.length == 1) {
+            valid = false;
+            let alert = this.alertCtrl.create({
+              title: 'Error',
+              subTitle: 'In question number ' + i + ' you adeed only one option.',
+              buttons: ['OK']
+            });
+            alert.present();
+          }
+          for (let j in this.questions[i].Options) {
+            if (valid && (this.questions[i].Options[j].Choice == null || this.questions[i].Options[j].Value == null)) {
+              valid = false;
+              let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: 'In question number ' + i + ', option ' + j + ' is invalid!',
+                buttons: ['OK']
+              });
+              alert.present();
+            }
+          }
         }
       }
     }

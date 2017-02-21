@@ -1,9 +1,10 @@
 var dbapi = require('./db.js');
-var maindb = new dbapi.database("main.db");
-var logindb = new dbapi.database("login.db");
+var maindb;
+var logindb;
 var http = require('http');
-var httpdispatcher = require('httpdispatcher');
+var httpdispatcher = require('./httpdispatcher.js');
 var dispatcher = new httpdispatcher();
+var fs = require("fs");
 
 var GoogleAuth = require('google-auth-library');
 var GAuth = new GoogleAuth;
@@ -40,26 +41,49 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  /*/logindb.query("DROP TABLE IF EXISTS Google",
-    null,
-    [[]]
-  );//*/
-  /*/logindb.query("DROP TABLE IF EXISTS Tokens",
-    null,
-    [[]]
-  );//*/
-  /*/logindb.query("DROP TABLE IF EXISTS Pair", null, [
-    []
-  ]);//*/
-  /*/logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", function(){}, [
-    []
-  ]);//*/
-  /*/logindb.query("CREATE TABLE Tokens (SessionToken TINYTEXT, AuthToken TINYTEXT, AuthType TINYTEXT, Expires TIMESTAMP)", function(){}, [
-    []
-  ]);//*/
-  /*logindb.query("CREATE TABLE Pair (PairToken TINYTEXT, PairType TINYTEYT, Expires TIMESTAMP)", null, [
+  logindb = new dbapi.database("login.db");
+  //console.log(logindb);
+  if(false) { //set to true if you crashed.
+    console.log("Login database corrupt!!!");
+    logindb.db.close(
+      function(){
+        fs.unlink(
+          "login.db",
+          function(){
+            logindb = new dbapi.database("login.db");
+            logindb.query("CREATE TABLE Tokens (SessionToken TINYTEXT, AuthToken TINYTEXT, AuthType TINYTEXT, Expires TIMESTAMP)", function(){}, [
+              []
+            ]);
+            logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", function(){}, [
+              []
+            ]);
+          }
+        )
+      }
+    );
+  } else {
+    logindb.query("DELETE FROM Tokens WHERE 1=1", function(){}, [
+      []
+    ]);
+  }
+  maindb = new dbapi.database("main.db");
+  /*if(!maindb.db.open) {
+    console.log("Main database corrupt!!!");
+    maindb.db.close(
+      function(){
+        fs.unlink(
+          "main.db",
+          function(){
+            maindb = new dbapi.database("main.db");
+          }
+        )
+      }
+    );
+  }*/
+  /*logindb.query("CREATE TABLE Google (Id INTEGER PRIMARY KEY AUTOINCREMENT, SubId TINYTEXT)", function(){}, [
     []
   ]);*/
+
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
 });
@@ -176,7 +200,7 @@ dispatcher.onOptions(/\//, function(req, res) {
   res.end();
 });
 
-dispatcher.onPost("/Questions", function(req, res) {
+dispatcher.onPost("/GetAllQuestions", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -185,10 +209,13 @@ dispatcher.onPost("/Questions", function(req, res) {
       maindb.rquery(
         "SELECT * FROM Questions WHERE QuestId = ?",
         function(err, sqlres) {
+          for(var i=0; i<sqlres.length; i++) {
+            sqlres[i].Options = JSON.parse(sqlres[i].Options);
+          }
           res.write(JSON.stringify(sqlres));
           res.end();
         },
-        [[req.params.Id]]
+        [[params.Id]]
       );
     },
     function() {
@@ -197,7 +224,7 @@ dispatcher.onPost("/Questions", function(req, res) {
   );
 });
 
-dispatcher.onPost("/QuestHeader", function(req, res) {
+dispatcher.onPost("/GetQuestHeader", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -219,7 +246,7 @@ dispatcher.onPost("/QuestHeader", function(req, res) {
   );
 });
 
-dispatcher.onPost("/Solution", function(req, res) {
+dispatcher.onPost("/SubmitQuestionSolution", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
@@ -255,19 +282,20 @@ dispatcher.onPost("/Solution", function(req, res) {
   );
 });
 
-dispatcher.onPost("/Question", function(req, res) {
+dispatcher.onPost("/GetOneQuestion", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
     params.id_token, params.id_token_type,
     function(user) {
       maindb.rquery(
-        "SELECT Question, Latitude, Longitude, Id, HashID FROM Questions WHERE Id = ? AND HashID = ?;",
+        "SELECT Question, Options, Latitude, Longitude, Id, HashID FROM Questions WHERE Id = ? AND HashID = ?;",
         function(err, sqlres) {
           //console.log(sqlres.length);
           //console.log(res);
           if (sqlres.length == 1) {
             //console.log(sqlres);
+            sqlres[0].Options = JSON.parse(sqlres[0].Options);
             res.write(JSON.stringify(sqlres[0]));
           } else {
             res.write("Server error...");
@@ -281,18 +309,19 @@ dispatcher.onPost("/Question", function(req, res) {
   );
 });
 
-dispatcher.onPost("/Quest", function(req, res) {
+dispatcher.onPost("/GetSuggestions", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   getProfile(
     params.id_token, params.id_token_type,
     function(user) {
       maindb.rquery(
-        "SELECT Start, Name, Description FROM Quests WHERE ? < Latitude AND Latitude < ? AND ? < Longitude AND Longitude < ?;",
+        "SELECT Start, Name, Description, Id FROM Quests",
         function(err, sqlres) {
           var resp = [];
           for (var i = 0; i < sqlres.length; i++) {
             resp.push({
+              Id: sqlres[i].Id,
               Name: sqlres[i].Name,
               Description: sqlres[i].Description,
               Start: sqlres[i].Start
@@ -301,14 +330,7 @@ dispatcher.onPost("/Quest", function(req, res) {
           res.write(JSON.stringify(resp));
           res.end();
         },
-        [
-          [
-            (+params.Latitude) - 0.0904,
-            (+params.Latitude) + 0.0904,
-            (+params.Longitude) - 0.0898 / Math.cos(+params.Latitude * Math.PI / 180.0),
-            (+params.Longitude) + 0.0898 / Math.cos(+params.Latitude * Math.PI / 180.0)
-          ]
-        ]
+        []
       );
     },
     function() {
@@ -317,7 +339,7 @@ dispatcher.onPost("/Quest", function(req, res) {
   );
 });
 
-dispatcher.onPost("/PairReq", function(req, res) {
+dispatcher.onPost("/LoginPairCode", function(req, res) {
   res.writeHead(200, head);
   //let params = JSON.parse(req.body);
   let stoken = makeId(64);
@@ -333,7 +355,7 @@ dispatcher.onPost("/PairReq", function(req, res) {
   res.end();
 });
 
-dispatcher.onPost("/PairResp", function(req, res) {
+dispatcher.onPost("/LoginPairResp", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   //console.log(params);
@@ -365,7 +387,7 @@ dispatcher.onPost("/PairResp", function(req, res) {
   }
 });
 
-dispatcher.onPost("/PairCheck", function(req, res) {
+dispatcher.onPost("/LoginPairCheck", function(req, res) {
   res.writeHead(200, head);
   let params = JSON.parse(req.body);
   //console.log(params);
@@ -413,6 +435,92 @@ dispatcher.onPost("/PairCheck", function(req, res) {
   //},
   //[[]]
   //);
+});
+
+dispatcher.onPost("/Create", function(req, res) {
+
+  //console.log(req.params);
+  var pall = JSON.parse(req.body);
+  console.log(pall);
+  var params = (pall.CreateData);
+  console.log(params);
+  console.log(params.questions);
+  console.log(params.questions[0].Options);
+  res.writeHead(200, head);
+  getProfile(
+    pall.id_token, pall.id_token_type,
+    function(user) {
+      function fInsert(i, n) {
+        if (i == 0) {
+          maindb.wquery(
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            function(err, sqlres) {
+              //console.log(this);
+              maindb.wquery(
+                "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
+                function() {
+                    res.write("{'Ok':0}");
+                    res.end();
+                }, [
+                  params.header.Name,
+                  params.header.Description,
+                  this.lastID,
+                  params.header.Latitude,
+                  params.header.Longitude
+                ]
+              );
+            }, [
+              "00000000000000000000000000000000",
+              params.questions[i].Question,
+              params.questions[i].Answer,
+              n,
+              params.questions[i].Latitude,
+              params.questions[i].Longitude,
+              JSON.stringify(params.questions[i].Options)
+            ]
+          );
+        }
+        if (i > 0) {
+          maindb.wquery(
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            function(err, sqlres) {
+              fInsert(i - 1, this.lastID);
+            }, [
+              makeId(32),
+              params.questions[i].Question,
+              params.questions[i].Answer,
+              n,
+              params.questions[i].Latitude,
+              params.questions[i].Longitude,
+              JSON.stringify(params.questions[i].Options)
+            ]
+          );
+        }
+      }
+      fInsert(params.questions.length - 1, 0);
+    },
+    function() {
+      res.end();
+    }
+  );
+});
+
+dispatcher.onPost("/VerifyLogin", function(req, res) {
+  res.writeHead(200, head);
+  let params = JSON.parse(req.body);
+  getProfile(
+    params.id_token, params.id_token_type,
+    function(user) {
+      var resp = user;
+      resp.Ok = 0;
+      res.write(JSON.stringify(resp));
+      res.end();
+    },
+    function() {
+      res.write(JSON.stringify({Ok:1}));
+      res.end();
+    }
+  );
 });
 
 dispatcher.onPost("/Log", function(req, res) {
