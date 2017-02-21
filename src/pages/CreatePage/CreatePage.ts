@@ -25,6 +25,7 @@ export class CreatePage {
   map: any;
   name: string;
   description: string;
+  modifyid: number;
   markers: any[] = Array<any>();
   questions: Question[] = Array<Question>();
 
@@ -134,7 +135,7 @@ export class CreatePage {
       this.questionProvider.createQuest(quest).subscribe(
         res => {
           let alert;
-          if(JSON.parse(res).Ok == 0) {
+          if(JSON.parse(res).Ok != 0) {
             alert = this.alertCtrl.create({
               title: 'Success',
               subTitle: 'The quest was submitted successfully',
@@ -143,7 +144,7 @@ export class CreatePage {
           } else{
             alert = this.alertCtrl.create({
               title: 'Error',
-              subTitle: 'There was an error with submitting the quest. The server sent this message: ' + 'res',
+              subTitle: 'There was an error with submitting the quest. The server sent this message: ' + JSON.parse(res).Ok,
               buttons: ['OK']
             });
           }
@@ -151,6 +152,22 @@ export class CreatePage {
         }
       );
     }
+  }
+
+  onModify() {
+     this.questionProvider.loadQuestHeader(this.modifyid).subscribe(
+        questHeader => {
+          if(questHeader.length) {
+            this.name = questHeader[0].Name;
+            this.description = questHeader[0].Description;
+            this.questionProvider.loadQuestions(this.modifyid).subscribe(
+              question => {
+                this.questions = question;
+              }
+            );
+          }
+        }
+      );
   }
 
   isQuestValid():boolean {
