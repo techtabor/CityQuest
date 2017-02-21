@@ -49,7 +49,7 @@
                     <ion-input placeholder="Question" type="text" [(ngModel)]="q.Question"></ion-input>
                   </ion-col>
                   <ion-col width-40>
-                    <ion-input placeholder="Answer" type="text" [(ngModel)]="q.Answer"></ion-input>
+                    <ion-input placeholder="Answer" type="number" [(ngModel)]="q.Answer"></ion-input>
                   </ion-col>
                   <ion-col width-20>
                     <button ion-button icon-only (click)="addOption(q)">
@@ -65,6 +65,14 @@
                   <ion-col width-20>
                     <button ion-button icon-only (click)="deleteOption(q,o)">
                       <ion-icon name="trash">
+                      </ion-icon>
+                    </button>
+                  </ion-col>
+                  <ion-col width-20>
+                    <button ion-button icon-only (click)="setOption(q,o)" >
+                      <ion-icon name="square-outline" *ngIf="0 + o.Value != 0 + q.Answer">
+                      </ion-icon>
+                      <ion-icon name="square" *ngIf="0 + o.Value == 0 + q.Answer">
                       </ion-icon>
                     </button>
                   </ion-col>

@@ -14,10 +14,6 @@
   <!-- cordova.js required for cordova apps -->
   <script src="http://maps.google.com/maps/api/js?key=AIzaSyBSrZ0Su0hmNk7iQB0bg18zg92jVvrp8mk"></script>
   <script src="cordova.js"></script>
-  <script src="../ng-cordova-oauth/dist/ng-cordova-oauth.min.js"></script>
-
-  <meta name="google-signin-scope" content="profile email">
-  <meta name="google-signin-client_id" content="316471932564-cbrncdi9fp37k95aco8g94vo0e16mfc3.apps.googleusercontent.com">
 
   <!-- un-comment this code to enable service worker
   <script>
@@ -33,10 +29,6 @@
 </head>
 <body>
   <!-- Way to send data from native javascript into ionic -->
-  <div id="GoogleData">
-  </div>
-  <button id="GoogleLogout" onclick="googleSignOut();"></button>
-
 
   <!-- Ionic's root component and where the app will load -->
   <ion-app></ion-app>
@@ -46,26 +38,5 @@
 
   <!-- The bundle js is generated during the build process -->
   <script src="build/main.js"></script>
-
-  <script>
-    function SaveGoogleData(d) {
-      document.getElementById('GoogleData').innerText = d.Zi.id_token;
-    }
-  </script>
-  <script>
-    function onBeginLogin() {
-      document.getElementById('GoogleData').innerText = "Loading";
-    }
-  </script>
-  <script>
-    function googleSignOut() {
-      var auth2 = gapi.auth2.getAuthInstance();
-      console.log('Begin sign out');
-      auth2.signOut().then(function () {
-        console.log('User signed out.');
-      });
-    }
-  </script>
-
 </body>
 </html>
