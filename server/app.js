@@ -438,57 +438,68 @@ dispatcher.onPost("/LoginPairCheck", function(req, res) {
 });
 
 dispatcher.onPost("/Create", function(req, res) {
-  //console.log(req.params);
-  var params = JSON.parse(req.params.Params);
-  //console.log(params);
-  //console.log(params.Questions[0]);
-  res.writeHead(200, head);
 
-  function fInsert(i, n) {
-    if (i == 0) {
-      maindb.wquery(
-        "INSERT INTO Questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
-        function(err, sqlres) {
-          //console.log(this);
+  //console.log(req.params);
+  var pall = JSON.parse(req.body);
+  console.log(pall);
+  var params = (pall.CreateData);
+  console.log(params);
+  console.log(params.questions);
+  res.writeHead(200, head);
+  getProfile(
+    params.id_token, params.id_token_type,
+    function(user) {
+      function fInsert(i, n) {
+        if (i == 0) {
           maindb.wquery(
-            "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
-            null, [
-              params.Name,
-              params.Desc,
-              this.lastID,
-              params.Latitude,
-              params.Longitude
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
+            function(err, sqlres) {
+              //console.log(this);
+              maindb.wquery(
+                "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
+                function() {
+                    res.write("{'Ok':0}");
+                    res.end();
+                }, [
+                  params.header.Name,
+                  params.header.Description,
+                  this.lastID,
+                  params.header.Latitude,
+                  params.header.Longitude
+                ]
+              );
+            }, [
+              "00000000000000000000000000000000",
+              params.questions[i].Question,
+              params.questions[i].Answer,
+              n,
+              params.questions[i].Latitude,
+              params.questions[i].Longitude
             ]
           );
-        }, [
-          "00000000000000000000000000000000",
-          params.Questions[i].Question,
-          params.Questions[i].Answer,
-          n,
-          params.Questions[i].Latitude,
-          params.Questions[i].Longitude
-        ]
-      );
+        }
+        if (i > 0) {
+          maindb.wquery(
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
+            function(err, sqlres) {
+              fInsert(i - 1, this.lastID);
+            }, [
+              makeId(32),
+              params.questions[i].Question,
+              params.questions[i].Answer,
+              n,
+              params.questions[i].Latitude,
+              params.questions[i].Longitude
+            ]
+          );
+        }
+      }
+      fInsert(params.questions.length - 1, 0);
+    },
+    function() {
+      res.end();
     }
-    if (i > 0) {
-      maindb.wquery(
-        "INSERT INTO Questions (HashID, Question, Answer, Next, Latitude, Longitude) VALUES (?, ?, ?, ?, ?, ?)",
-        function(err, sqlres) {
-          fInsert(i - 1, this.lastID);
-        }, [
-          makeId(32),
-          params.Questions[i].Question,
-          params.Questions[i].Answer,
-          n,
-          params.Questions[i].Latitude,
-          params.Questions[i].Longitude
-        ]
-      );
-    }
-  }
-  fInsert(params.Questions.length - 1, 0);
-  res.write("{'Ok':0}");
-  res.end();
+  );
 });
 
 dispatcher.onPost("/VerifyLogin", function(req, res) {

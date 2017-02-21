@@ -87,7 +87,7 @@ export class QuestionProvider {
     let headers = new Headers(head);
     let options = new RequestOptions({headers: headers});
 
-    return this.http.post(`${this.serverIpProvider.getServerIp()}/Create`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), CreateData: JSON.stringify(quest)}, options)
+    return this.http.post(`${this.serverIpProvider.getServerIp()}/Create`, {id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), CreateData: quest}, options)
             .map(res => JSON.stringify(res))
   }
 
