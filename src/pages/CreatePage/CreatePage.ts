@@ -134,7 +134,7 @@ export class CreatePage {
       this.questionProvider.createQuest(quest).subscribe(
         res => {
           let alert;
-          if(JSON.parse(res).Ok == 0) {
+          if(JSON.parse(res).Ok != 0) {
             alert = this.alertCtrl.create({
               title: 'Success',
               subTitle: 'The quest was submitted successfully',
@@ -143,7 +143,7 @@ export class CreatePage {
           } else{
             alert = this.alertCtrl.create({
               title: 'Error',
-              subTitle: 'There was an error with submitting the quest. The server sent this message: ' + 'res',
+              subTitle: 'There was an error with submitting the quest. The server sent this message: ' + JSON.parse(res).Ok,
               buttons: ['OK']
             });
           }

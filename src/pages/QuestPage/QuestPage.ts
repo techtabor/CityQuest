@@ -5,6 +5,7 @@ import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
 import { QuestHeader } from '../../models/QuestHeader';
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { QuestionPage } from '../QuestionPage/QuestionPage';
 
 import { QuestShareService } from '../../services/QuestShareService';
 
@@ -49,7 +50,7 @@ export class QuestPage {
                 this.shareService.setCurrentQuestion(this.currentQuestion);
               }
             );
-            //this.navCtrl.
+            this.navCtrl.setRoot(QuestionPage);
           }
         }
       );

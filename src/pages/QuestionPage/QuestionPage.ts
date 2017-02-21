@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 
 import { Quest } from '../../models/Quest';
 import { Question } from '../../models/Question';
@@ -20,10 +20,12 @@ export class QuestionPage {
 
   private currentQuestion:Question;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private shareService: QuestShareService) { }
+  constructor(public navCtrl: NavController, private shareService: QuestShareService) { }
 
   ionViewDidLoad() {
   	this.currentQuestion = this.shareService.getCurrentQuestion();
+
+    console.log(this.currentQuestion.Options);
   }
 
 }
