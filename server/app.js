@@ -253,26 +253,42 @@ dispatcher.onPost("/SubmitQuestionSolution", function(req, res) {
     params.id_token, params.id_token_type,
     function(user) {
       maindb.rquery(
-        "SELECT A.Answer, A.Next, A.Latitude, A.Longitude, B.HashID FROM Questions AS A INNER JOIN Questions AS B WHERE A.Id = ? AND A.HashID = ? AND A.Next = B.ID;",
+        "SELECT A.Answer, A.Next, A.Latitude, A.Longitude, A.QuestId, B.HashID FROM Questions AS A INNER JOIN Questions AS B WHERE A.Id = ? AND A.HashID = ? AND A.Next = B.ID;",
         function(err, sqlres) {
           if (sqlres.length == 1) {
             if (latlongdist(params.Lat, params.Long, sqlres[0].Latitude, sqlres[0].Longitude) <= 150) {
               if (sqlres[0].Answer == params.Sol) {
                 res.write('{"Correct": true, "Response":"OK.", "NextId":' +
                   sqlres[0].Next + ', "NextCode":"' + sqlres[0].HashID +
-                  '"}');
+                  '"}'
+                );
+                var arr = [[user.ID, sqlres[0].QuestId, params.Id]];
+                if(sqlres[0].Next == 0) {
+                  arr.push([user.ID, sqlres[0].QuestId, 0]);
+                }
+                maindb.query(
+                  "INSERT INTO Solutions(User, Quest, Question) VALUES (?,?,?)",
+                  function(erri, sqlresi) {
+                    res.end();
+                  },
+                  arr
+                );
               } else {
                 res.write('{"Correct": false, "Response":"Wrong answer.", "NextId": 0, "NextCode": 0}');
+                res.end();
               }
             } else {
               res.write('{"Correct": false, "Response":"Too far, you are ' +
                 Math.round(latlongdist(params.Lat, params.Long, sqlres[0].Latitude, sqlres[0].Longitude)) +
-                ' meters away.", "NextId": 0, "NextCode": 0}');
+                ' meters away.", "NextId": 0, "NextCode": 0}'
+              );
+              res.end();
             }
           } else {
             res.write('{"Correct": false, "Response":"Incorrect question", "NextId": 0, "NextCode": 0}');
+            res.end();
           }
-          res.end();
+
         }, [[params.Id, params.Code]]
       );
     },
@@ -447,26 +463,25 @@ dispatcher.onPost("/Create", function(req, res) {
   console.log(params.questions);
   console.log(params.questions[0].Options);
   res.writeHead(200, head);
+
+  var thisQuestId;
   getProfile(
     pall.id_token, pall.id_token_type,
     function(user) {
       function fInsert(i, n) {
         if (i == 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options, QuestId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               //console.log(this);
               maindb.wquery(
-                "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
+                "UPDATE Quests SET Start = ? WHERE Id = ?",
                 function() {
                     res.write("{'Ok':0}");
                     res.end();
                 }, [
-                  params.header.Name,
-                  params.header.Description,
                   this.lastID,
-                  params.header.Latitude,
-                  params.header.Longitude
+                  thisQuestId
                 ]
               );
             }, [
@@ -476,13 +491,14 @@ dispatcher.onPost("/Create", function(req, res) {
               n,
               params.questions[i].Latitude,
               params.questions[i].Longitude,
-              JSON.stringify(params.questions[i].Options)
+              JSON.stringify(params.questions[i].Options),
+              thisQuestId
             ]
           );
         }
         if (i > 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options, QuestId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               fInsert(i - 1, this.lastID);
             }, [
@@ -492,12 +508,26 @@ dispatcher.onPost("/Create", function(req, res) {
               n,
               params.questions[i].Latitude,
               params.questions[i].Longitude,
-              JSON.stringify(params.questions[i].Options)
+              JSON.stringify(params.questions[i].Options),
+              thisQuestId
             ]
           );
         }
       }
-      fInsert(params.questions.length - 1, 0);
+      maindb.wquery(
+        "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
+        function() {
+          thisQuestId = this.lastID;
+          fInsert(params.questions.length - 1, 0);
+
+        }, [
+          params.header.Name,
+          params.header.Description,
+          0,
+          params.header.Latitude,
+          params.header.Longitude
+        ]
+      );
     },
     function() {
       res.end();
