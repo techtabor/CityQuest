@@ -5,6 +5,8 @@ import { Quest } from '../../models/Quest';
 import { Option } from '../../models/Option';
 import { Question } from '../../models/Question';
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { QuestPage } from '../QuestPage/QuestPage';
+
 
 import { QuestShareService } from '../../services/QuestShareService';
 
@@ -45,6 +47,7 @@ export class QuestionPage {
               buttons: buttons
             });
             alert.present();
+            this.navCtrl.setRoot(QuestPage);
           } else {
             this.currentQuestion.Id = solutionRes.NextId;
             this.currentQuestion.HashID = solutionRes.NextCode;

@@ -37,6 +37,7 @@ export class QuestPage {
   }
 
   loadQuest(id) {
+    ///Code copied to StatsPage openQuest. Change there too!!!!!
     if (id != '') {
       console.log('Loading quest with id', id);
       this.questionProvider.loadQuestHeader(id).subscribe(

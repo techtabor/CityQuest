@@ -12,4 +12,28 @@
 <ion-content padding>
 	<h2>StatsPage</h2>
   <div id="gdiv"></div>
+  <ion-list >
+    <ion-row>
+      <ion-col>
+        Name
+      </ion-col>
+      <ion-col>
+        Description
+      </ion-col>
+      <ion-col>
+        Completion
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let s of myStats?.Stats" (click)="openQuest(s.Id)">
+      <ion-col>
+        {{s.Name}}
+      </ion-col>
+      <ion-col>
+        {{s.Description}}
+      </ion-col>
+      <ion-col>
+        {{s.Solved}} / {{s.Questions}}: {{(100 * s.Solved / s.Questions)| number:0}}%
+      </ion-col>
+    </ion-row>
+  </ion-list>
 </ion-content>

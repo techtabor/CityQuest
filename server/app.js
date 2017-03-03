@@ -355,6 +355,39 @@ dispatcher.onPost("/GetSuggestions", function(req, res) {
   );
 });
 
+dispatcher.onPost("/GetPlayedQuests", function(req, res) {
+  //console.log("asd");
+  res.writeHead(200, head);
+  let params = JSON.parse(req.body);
+  getProfile(
+    params.id_token, params.id_token_type,
+    function(user) {
+      maindb.query(
+        //"SELECT Quests.Id, Quests.Name, Quests.Description, Questions.Count FROM Quests INNER JOIN Questions WHERE Quests.Id IN (SELECT Quests.Id FROM Quests INNERJOIN Solutions WHERE Solutions.User = ? AND Solutions.Quest = Quests.Id)"
+      "SELECT	Q.Id AS Id, S.Solved AS Solved, Q.Name AS Name, Q.Description AS Description, Qn.Total AS Questions FROM	Quests Q INNER JOIN ( (SELECT QuestId, COUNT(*) AS 'Total' FROM Questions GROUP BY QuestId) Qn INNER JOIN (SELECT Quest, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE User = ? AND Question <> 0 GROUP BY Quest) S	ON Qn.QuestId = S.Quest) ON S.Quest = Q.Id",
+        function(err, sqlres) {
+          //console.log(JSON.stringify(sqlres));
+          sqlres.sort(function(a, b) {
+            return a.Solved / a.Total - b.Solved / b.Total;
+          });
+          res.write(JSON.stringify({Ok:0, Stats: sqlres}));
+          res.end();
+        },
+        [[user.ID]]
+      );
+      var resp;
+      //resp.Ok = 0;
+      //res.write(JSON.stringify(resp));
+
+    },
+    function() {
+      //console.log("Invalid");
+      res.write(JSON.stringify({Ok:1}));
+      res.end();
+    }
+  );
+});
+
 dispatcher.onPost("/LoginPairCode", function(req, res) {
   res.writeHead(200, head);
   //let params = JSON.parse(req.body);
