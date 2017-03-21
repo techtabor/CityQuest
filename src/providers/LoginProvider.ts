@@ -29,14 +29,21 @@ export class LoginProvider {
   }
 
   setType(s): void {
+    localStorage.setItem("AuthType", s);
     this.type=s;
   }
 
   setToken(s): void {
+    localStorage.setItem("AuthToken", s);
     this.token=s;
   }
 
   setPairCode(s): void {
     this.pair=s;
+  }
+
+  load(): void {
+    this.type = localStorage.getItem("AuthType");
+    this.token = localStorage.getItem("AuthToken");
   }
 }

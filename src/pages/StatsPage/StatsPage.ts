@@ -22,7 +22,10 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 })
 export class StatsPage {
   geo: GeoLocationProvider;
-  myStats: any;
+  myPlayerStats: any;
+  myGlobalStats: any;
+  myFriendStats: any;
+  selectedPage: number;
   constructor(
     public http: Http,
     public navCtrl: NavController,
@@ -32,8 +35,7 @@ export class StatsPage {
     public questionProvider: QuestionProvider,
     public serverIpProvider: ServerIpProvider
 ) {
-
-
+    this.selectedPage = 0;
     this.geo = geoLocationProvider;
     setInterval(
       (
@@ -47,13 +49,31 @@ export class StatsPage {
 
   }
 
-  GetStats() {
+  GetPlayerStats() {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
     console.log("Getting stats");
-    this.http.post(`${this.serverIpProvider.getServerIp()}/GetPlayedQuests`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
-            .subscribe(res => {this.myStats = res.json()});
+    this.http.post(`${this.serverIpProvider.getServerIp()}/GetPlayedStats`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
+            .subscribe(res => {this.myPlayerStats = res.json()});
+  }
+
+  GetGlobalStats() {
+    let head = {'Content-Type': 'text/plain'};
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+    console.log("Getting stats");
+    this.http.post(`${this.serverIpProvider.getServerIp()}/GetGlobalStats`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
+            .subscribe(res => {this.myGlobalStats = res.json()});
+  }
+
+  GetFriendStats() {
+    let head = {'Content-Type': 'text/plain'};
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+    console.log("Getting stats");
+    this.http.post(`${this.serverIpProvider.getServerIp()}/GetFriendStats`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
+            .subscribe(res => {this.myFriendStats = res.json()});
   }
 
   openQuest(id) {
@@ -80,13 +100,15 @@ export class StatsPage {
   }
 
   GeoC() {
-    if(document.getElementById("gdiv") != null) {
+    if(document.getElementById("gdiv") != null && this.geo.getLocation() != null) {
       document.getElementById("gdiv").innerText = this.geo.getLocation().latitude + " " + this.geo.getLocation().longitude;
     }
   }
 
   ionViewDidLoad() {
-    this.GetStats();
+    this.GetPlayerStats();
+    this.GetGlobalStats();
+    this.GetFriendStats();
     console.log('Hello StatsPage Page');
 }
 

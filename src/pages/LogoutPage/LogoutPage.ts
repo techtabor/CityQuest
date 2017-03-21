@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginPage } from '../LoginPage/LoginPage';
+import { LoginProvider } from '../../providers/LoginProvider';
 import { NavController, NavParams } from 'ionic-angular';
 import {InAppBrowser} from 'ionic-native';
 import { ServerIpProvider } from '../../providers/ServerIpProvider';
@@ -17,11 +18,15 @@ export class LogoutPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public serverIpProvider: ServerIpProvider
+    public serverIpProvider: ServerIpProvider,
+    public loginProvider: LoginProvider
   ) {
   }
 
   doGoogleLogout() {
+    this.loginProvider.setType("");
+    this.loginProvider.setToken("");
+    this.loginProvider.setPairCode("");
     //this.googleAuth.logout();
     let browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Logout.html`), '_system', 'hardwareback=no');
     this.navCtrl.setRoot(LoginPage);
