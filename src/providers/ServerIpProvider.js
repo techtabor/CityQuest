@@ -19,7 +19,7 @@ var ServerIpProvider = (function () {
     function ServerIpProvider() {
     }
     ServerIpProvider.prototype.getServerIp = function () {
-        return "http://localhost:2017";
+        return "http://cityquesta.altalo.com:2017";
     };
     return ServerIpProvider;
 }());

@@ -2,13 +2,15 @@ var mysql      = require('mysql');
 
 module.exports = {
 	database: function(hostp, userp, passwordp, databasep) {
+		//console.log(passwordp);
 		this.db = mysql.createConnection({
-		  host     : host,
+		  host     : hostp,
 		  user     : userp,
 		  password : passwordp,
 		  database : databasep
 		});
 		this.callbackreformat = function(callbackf, error, results, additional) {
+			console.log(results);
 			results.lastID = results.insertId;
 			callbackf(error, results);
 		}
@@ -31,12 +33,20 @@ module.exports = {
 		}
 		this.rquery = function(query, callback, params) { //Array[Array] for rows of params, Array for params, value for one param, nothing for normal statement.
 			params = this.formatparam(params);
+			var self = this;
 			for(var i=0;i<params.length;i++) {
 				//console.log(params[i]);
-				db.query(query, params[i], callback);
+
+				this.db.query(query, params[i],
+					function(err, res, add) {
+						//console.log(err);
+						self.callbackreformat(callback, err, res, add);
+					}
+				);
 			}
 			//this.db.close();
 		};
 		this.query = this.rquery; //SAFE TO USE, all the same :P
 		this.wquery = this.rquery;
+	}
 }

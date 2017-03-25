@@ -1,4 +1,6 @@
-var dbapi = require('./db.js');
+//Run app with: node app.js [PASSWORD]
+
+var dbapi = require('./dbmysql.js');
 var maindb;
 var logindb;
 var http = require('http');
@@ -66,7 +68,8 @@ server.listen(PORT, function() {
       []
     ]);
   }*/
-  maindb = new dbapi.database("main.db");
+  maindb = new dbapi.database("localhost", "system", process.argv[2], "Main");
+
   logindb = maindb;
   /*if(!maindb.db.open) {
     console.log("Main database corrupt!!!");
@@ -493,7 +496,10 @@ dispatcher.onPost("/LoginPairResp", function(req, res) {
             res.end();
           } else {
             logindb.query(
-              "INSERT INTO Tokens (SessionToken, AuthToken, AuthType, Expires) VALUES (?,?,?,date('now', '+1 hour'))",
+              "INSERT INTO Tokens (SessionToken, AuthToken, AuthType, Expires) VALUES (?,?,?,"+
+              /*"date('now', '+1 hour')"+*/ //SQLITE
+              "DATE_ADD(NOW(), INTERVAL 1 HOUR)"+ //MYSQL
+              ")",
               function(err, sqlres) {
                 res.write(JSON.stringify({ok: true}));
                 res.end();
