@@ -41,9 +41,9 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  logindb = new dbapi.database("login.db");
+  //logindb = new dbapi.database("main.db");
   //console.log(logindb);
-  if(false) { //set to true if you crashed.
+  /*if(false) { //set to true if you crashed.
     console.log("Login database corrupt!!!");
     logindb.db.close(
       function(){
@@ -65,8 +65,9 @@ server.listen(PORT, function() {
     logindb.query("DELETE FROM Tokens WHERE 1=1", function(){}, [
       []
     ]);
-  }
+  }*/
   maindb = new dbapi.database("main.db");
+  logindb = maindb;
   /*if(!maindb.db.open) {
     console.log("Main database corrupt!!!");
     maindb.db.close(
@@ -111,15 +112,15 @@ function makeId(len) {
   return text;
 }
 
-function createAccount(type, foreignid, callback) {
+function createAccount(type, foreignid, user, callback) {
   switch (type) {
     case "GOOGLE":
       logindb.wquery(
-        "INSERT INTO Google (SubId) VALUES (?)",
+        "INSERT INTO Users (SubId, Type, Name, Email) VALUES (?, 1, ?, ?)",
         function(err, sqlres) {
           callback(true, this.lastID);
         },
-        [[foreignid]]
+        [[foreignid, user.Name, user.Email]]
       );
       break;
     default:
@@ -144,7 +145,7 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
             var payload = login.getPayload();
             var userid = payload['sub'];
             logindb.query( //get internal user id
-              "SELECT Id FROM Google WHERE (SubId = ?)",
+              "SELECT Id FROM Users WHERE (SubId = ? AND Type = 1)",
               function(err, sqlres) {
                 if (sqlres.length > 0) {
                   //User exists
@@ -161,6 +162,13 @@ function getProfile(token, type, callbackok, callbackerr) { //Check login
                   createAccount(
                     type,
                     userid,
+                    {
+                      Name: payload['name'],
+                      Email: payload['email'],
+                      Locale: payload['locale'],
+                      EmailVerified: payload['email_verified'],
+                      Picture: payload['picture']
+                    },
                     function(accepted, newid) {
                       if (accepted) {
                         callbackok({
@@ -253,26 +261,42 @@ dispatcher.onPost("/SubmitQuestionSolution", function(req, res) {
     params.id_token, params.id_token_type,
     function(user) {
       maindb.rquery(
-        "SELECT A.Answer, A.Next, A.Latitude, A.Longitude, B.HashID FROM Questions AS A INNER JOIN Questions AS B WHERE A.Id = ? AND A.HashID = ? AND A.Next = B.ID;",
+        "SELECT A.Answer, A.Next, A.Latitude, A.Longitude, A.QuestId, B.HashID FROM Questions AS A INNER JOIN Questions AS B WHERE A.Id = ? AND A.HashID = ? AND A.Next = B.ID;",
         function(err, sqlres) {
           if (sqlres.length == 1) {
             if (latlongdist(params.Lat, params.Long, sqlres[0].Latitude, sqlres[0].Longitude) <= 150) {
               if (sqlres[0].Answer == params.Sol) {
                 res.write('{"Correct": true, "Response":"OK.", "NextId":' +
                   sqlres[0].Next + ', "NextCode":"' + sqlres[0].HashID +
-                  '"}');
+                  '"}'
+                );
+                var arr = [[user.ID, sqlres[0].QuestId, params.Id]];
+                if(sqlres[0].Next == 0) {
+                  arr.push([user.ID, sqlres[0].QuestId, 0]);
+                }
+                maindb.query(
+                  "INSERT INTO Solutions(User, Quest, Question) VALUES (?,?,?)",
+                  function(erri, sqlresi) {
+                    res.end();
+                  },
+                  arr
+                );
               } else {
                 res.write('{"Correct": false, "Response":"Wrong answer.", "NextId": 0, "NextCode": 0}');
+                res.end();
               }
             } else {
               res.write('{"Correct": false, "Response":"Too far, you are ' +
                 Math.round(latlongdist(params.Lat, params.Long, sqlres[0].Latitude, sqlres[0].Longitude)) +
-                ' meters away.", "NextId": 0, "NextCode": 0}');
+                ' meters away.", "NextId": 0, "NextCode": 0}'
+              );
+              res.end();
             }
           } else {
             res.write('{"Correct": false, "Response":"Incorrect question", "NextId": 0, "NextCode": 0}');
+            res.end();
           }
-          res.end();
+
         }, [[params.Id, params.Code]]
       );
     },
@@ -337,6 +361,105 @@ dispatcher.onPost("/GetSuggestions", function(req, res) {
       res.end();
     }
   );
+});
+
+dispatcher.onPost("/GetPlayedStats", function(req, res) {
+  //console.log("asd");
+  res.writeHead(200, head);
+  let params = JSON.parse(req.body);
+  getProfile(
+    params.id_token, params.id_token_type,
+    function(user) {
+      maindb.query(
+        //"SELECT Quests.Id, Quests.Name, Quests.Description, Questions.Count FROM Quests INNER JOIN Questions WHERE Quests.Id IN (SELECT Quests.Id FROM Quests INNERJOIN Solutions WHERE Solutions.User = ? AND Solutions.Quest = Quests.Id)"
+      "SELECT	Q.Id AS Id, S.Solved AS Solved, Q.Name AS Name, Q.Description AS Description, Qn.Total AS Questions FROM	Quests Q INNER JOIN ( (SELECT QuestId, COUNT(*) AS 'Total' FROM Questions GROUP BY QuestId) Qn INNER JOIN (SELECT Quest, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE User = ? AND Question <> 0 GROUP BY Quest) S	ON Qn.QuestId = S.Quest) ON S.Quest = Q.Id ORDER BY S.Solved",
+        function(err, sqlres) {
+          //console.log(JSON.stringify(sqlres));
+          /*sqlres.sort(function(a, b) {
+            return a.Solved / a.Total - b.Solved / b.Total;
+          });*/
+          res.write(JSON.stringify({Ok:0, Stats: sqlres}));
+          res.end();
+        },
+        [[user.ID]]
+      );
+      var resp;
+      //resp.Ok = 0;
+      //res.write(JSON.stringify(resp));
+
+    },
+    function() {
+      //console.log("Invalid");
+      res.write(JSON.stringify({Ok:1}));
+      res.end();
+    }
+  );
+});
+
+dispatcher.onPost("/GetGlobalStats", function(req, res) {
+  //console.log("asd");
+  res.writeHead(200, head);
+  let params = JSON.parse(req.body);
+  getProfile(
+    params.id_token, params.id_token_type,
+    function(user) {
+      maindb.query(
+        //"SELECT Quests.Id, Quests.Name, Quests.Description, Questions.Count FROM Quests INNER JOIN Questions WHERE Quests.Id IN (SELECT Quests.Id FROM Quests INNERJOIN Solutions WHERE Solutions.User = ? AND Solutions.Quest = Quests.Id)"
+      "SELECT U.Name AS Name, S.Solved AS Solved FROM ((SELECT Id, Name FROM Users) U INNER JOIN (SELECT User, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE Question <> 0 GROUP BY User) S ON U.Id = S.User) ORDER BY S.Solved DESC LIMIT 10",
+        function(err, sqlres) {
+          console.log(JSON.stringify(sqlres));
+          //console.log(sqlres);
+          res.write(JSON.stringify({Ok:0, Stats: sqlres}));
+          res.end();
+        },
+        [[]]
+      );
+      var resp;
+      //resp.Ok = 0;
+      //res.write(JSON.stringify(resp));
+
+    },
+    function() {
+      //console.log("Invalid");
+      res.write(JSON.stringify({Ok:1}));
+      res.end();
+    }
+  );
+});
+
+dispatcher.onPost("/GetFriendStats", function(req, res) {
+  //console.log("asd");
+  res.writeHead(200, head);
+  /*let params = JSON.parse(req.body);
+  getProfile(
+    params.id_token, params.id_token_type,
+    function(user) {
+      maindb.query(
+        //"SELECT Quests.Id, Quests.Name, Quests.Description, Questions.Count FROM Quests INNER JOIN Questions WHERE Quests.Id IN (SELECT Quests.Id FROM Quests INNERJOIN Solutions WHERE Solutions.User = ? AND Solutions.Quest = Quests.Id)"
+      "SELECT	Q.Id AS Id, S.Solved AS Solved, Q.Name AS Name, Q.Description AS Description, Qn.Total AS Questions FROM	Quests Q INNER JOIN ( (SELECT QuestId, COUNT(*) AS 'Total' FROM Questions GROUP BY QuestId) Qn INNER JOIN (SELECT Quest, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE User = ? AND Question <> 0 GROUP BY Quest) S	ON Qn.QuestId = S.Quest) ON S.Quest = Q.Id",
+        function(err, sqlres) {
+          //console.log(JSON.stringify(sqlres));
+          sqlres.sort(function(a, b) {
+            return a.Solved / a.Total - b.Solved / b.Total;
+          });
+          res.write(JSON.stringify({Ok:0, Stats: sqlres}));
+          res.end();
+        },
+        [[user.ID]]
+      );
+      var resp;
+      //resp.Ok = 0;
+      //res.write(JSON.stringify(resp));
+
+    },
+    function() {
+      //console.log("Invalid");
+      res.write(JSON.stringify({Ok:1}));
+      res.end();
+    }
+  );*/
+  res.write(JSON.stringify({Ok:0, Stats: []}));
+  res.end();
 });
 
 dispatcher.onPost("/LoginPairCode", function(req, res) {
@@ -447,26 +570,25 @@ dispatcher.onPost("/Create", function(req, res) {
   console.log(params.questions);
   console.log(params.questions[0].Options);
   res.writeHead(200, head);
+
+  var thisQuestId;
   getProfile(
     pall.id_token, pall.id_token_type,
     function(user) {
       function fInsert(i, n) {
         if (i == 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options, QuestId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               //console.log(this);
               maindb.wquery(
-                "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
+                "UPDATE Quests SET Start = ? WHERE Id = ?",
                 function() {
                     res.write("{'Ok':0}");
                     res.end();
                 }, [
-                  params.header.Name,
-                  params.header.Description,
                   this.lastID,
-                  params.header.Latitude,
-                  params.header.Longitude
+                  thisQuestId
                 ]
               );
             }, [
@@ -476,13 +598,14 @@ dispatcher.onPost("/Create", function(req, res) {
               n,
               params.questions[i].Latitude,
               params.questions[i].Longitude,
-              JSON.stringify(params.questions[i].Options)
+              JSON.stringify(params.questions[i].Options),
+              thisQuestId
             ]
           );
         }
         if (i > 0) {
           maindb.wquery(
-            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO questions (HashID, Question, Answer, Next, Latitude, Longitude, Options, QuestId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             function(err, sqlres) {
               fInsert(i - 1, this.lastID);
             }, [
@@ -492,12 +615,26 @@ dispatcher.onPost("/Create", function(req, res) {
               n,
               params.questions[i].Latitude,
               params.questions[i].Longitude,
-              JSON.stringify(params.questions[i].Options)
+              JSON.stringify(params.questions[i].Options),
+              thisQuestId
             ]
           );
         }
       }
-      fInsert(params.questions.length - 1, 0);
+      maindb.wquery(
+        "INSERT INTO Quests (Name, Description, Start, Latitude, Longitude) VALUES (?, ?, ?, ?, ?)",
+        function() {
+          thisQuestId = this.lastID;
+          fInsert(params.questions.length - 1, 0);
+
+        }, [
+          params.header.Name,
+          params.header.Description,
+          0,
+          params.header.Latitude,
+          params.header.Longitude
+        ]
+      );
     },
     function() {
       res.end();

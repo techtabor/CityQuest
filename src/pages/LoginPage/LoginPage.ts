@@ -80,8 +80,7 @@ export class LoginPage {
           clearInterval(this.watch);
           this.loginProvider.setToken(resp.Token);
           this.loginProvider.setType("GOOGLE");
-          localStorage.setItem("AuthToken", resp.Token);
-          localStorage.setItem("AuthType", "GOOGLE");
+
           document.getElementById('LoginLoading').innerText = "Verified";
           //this.browser.close();
           this.navCtrl.setRoot(QuestPage);
@@ -104,8 +103,7 @@ export class LoginPage {
       {
         let resp = res.json();
         if(resp.Ok == 0) {
-          this.loginProvider.setToken(localStorage.getItem("AuthToken"));
-          this.loginProvider.setType(localStorage.getItem("AuthType"));
+          this.loginProvider.load();
           document.getElementById('LoginLoading').innerText = "Success! Redirecting...";
           this.navCtrl.setRoot(QuestPage);
         } else {
