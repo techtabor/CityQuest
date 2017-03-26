@@ -13,6 +13,6 @@ export class ServerIpProvider {
   }
 
   getServerIp(): string {
-    return "http://cityquesta.altalo.com:2017";
+    return "http://localhost:2017";
   }
 }
