@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Teams
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+	<h2>TeamPage</h2>
+  <ion-row>
+    <ion-col>
+      <button ion-button (click)="selectedPage = 0">
+        Your teams
+      </button>
+    </ion-col>
+    <ion-col>
+      <button ion-button (click)="selectedPage = 1">
+        New team
+      </button>
+    </ion-col>
+  </ion-row>
+  <div *ngIf="0 == selectedPage">
+    <h2>Your teams:</h2>
+    <ion-list >
+      <ion-row>
+        <ion-col>
+          Name
+        </ion-col>
+        <ion-col>
+          Members
+        </ion-col>
+      </ion-row>
+      <ion-item-divider></ion-item-divider>
+      <ion-row *ngFor="let t of myTeams" (click)="ViewMembers(t)">
+        <ion-col>
+          {{t.Name}}
+        </ion-col>
+        <ion-col>
+          {{t.Members}}
+        </ion-col>
+      </ion-row>
+    </ion-list>
+  </div>
+
+  <div *ngIf="1 == selectedPage">
+    <h2>New team:</h2>
+    <button ion-button icon-only (click)="AddMember()">
+      <ion-icon name="add">
+      </ion-icon>
+    </button>
+    <button ion-button (click)="Submit()">
+      Submit
+    </button>
+    <ion-input placeholder="Team name" type="text" [(ngModel)]="newName"></ion-input>
+    <ion-list>
+      <ion-row>
+        <ion-col>
+          Email address
+        </ion-col>
+        <ion-col>
+
+        </ion-col>
+      </ion-row>
+      <ion-item-divider></ion-item-divider>
+      <ion-row *ngFor="let m of newMembers">
+        <ion-col>
+          <ion-input placeholder="Email address" type="email" [(ngModel)]="m.email"></ion-input>
+        </ion-col>
+        <ion-col>
+          <button ion-button icon-only (click)="DeleteMember(m)">
+            <ion-icon name="trash">
+            </ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+  </div>
+
+  <div *ngIf="2 == selectedPage">
+    <h2>Team members of {{selectedTeam?.Name}}:</h2>
+    <button ion-button icon-only (click)="LeaveTeam()">
+      Leave team
+    </button>
+    <ion-list>
+      <ion-row>
+        <ion-col>
+          Name
+        </ion-col>
+        <ion-col>
+          Email address
+        </ion-col>
+      </ion-row>
+      <ion-item-divider></ion-item-divider>
+      <ion-row *ngFor="let m of myTeamMembers">
+        <ion-col>
+          {{m.Name}}
+        </ion-col>
+        <ion-col>
+          {{m.Email}}
+        </ion-col>
+      </ion-row>
+    </ion-list>
+  </div>
+</ion-content>

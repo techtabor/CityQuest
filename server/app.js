@@ -11,6 +11,7 @@ var fs = require("fs");
 require('./login.js')();
 require('./stats.js')();
 require('./quest.js')();
+require('./team.js')();
 var base = require('./base.js');
 
 //Lets define a port we want to listen to
@@ -79,5 +80,13 @@ dispatcher.onPost("/LoginPairCode", LoginPairCode);
 dispatcher.onPost("/LoginPairResp", LoginPairResp);
 
 dispatcher.onPost("/LoginPairCheck", LoginPairCheck);
+
+dispatcher.onPost("/CreateTeam", CreateTeam);
+
+dispatcher.onPost("/GetTeamMembers", GetTeamMembers);
+
+dispatcher.onPost("/GetTeams", GetTeams);
+
+dispatcher.onPost("/LeaveTeam", LeaveTeam);
 
 dispatcher.onPost("/VerifyLogin", VerifyLogin);
