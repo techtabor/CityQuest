@@ -1,4 +1,7 @@
-var dbapi = require('./db.js');
+
+var dbapi = require('./dbmysql.js');
+var maindb;
+var logindb;
 
 var http = require('http');
 var httpdispatcher = require('./httpdispatcher.js');
@@ -30,8 +33,7 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-
-  base.maindb = new dbapi.database("main.db");
+  maindb = new dbapi.database("localhost", "system", process.argv[2], "Main");
 
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
