@@ -63,7 +63,6 @@ module.exports = function() {
   this.SubmitQuestionSolution = function(req, res) {
     res.writeHead(200, base.head);
     let params = JSON.parse(req.body);
-    console.log(params);
     getProfile(
       params.id_token, params.id_token_type,
       function(user) {
