@@ -1,0 +1,120 @@
+Clean with: http://www.textfixer.com/tools/remove-line-breaks.php
+
+################################################################################
+
+Get Player Stats:
+
+SELECT
+  Quests.Id AS Id,
+  SolvedQuestions.Solved AS Solved,
+  Quests.Name AS Name,
+  Quests.Description AS Description,
+  QuestQuestions.Total AS Questions
+FROM
+  (
+    Quests
+  INNER JOIN
+    (
+      (
+        SELECT
+          QuestId,
+          COUNT(*) AS Total
+        FROM
+          Questions
+        GROUP BY
+          QuestId
+      ) QuestQuestions
+    INNER JOIN
+      (
+        SELECT
+          Quest,
+          COUNT(DISTINCT Question) AS Solved
+        FROM
+          Solutions
+        WHERE
+          Team = ?
+          AND
+          Question <> 0
+        GROUP BY
+          Quest
+      ) SolvedQuestions
+    ON
+      QuestQuestions.QuestId = SolvedQuestions.Quest
+    )
+  ON
+    SolvedQuestions.Quest = Quests.Id
+  )
+ORDER BY
+  SolvedQuestions.Solved
+
+SELECT Quests.Id AS Id, SolvedQuestions.Solved AS Solved, Quests.Name AS Name, Quests.Description AS Description, QuestQuestions.Total AS Questions FROM ( Quests INNER JOIN ( ( SELECT QuestId, COUNT(*) AS Total FROM Questions GROUP BY QuestId ) QuestQuestions INNER JOIN ( SELECT Quest, COUNT(DISTINCT Question) AS Solved FROM Solutions WHERE Team = ? AND Question <> 0 GROUP BY Quest ) SolvedQuestions ON QuestQuestions.QuestId = SolvedQuestions.Quest ) ON SolvedQuestions.Quest = Quests.Id ) ORDER BY SolvedQuestions.Solved
+
+################################################################################
+
+Get global stats
+
+SELECT
+  TeamData.Name AS Name,
+  TeamSolutions.Solved AS Solved
+FROM
+  (
+    TeamData
+  INNER JOIN
+    (
+      SELECT
+        Team,
+        COUNT(DISTINCT Question) AS 'Solved'
+      FROM
+        Solutions
+      WHERE
+        Question <> 0
+      GROUP BY
+        Team
+    ) TeamSolutions
+  ON
+    TeamData.Id = TeamSolutions.Team
+  )
+ORDER BY
+  TeamSolutions.Solved DESC
+LIMIT
+  10
+
+SELECT TeamData.Name AS Name, TeamSolutions.Solved AS Solved FROM ( TeamData INNER JOIN ( SELECT Team, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE Question <> 0 GROUP BY Team ) TeamSolutions ON TeamData.Id = TeamSolutions.Team ) ORDER BY TeamSolutions.Solved DESC LIMIT 10
+
+################################################################################
+
+Get My Teams
+
+SELECT
+  TeamMembers.Team AS Team,
+  TeamMembers.Members AS Members,
+  TeamData.Name AS Name,
+  Users.Name AS LeaderName,
+  Users.Email AS LeaderEmail,
+  TeamData.Quest AS Quest
+FROM
+  (
+    (
+      (
+        SELECT
+          Team,
+          COUNT(User) AS Members
+        FROM
+          Teams
+        WHERE
+          User = ?
+        GROUP BY
+          Team
+      ) TeamMembers
+    INNER JOIN
+      TeamData
+    ON
+      TeamMembers.Team = TeamData.Id
+    )
+  INNER JOIN
+    Users
+  ON
+    Users.Id = TeamData.Leader
+  )
+
+SELECT TeamMembers.Team AS Team, TeamMembers.Members AS Members, TeamData.Name AS Name, Users.Name AS LeaderName, Users.Email AS LeaderEmail, TeamData.Quest AS Quest FROM ( ( ( SELECT Team, COUNT(User) AS Members FROM Teams WHERE User = ? GROUP BY Team ) TeamMembers INNER JOIN TeamData ON TeamMembers.Team = TeamData.Id ) INNER JOIN Users ON Users.Id = TeamData.Leader )

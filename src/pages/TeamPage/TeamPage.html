@@ -32,6 +32,15 @@
         <ion-col>
           Members
         </ion-col>
+        <ion-col>
+          Leader Name
+        </ion-col>
+        <ion-col>
+          Leader Email
+        </ion-col>
+        <ion-col>
+          Quest
+        </ion-col>
       </ion-row>
       <ion-item-divider></ion-item-divider>
       <ion-row *ngFor="let t of myTeams" (click)="ViewMembers(t)">
@@ -40,6 +49,15 @@
         </ion-col>
         <ion-col>
           {{t.Members}}
+        </ion-col>
+        <ion-col>
+          {{t.LeaderName}}
+        </ion-col>
+        <ion-col>
+          {{t.LeaderEmail}}
+        </ion-col>
+        <ion-col>
+          {{t.Quest}}
         </ion-col>
       </ion-row>
     </ion-list>
@@ -81,7 +99,7 @@
 
   <div *ngIf="2 == selectedPage">
     <h2>Team members of {{selectedTeam?.Name}}:</h2>
-    <button ion-button icon-only (click)="LeaveTeam()">
+    <button ion-button (click)="LeaveTeam()">
       Leave team
     </button>
     <ion-list>

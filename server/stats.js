@@ -10,7 +10,7 @@ module.exports = function() {
       function(user) {
         base.maindb.query(
           //"SELECT Quests.Id, Quests.Name, Quests.Description, Questions.Count FROM Quests INNER JOIN Questions WHERE Quests.Id IN (SELECT Quests.Id FROM Quests INNERJOIN Solutions WHERE Solutions.User = ? AND Solutions.Quest = Quests.Id)"
-        "SELECT	Q.Id AS Id, S.Solved AS Solved, Q.Name AS Name, Q.Description AS Description, Qn.Total AS Questions FROM	Quests Q INNER JOIN ( (SELECT QuestId, COUNT(*) AS 'Total' FROM Questions GROUP BY QuestId) Qn INNER JOIN (SELECT Quest, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE User = ? AND Question <> 0 GROUP BY Quest) S	ON Qn.QuestId = S.Quest) ON S.Quest = Q.Id ORDER BY S.Solved",
+        "SELECT Quests.Id AS Id, SolvedQuestions.Solved AS Solved, Quests.Name AS Name, Quests.Description AS Description, QuestQuestions.Total AS Questions FROM ( Quests INNER JOIN ( ( SELECT QuestId, COUNT(*) AS Total FROM Questions GROUP BY QuestId ) QuestQuestions INNER JOIN ( SELECT Quest, COUNT(DISTINCT Question) AS Solved FROM Solutions WHERE Team = ? AND Question <> 0 GROUP BY Quest ) SolvedQuestions ON QuestQuestions.QuestId = SolvedQuestions.Quest ) ON SolvedQuestions.Quest = Quests.Id ) ORDER BY SolvedQuestions.Solved",
           function(err, sqlres) {
             //console.log(JSON.stringify(sqlres));
             /*sqlres.sort(function(a, b) {
@@ -43,7 +43,7 @@ module.exports = function() {
       function(user) {
         base.maindb.query(
           //"SELECT Quests.Id, Quests.Name, Quests.Description, Questions.Count FROM Quests INNER JOIN Questions WHERE Quests.Id IN (SELECT Quests.Id FROM Quests INNERJOIN Solutions WHERE Solutions.User = ? AND Solutions.Quest = Quests.Id)"
-        "SELECT U.Name AS Name, S.Solved AS Solved FROM ((SELECT Id, Name FROM Users) U INNER JOIN (SELECT User, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE Question <> 0 GROUP BY User) S ON U.Id = S.User) ORDER BY S.Solved DESC LIMIT 10",
+        "SELECT TeamData.Name AS Name, TeamSolutions.Solved AS Solved FROM ( TeamData INNER JOIN ( SELECT Team, COUNT(DISTINCT Question) AS 'Solved' FROM Solutions WHERE Question <> 0 GROUP BY Team ) TeamSolutions ON TeamData.Id = TeamSolutions.Team ) ORDER BY TeamSolutions.Solved DESC LIMIT 10",
           function(err, sqlres) {
             //console.log(JSON.stringify(sqlres));
             //console.log(sqlres);

@@ -22,8 +22,26 @@ module.exports = function() {
       case "GOOGLE":
         base.maindb.wquery(
           "INSERT INTO Users (SubId, Type, Name, Email) VALUES (?, 1, ?, ?)",
-          function(err, sqlres) {
-            callback(true, this.lastID);
+          function(err, sqlres) { //UserID
+            base.maindb.wquery(
+              "INSERT INTO TeamData (Leader, Quest, Name, Type) VALUES (?, 0, ?, 1)",
+              function(err2, sqlres2) {
+                base.maindb.wquery( //Self TeamID
+                  "INSERT INTO Teams (Team, User) VALUES (?, ?)",
+                  function(err3, sqlres3) {
+                    base.maindb.wquery(
+                      "UPDATE Users SET Team = ? WHERE Id = ?",
+                      function(err4, sqlres4) {
+                        callback(true, sqlres.insertId, sqlres2.insertId);
+                      },
+                      [[sqlres2.insertId, sqlres.insertId]]
+                    );
+                  },
+                  [[sqlres2.insertId, sqlres.insertId]]
+                );
+              },
+              [[sqlres.insertId, user.Name]]
+            );
           },
           [[foreignid, user.Name, user.Email]]
         );
@@ -50,12 +68,13 @@ module.exports = function() {
               var payload = login.getPayload();
               var userid = payload['sub'];
               base.maindb.query( //get internal user id
-                "SELECT Id FROM Users WHERE (SubId = ? AND Type = 1)",
+                "SELECT Id, Team FROM Users WHERE (SubId = ? AND Type = 1)",
                 function(err, sqlres) {
                   if (sqlres.length > 0) {
                     //User exists
                     callbackok({
                       ID: sqlres[0].Id,
+                      Team: sqlres[0].Team,
                       Name: payload['name'],
                       Email: payload['email'],
                       Locale: payload['locale'],
@@ -74,10 +93,11 @@ module.exports = function() {
                         EmailVerified: payload['email_verified'],
                         Picture: payload['picture']
                       },
-                      function(accepted, newid) {
+                      function(accepted, newid, newteam) {
                         if (accepted) {
                           callbackok({
                             ID: newid,
+                            Team: newteam,
                             Name: payload['name'],
                             Email: payload['email'],
                             Locale: payload['locale'],

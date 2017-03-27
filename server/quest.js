@@ -76,12 +76,12 @@ module.exports = function() {
                     sqlres[0].Next + ', "NextCode":"' + sqlres[0].HashID +
                     '"}'
                   );
-                  var arr = [[user.ID, sqlres[0].QuestId, params.Id]];
+                  var arr = [[user.Team, sqlres[0].QuestId, params.Id]];
                   if(sqlres[0].Next == 0) {
-                    arr.push([user.ID, sqlres[0].QuestId, 0]);
+                    arr.push([user.Team, sqlres[0].QuestId, 0]);
                   }
                   base.maindb.query(
-                    "INSERT INTO Solutions(User, Quest, Question) VALUES (?,?,?)",
+                    "INSERT INTO Solutions(Team, Quest, Question) VALUES (?,?,?)",
                     function(erri, sqlresi) {
                       res.end();
                     },
