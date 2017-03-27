@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Global Stats
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+	<h2>Global leaderboards:</h2>
+    <ion-list>
+      <ion-row>
+        <ion-col>
+          Name
+        </ion-col>
+        <ion-col>
+          Solved
+        </ion-col>
+      </ion-row>
+      <ion-item-divider></ion-item-divider>
+      <ion-row *ngFor="let s of myGlobalStats?.Stats">
+        <ion-col>
+          {{s.Name}}
+        </ion-col>
+        <ion-col>
+          {{s.Solved}}
+        </ion-col>
+      </ion-row>
+    </ion-list>
+</ion-content>

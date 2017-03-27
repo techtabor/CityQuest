@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
 import { QuestShareService } from '../../services/QuestShareService';
+import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
 
 declare var google;
 
@@ -21,7 +22,8 @@ export class MapPage {
   map: any;
 
   constructor(public navCtrl: NavController,
-              private shareService: QuestShareService) { }
+              private shareService: QuestShareService,
+              private locationProvider: GeoLocationProvider) { }
 
   ionViewDidLoad(){
     console.log('Hello MapPage page');
@@ -47,4 +49,16 @@ export class MapPage {
     });
   }
 
+  centerMap() {
+    let location = this.locationProvider.getLocation();
+    let latLng = new google.maps.LatLng(location.latitude, location.longitude);
+    console.log(latLng);
+    let yourMarker = new google.maps.Marker({
+      position: latLng,
+      map: this.map,
+      title: 'Your position'
+    });
+    console.log('Centering Map');
+    this.map.panTo(latLng);
+  }
 }
