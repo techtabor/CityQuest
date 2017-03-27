@@ -46,9 +46,9 @@ import { QuestShareService } from '../services/QuestShareService';
     LogoutPage,
     CreatePage,
     QuestionPage,
+    TeamPage,
     GlobalStatsTab,
     PlayerStatsTab,
-    TeamPage,
     FriendStatsTab
   ],
   imports: [
@@ -65,9 +65,9 @@ import { QuestShareService } from '../services/QuestShareService';
     LogoutPage,
     CreatePage,
     QuestionPage,
+    TeamPage,
     GlobalStatsTab,
     PlayerStatsTab,
-    TeamPage,
     FriendStatsTab
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]

@@ -11,7 +11,7 @@ module.exports = function() {
       function(user) {
         var resp = user;
         base.maindb.query(
-          "INSERT INTO TeamData (Leader, Quest, Name, Type) VALUES (?, 0, ?, 1)",
+          "INSERT INTO TeamData (Leader, Quest, Name, Type) VALUES (?, 0, ?, 2)",
           function(err1,sqlres1) {
             var arr = new Array(params.members.length);
             for(var i=0; i < params.members.length; i++) {
@@ -114,13 +114,36 @@ module.exports = function() {
         //console.log(user.ID);
         //console.log(params.team);
         base.maindb.query(
-          "DELETE FROM Teams WHERE Team = ? AND User = ?",
-          function(err,sqlres) {
-            //console.log(sqlres);
-            res.write(JSON.stringify({Ok:0, Members: sqlres}));
-            res.end();
+          "SELECT Type, Leader FROM TeamData WHERE Id = ?",
+          function(err1,sqlres1) {
+            if(sqlres1.length == 1 && sqlres1[0].Type != 1 && sqlres1[0].Leader != user.ID) {
+              base.maindb.query(
+                "DELETE FROM Teams WHERE Team = ? AND User = ?",
+                function(err,sqlres) {
+                  //console.log(sqlres);
+                  res.write(JSON.stringify({Ok:0, Members: sqlres}));
+                  res.end();
+                },
+                [params.team, user.ID]
+              );
+            } else {
+              if(sqlres1.length != 1) {
+                res.write(JSON.stringify({Ok:1, Message: "Invalid team."}));
+              } else {
+                if(sqlres1[0].Type == 1) {
+                  res.write(JSON.stringify({Ok:1, Message: "You can not leave your private team."}));
+                } else {
+                  if(sqlres1[0].Leader == user.ID) {
+                    res.write(JSON.stringify({Ok:1, Message: "Team leaders can not leave."}));
+                  } else {
+                    res.write(JSON.stringify({Ok:1, Message: "Unknown error!"}));
+                  }
+                }
+              }
+              res.end();
+            }
           },
-          [params.team, user.ID]
+          [user.Team]
         );
       },
       function() {
