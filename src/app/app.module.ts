@@ -17,6 +17,10 @@ import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
 import { QuestionPage } from '../pages/QuestionPage/QuestionPage';
 
+import { GlobalStatsTab } from '../pages/StatsPage/GlobalStatsTab/GlobalStatsTab';
+import { FriendStatsTab } from '../pages/StatsPage/FriendStatsTab/FriendStatsTab';
+import { PlayerStatsTab } from '../pages/StatsPage/PlayerStatsTab/PlayerStatsTab';
+
 import { QuestShareService } from '../services/QuestShareService';
 
 /*const cloudSettings: CloudSettings = {
@@ -40,7 +44,10 @@ import { QuestShareService } from '../services/QuestShareService';
     LoginPage,
     LogoutPage,
     CreatePage,
-    QuestionPage
+    QuestionPage,
+    GlobalStatsTab,
+    PlayerStatsTab,
+    FriendStatsTab
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -55,7 +62,10 @@ import { QuestShareService } from '../services/QuestShareService';
     LoginPage,
     LogoutPage,
     CreatePage,
-    QuestionPage
+    QuestionPage,
+    GlobalStatsTab,
+    PlayerStatsTab,
+    FriendStatsTab
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]
 })
