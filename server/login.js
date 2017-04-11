@@ -20,6 +20,7 @@ module.exports = function() {
   this.createAccount = function(type, foreignid, user, callback) {
     switch (type) {
       case "GOOGLE":
+        var selfTeamName = user.Name + "'s private team";
         base.maindb.wquery(
           "INSERT INTO Users (SubId, Type, Name, Email) VALUES (?, 1, ?, ?)",
           function(err, sqlres) { //UserID
@@ -32,7 +33,7 @@ module.exports = function() {
                     base.maindb.wquery(
                       "UPDATE Users SET Team = ? WHERE Id = ?",
                       function(err4, sqlres4) {
-                        callback(true, sqlres.insertId, sqlres2.insertId);
+                        callback(true, sqlres.insertId, sqlres2.insertId, selfTeamName);
                       },
                       [[sqlres2.insertId, sqlres.insertId]]
                     );
@@ -40,7 +41,7 @@ module.exports = function() {
                   [[sqlres2.insertId, sqlres.insertId]]
                 );
               },
-              [[sqlres.insertId, user.Name]]
+              [[sqlres.insertId, selfTeamName]]
             );
           },
           [[foreignid, user.Name, user.Email]]
@@ -68,13 +69,14 @@ module.exports = function() {
               var payload = login.getPayload();
               var userid = payload['sub'];
               base.maindb.query( //get internal user id
-                "SELECT Id, Team FROM Users WHERE (SubId = ? AND Type = 1)",
+                "SELECT Users.Id AS Id, Users.Team AS Team, TeamData.Name AS TeamName FROM Users INNER JOIN TeamData ON TeamData.Id = Users.Team WHERE (Users.SubId = ?)",
                 function(err, sqlres) {
                   if (sqlres.length > 0) {
                     //User exists
                     callbackok({
                       ID: sqlres[0].Id,
                       Team: sqlres[0].Team,
+                      TeamName: sqlres[0].TeamName,
                       Name: payload['name'],
                       Email: payload['email'],
                       Locale: payload['locale'],
@@ -93,11 +95,12 @@ module.exports = function() {
                         EmailVerified: payload['email_verified'],
                         Picture: payload['picture']
                       },
-                      function(accepted, newid, newteam) {
+                      function(accepted, newid, newteamid, newteam) {
                         if (accepted) {
                           callbackok({
                             ID: newid,
-                            Team: newteam,
+                            TeamName: newteam,
+                            Team: newteamid,
                             Name: payload['name'],
                             Email: payload['email'],
                             Locale: payload['locale'],
@@ -188,29 +191,24 @@ module.exports = function() {
           "DELETE FROM Tokens WHERE SessionToken = ? AND AuthType = ?",
           function(errd, sqlresd) {
             if(sqlres.length == 1) {
-              switch(params.type) {
-                case "GOOGLE":
-                  GoogleClient.verifyIdToken(
-                    sqlres[0].AuthToken,
-                    GOOGLE_CLIENT_ID,
-                    function(e, login) {
-                      if (e != null && e != undefined && e != "") {
-                        res.write(JSON.stringify({Ok: 0}));
-                        res.end();
-                      } else {
-                        res.write(JSON.stringify({Ok: 2, Token: sqlres[0].AuthToken}));
-                        res.end();
-                      }
-                    }
-                  );
-                break;
-                default:
-                res.write(JSON.stringify({Ok: 0}));
-                res.end();
-                break;
-              }
+              console.log(params.type);
+              console.log(sqlres[0].AuthToken);
+              getProfile(
+                sqlres[0].AuthToken, params.type,
+                function(user) {
+                  var resp = user;
+                  resp.Ok = 0;
+                  resp.Token = sqlres[0].AuthToken;
+                  res.write(JSON.stringify(resp));
+                  res.end();
+                },
+                function() {
+                  res.write(JSON.stringify({Ok:1}));
+                  res.end();
+                }
+              );
             } else {
-              res.write(JSON.stringify({Ok: 1}));
+              res.write(JSON.stringify({Ok: 2}));
               res.end();
             }
           },

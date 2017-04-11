@@ -89,4 +89,6 @@ dispatcher.onPost("/GetTeams", GetTeams);
 
 dispatcher.onPost("/LeaveTeam", LeaveTeam);
 
+dispatcher.onPost("/SetTeam", SetTeam);
+
 dispatcher.onPost("/VerifyLogin", VerifyLogin);

@@ -31,10 +31,10 @@ export class TeamPage {
     public http: Http,
     public navCtrl: NavController,
     public geoLocationProvider: GeoLocationProvider,
-    public loginProvider: LoginProvider,
     public alertCtrl: AlertController,
     public shareService: QuestShareService,
     public questionProvider: QuestionProvider,
+    public loginProvider: LoginProvider,
     public serverIpProvider: ServerIpProvider
 ) {
     this.myTeams = [];
@@ -115,6 +115,28 @@ export class TeamPage {
                 var alert = this.alertCtrl.create({
                   title: 'Error',
                   subTitle: 'There was an error with the team!\n' + resp.Message,
+                  buttons: ['OK']
+                });
+                alert.present();
+              }
+            });
+  }
+
+  ChooseTeam() {
+    let head = {'Content-Type': 'text/plain'};
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+    this.http.post(`${this.serverIpProvider.getServerIp()}/SetTeam`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team}), options)
+            .subscribe(res => {
+              var resp = res.json();
+              if(resp.Ok == 0) {
+                this.loginProvider.teamName = resp.TeamName;
+                this.loginProvider.team = this.selectedTeam.Team;
+              }
+              else {
+                var alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: 'Login error!',
                   buttons: ['OK']
                 });
                 alert.present();

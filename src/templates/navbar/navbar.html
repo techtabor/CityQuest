@@ -1,0 +1,15 @@
+<ion-navbar >
+  <button ion-button icon-only menuToggle>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+
+  <ion-title>{{pageName}}</ion-title>
+
+  <div (click)="openProfile()">
+    {{loginProvider.name}}
+
+    <ion-img width="80" height="80" src= loginProvider.profilePic ></ion-img>
+
+    {{loginProvider.teamName}}
+  </div>
+</ion-navbar>

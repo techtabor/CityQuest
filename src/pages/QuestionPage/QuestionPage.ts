@@ -5,6 +5,7 @@ import { Quest } from '../../models/Quest';
 import { Option } from '../../models/Option';
 import { Question } from '../../models/Question';
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { LoginProvider } from '../../providers/LoginProvider';
 import { QuestPage } from '../QuestPage/QuestPage';
 
 
@@ -24,7 +25,13 @@ export class QuestionPage {
 
   private currentQuestion:Question;
 
-  constructor(public navCtrl: NavController, private shareService: QuestShareService, private alertCtrl: AlertController, private questionProvider: QuestionProvider) { }
+  constructor(
+    public navCtrl: NavController,
+    private shareService: QuestShareService,
+    private alertCtrl: AlertController,
+    private loginProvider: LoginProvider,
+    private questionProvider: QuestionProvider
+  ) { }
 
   ionViewDidLoad() {
   	this.currentQuestion = this.shareService.getCurrentQuestion();

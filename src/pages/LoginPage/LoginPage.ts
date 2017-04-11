@@ -76,16 +76,20 @@ export class LoginPage {
     .subscribe(res =>
       {
         let resp = res.json();
-        if(resp.Ok == 2) {
+        if(resp.Ok == 0) {
           clearInterval(this.watch);
           this.loginProvider.setToken(resp.Token);
           this.loginProvider.setType("GOOGLE");
+          this.loginProvider.name = resp.Name;
+          this.loginProvider.profilePic = resp.Picture;
+          this.loginProvider.teamName = resp.TeamName;
+          this.loginProvider.team = resp.Team;
 
           document.getElementById('LoginLoading').innerText = "Verified";
           //this.browser.close();
           this.navCtrl.setRoot(QuestPage);
         } else {
-          if(resp.Ok == 0) {
+          if(resp.Ok == 1) {
             clearInterval(this.watch);
             document.getElementById('LoginLoading').innerText = "Error. Try again!";
           }
@@ -98,12 +102,16 @@ export class LoginPage {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/VerifyLogin`, JSON.stringify({id_token: localStorage.getItem("AuthToken"), id_token_type: localStorage.getItem("AuthType")}), options)
+    this.loginProvider.load();
+    this.http.post(`${this.serverIpProvider.getServerIp()}/VerifyLogin`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
     .subscribe(res =>
       {
         let resp = res.json();
         if(resp.Ok == 0) {
-          this.loginProvider.load();
+          this.loginProvider.name = resp.Name;
+          this.loginProvider.profilePic = resp.Picture;
+          this.loginProvider.teamName = resp.TeamName;
+          this.loginProvider.team = resp.Team;
           document.getElementById('LoginLoading').innerText = "Success! Redirecting...";
           this.navCtrl.setRoot(QuestPage);
         } else {

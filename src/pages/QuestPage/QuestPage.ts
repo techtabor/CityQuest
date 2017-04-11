@@ -5,7 +5,9 @@ import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
 import { QuestHeader } from '../../models/QuestHeader';
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { LoginProvider } from '../../providers/LoginProvider';
 import { QuestionPage } from '../QuestionPage/QuestionPage';
+
 
 import { QuestShareService } from '../../services/QuestShareService';
 
@@ -33,6 +35,7 @@ export class QuestPage {
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               private questionProvider: QuestionProvider,
+              private loginProvider: LoginProvider,
               private shareService: QuestShareService) {
   }
 
@@ -72,6 +75,10 @@ export class QuestPage {
         }
       }
     );
+  }
+
+  openProfile() {
+    
   }
 
   ionViewDidLoad() {

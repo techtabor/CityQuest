@@ -152,4 +152,31 @@ module.exports = function() {
       }
     );
   }
+  this.SetTeam = function(req, res) {
+    res.writeHead(200, base.head);
+    let params = JSON.parse(req.body);
+    getProfile(
+      params.id_token, params.id_token_type,
+      function(user) {
+        base.maindb.query(
+          "UPDATE Users SET Team = ? WHERE Id = ?",
+          function(err1,sqlres1) {
+            base.maindb.query(
+              "SELECT Name FROM TeamData WHERE Id = ?",
+              function(err2,sqlres2) {
+                res.write(JSON.stringify({Ok:0, TeamName: sqlres2[0].Name}));
+                res.end();
+              },
+              [params.team]
+            );
+          },
+          [params.team, user.ID]
+        );
+      },
+      function() {
+        res.write(JSON.stringify({Ok:1}));
+        res.end();
+      }
+    );
+  }
 }
