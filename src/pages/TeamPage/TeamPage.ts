@@ -123,15 +123,26 @@ export class TeamPage {
   }
 
   ChooseTeam() {
+    this.ChooseTeamId(this.selectedTeam.Team);
+  }
+
+  openProfile() {
+
+  }
+  openTeam() {
+    this.navCtrl.setRoot(TeamPage);
+  }
+
+  ChooseTeamId(id) {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/SetTeam`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team}), options)
+    this.http.post(`${this.serverIpProvider.getServerIp()}/SetTeam`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: id}), options)
             .subscribe(res => {
               var resp = res.json();
               if(resp.Ok == 0) {
                 this.loginProvider.teamName = resp.TeamName;
-                this.loginProvider.team = this.selectedTeam.Team;
+                this.loginProvider.team = id;
               }
               else {
                 var alert = this.alertCtrl.create({
