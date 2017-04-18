@@ -7,7 +7,7 @@ import { Question } from '../../models/Question';
 import { QuestionProvider } from '../../providers/QuestionProvider';
 import { LoginProvider } from '../../providers/LoginProvider';
 import { QuestPage } from '../QuestPage/QuestPage';
-
+import { TeamPage } from '../TeamPage/TeamPage';
 
 import { QuestShareService } from '../../services/QuestShareService';
 
@@ -36,6 +36,14 @@ export class QuestionPage {
   ionViewDidLoad() {
   	this.currentQuestion = this.shareService.getCurrentQuestion();
   }
+
+  openProfile() {
+
+  }
+  openTeam() {
+    this.navCtrl.setRoot(TeamPage);
+  }
+
 
   checkAnswer(o:Option) {
     let title:string, subTitle:string;

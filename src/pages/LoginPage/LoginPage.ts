@@ -19,6 +19,7 @@ export class LoginPage {
   watch: any;
   state: number;
   browser: any;
+  canlogin: boolean;
   constructor(
     public http: Http,
     public navCtrl: NavController,
@@ -43,7 +44,6 @@ export class LoginPage {
         document.getElementById('LoginLoading').innerText = document.getElementById('LoginLoading').innerText+JSON.stringify(e);
       }
     );*/
-
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
@@ -55,6 +55,7 @@ export class LoginPage {
         this.loginProvider.setPairCode(resp.code);
         this.browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Pair.html?c=` + resp.code), '_system', 'hardwareback=no');
         document.getElementById('LoginLoading').innerText = "Verifying login...";
+        this.canlogin = false;
         this.watch = setInterval(
           (
             function(self) {         //Self-executing func which takes 'this' as self
@@ -92,6 +93,7 @@ export class LoginPage {
           if(resp.Ok == 1) {
             clearInterval(this.watch);
             document.getElementById('LoginLoading').innerText = "Error. Try again!";
+            this.canlogin = true;
           }
         }
       }
@@ -99,6 +101,7 @@ export class LoginPage {
   }
 
   ionViewDidLoad() {
+    this.canlogin = false;
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
@@ -116,6 +119,7 @@ export class LoginPage {
           this.navCtrl.setRoot(QuestPage);
         } else {
           document.getElementById('LoginLoading').innerText = "Please log in!";
+          this.canlogin = true;
         }
       }
     );

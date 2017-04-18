@@ -7,6 +7,7 @@ import { QuestHeader } from '../../models/QuestHeader';
 import { QuestionProvider } from '../../providers/QuestionProvider';
 import { LoginProvider } from '../../providers/LoginProvider';
 import { QuestionPage } from '../QuestionPage/QuestionPage';
+import { TeamPage } from '../TeamPage/TeamPage';
 
 
 import { QuestShareService } from '../../services/QuestShareService';
@@ -78,7 +79,10 @@ export class QuestPage {
   }
 
   openProfile() {
-    
+
+  }
+  openTeam() {
+    this.navCtrl.setRoot(TeamPage);
   }
 
   ionViewDidLoad() {
