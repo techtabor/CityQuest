@@ -22,10 +22,10 @@ module.exports = function() {
       case "GOOGLE":
         var selfTeamName = user.Name + "'s private team";
         base.maindb.wquery(
-          "INSERT INTO Users (SubId, Type, Name, Email) VALUES (?, 1, ?, ?)",
+          "INSERT INTO Users (SubId, Name, Email) VALUES (?, ?, ?)",
           function(err, sqlres) { //UserID
             base.maindb.wquery(
-              "INSERT INTO TeamData (Leader, Quest, Name) VALUES (?, 0, ?)",
+              "INSERT INTO TeamData (Leader, Quest, Name, Type) VALUES (?, 0, ?, 1)",
               function(err2, sqlres2) {
                 base.maindb.wquery( //Self TeamID
                   "INSERT INTO Teams (Team, User) VALUES (?, ?)",
