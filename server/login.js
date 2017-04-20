@@ -25,7 +25,7 @@ module.exports = function() {
           "INSERT INTO Users (SubId, Type, Name, Email) VALUES (?, 1, ?, ?)",
           function(err, sqlres) { //UserID
             base.maindb.wquery(
-              "INSERT INTO TeamData (Leader, Quest, Name, Type) VALUES (?, 0, ?, 1)",
+              "INSERT INTO TeamData (Leader, Quest, Name) VALUES (?, 0, ?)",
               function(err2, sqlres2) {
                 base.maindb.wquery( //Self TeamID
                   "INSERT INTO Teams (Team, User) VALUES (?, ?)",
