@@ -11,6 +11,7 @@ import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
 import { QuestionPage } from '../pages/QuestionPage/QuestionPage';
 import { TeamPage } from '../pages/TeamPage/TeamPage';
+import { FriendPage } from '../pages/FriendPage/FriendPage';
 
 import { QuestShareService } from '../services/QuestShareService';
 
@@ -37,6 +38,7 @@ export class MyApp {
       {title: 'Map', component: MapPage, icon_name: 'compass'},
       {title: 'Stats', component: StatsPage, icon_name: 'stats'},
       {title: 'Team', component: TeamPage, icon_name: 'people'},
+      {title: 'Friends', component: FriendPage, icon_name: 'people'},
       {title: 'Create', component: CreatePage, icon_name: 'color-wand'},
       {title: 'Logout', component: LogoutPage, icon_name: 'exit'}
     ];

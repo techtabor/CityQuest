@@ -12,6 +12,7 @@ require('./login.js')();
 require('./stats.js')();
 require('./quest.js')();
 require('./team.js')();
+require('./friends.js')();
 var base = require('./base.js');
 
 //Lets define a port we want to listen to
@@ -90,5 +91,15 @@ dispatcher.onPost("/GetTeams", GetTeams);
 dispatcher.onPost("/LeaveTeam", LeaveTeam);
 
 dispatcher.onPost("/SetTeam", SetTeam);
+
+dispatcher.onPost("/AddFriend", AddFriend);
+
+dispatcher.onPost("/GetFriends", GetFriends);
+
+dispatcher.onPost("/GetFriendRequests", GetFriendRequests);
+
+dispatcher.onPost("/ConfirmRequest", ConfirmRequest);
+
+dispatcher.onPost("/RemoveFriend", RemoveFriend);
 
 dispatcher.onPost("/VerifyLogin", VerifyLogin);
