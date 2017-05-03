@@ -83,6 +83,42 @@ SELECT TeamData.Name AS Name, TeamSolutions.Solved AS Solved FROM ( TeamData INN
 
 ################################################################################
 
+Get friend stats&&&&&&&&&&&&&&
+
+
+SELECT
+  Users.Name AS 'Name',
+  COUNT(DISTINCT Solutions.Question) AS 'Solved'
+FROM
+  Solutions, TeamData, Users
+WHERE
+  Question <> 0
+    AND
+  Solutions.Team = TeamData.Id
+    AND
+  TeamData.Type = 1
+    AND
+  TeamData.Leader = Users.Id
+    AND
+  Users.Id IN
+    (
+      SELECT
+        UserA
+      FROM
+        Friends
+      WHERE
+        UserB = ?
+          AND
+        Accepted = 1
+    )
+GROUP BY
+  Users.Name
+LIMIT 10
+
+SELECT Users.Name AS 'Name', COUNT(DISTINCT Solutions.Question) AS 'Solved' FROM Solutions, TeamData, Users WHERE Question <> 0 AND Solutions.Team = TeamData.Id AND TeamData.Type = 1 AND TeamData.Leader = Users.Id AND Users.Id IN ( SELECT UserA FROM Friends WHERE UserB = ? AND Accepted = 1 ) GROUP BY Users.Name LIMIT 10
+
+################################################################################
+
 Get My Teams
 
 SELECT
