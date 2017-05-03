@@ -5,11 +5,7 @@ import { LoginProvider } from '../../providers/LoginProvider';
 import { QuestShareService } from '../../services/QuestShareService';
 import { ServerIpProvider } from '../../providers/ServerIpProvider';
 import { QuestionProvider } from '../../providers/QuestionProvider';
-import { QuestionPage } from '../QuestionPage/QuestionPage';
-import { Question } from '../../models/Question';
-import { Quest } from '../../models/Quest';
-import { QuestHeader } from '../../models/QuestHeader';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http } from '@angular/http';
 
 import { AddFriendsTab } from './AddFriendsTab/AddFriendsTab';
 import { FriendsTab } from './FriendsTab/FriendsTab';

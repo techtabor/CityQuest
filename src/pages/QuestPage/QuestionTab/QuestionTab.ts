@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 
-import { Quest } from '../../models/Quest';
-import { Option } from '../../models/Option';
-import { Question } from '../../models/Question';
-import { QuestionProvider } from '../../providers/QuestionProvider';
-import { LoginProvider } from '../../providers/LoginProvider';
-import { QuestPage } from '../QuestPage/QuestPage';
-import { TeamPage } from '../TeamPage/TeamPage';
+import { Quest } from '../../../models/Quest';
+import { Option } from '../../../models/Option';
+import { Question } from '../../../models/Question';
+import { QuestionProvider } from '../../../providers/QuestionProvider';
+import { LoginProvider } from '../../../providers/LoginProvider';
+import { QuestPage } from '../../QuestPage/QuestPage';
+import { TeamPage } from '../../TeamPage/TeamPage';
 
-import { QuestShareService } from '../../services/QuestShareService';
+import { QuestShareService } from '../../../services/QuestShareService';
 
 /*
   Generated class for the QuestionPage page.
@@ -18,10 +18,10 @@ import { QuestShareService } from '../../services/QuestShareService';
   Ionic pages and navigation.
 */
 @Component({
-  selector: 'page-question-page',
-  templateUrl: 'QuestionPage.html'
+  selector: 'tab-question',
+  templateUrl: 'QuestionTab.html'
 })
-export class QuestionPage {
+export class QuestionTab {
 
   private currentQuestion:Question;
 

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 import { ServerIpProvider } from '../../../providers/ServerIpProvider';
-import { Quest } from '../../../models/Quest';
-import { QuestHeader } from '../../../models/QuestHeader';
 import { LoginProvider } from '../../../providers/LoginProvider';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 
 @Component({
 	selector: 'PendingFriendsTab',

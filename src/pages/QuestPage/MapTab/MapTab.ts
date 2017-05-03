@@ -1,8 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
-import { QuestShareService } from '../../services/QuestShareService';
-import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
+import { QuestShareService } from '../../../services/QuestShareService';
+import { GeoLocationProvider } from '../../../providers/GeoLocationProvider';
 
 declare var google;
 
@@ -13,10 +13,10 @@ declare var google;
   Ionic pages and navigation.
 */
 @Component({
-  selector: 'page-map',
-  templateUrl: 'MapPage.html'
+  selector: 'tab-map',
+  templateUrl: 'MapTab.html'
 })
-export class MapPage {
+export class MapTab {
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -26,7 +26,7 @@ export class MapPage {
               private locationProvider: GeoLocationProvider) { }
 
   ionViewDidLoad(){
-    console.log('Hello MapPage page');
+    console.log('Hello MapTab page');
     this.loadMap();
   }
 

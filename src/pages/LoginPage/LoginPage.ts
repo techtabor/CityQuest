@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { LoginProvider } from '../../providers/LoginProvider';
 import { QuestPage } from '../QuestPage/QuestPage';
 import { NavController, NavParams } from 'ionic-angular';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { ServerIpProvider } from '../../providers/ServerIpProvider';
 import {InAppBrowser} from 'ionic-native';
 /*

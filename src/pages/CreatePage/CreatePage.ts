@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
-import { CreateQuestionComponent } from './CreateQuestionComponent';
+
 import { Quest } from '../../models/Quest';
 import { Option } from '../../models/Option';
 import { Question } from '../../models/Question';
