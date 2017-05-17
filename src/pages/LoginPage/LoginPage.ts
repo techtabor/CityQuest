@@ -4,6 +4,7 @@ import { QuestPage } from '../QuestPage/QuestPage';
 import { NavController, NavParams } from 'ionic-angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { ServerIpProvider } from '../../providers/ServerIpProvider';
+import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
 import {InAppBrowser} from 'ionic-native';
 /*
   Generated class for the LoginPage page.
@@ -25,25 +26,12 @@ export class LoginPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public loginProvider: LoginProvider,
-    public serverIpProvider: ServerIpProvider
+    public serverIpProvider: ServerIpProvider,
+    public geoLocationProvider: GeoLocationProvider
   ) {
   }
 
-  doGoogleLogin() {/*
-    document.getElementById('LoginLoading').innerText = "Verifying login...";
-    document.getElementById('LoginLoading').innerText=JSON.stringify(this.googleAuth);
-    this.googleAuth.login().then(
-      function() {
-        console.log("s");
-        document.getElementById('LoginLoading').innerText = "Verified!";
-        this.navCtrl.setRoot(QuestPage);
-      },
-      function(e) {
-        console.log("e:");
-        console.log(e);
-        document.getElementById('LoginLoading').innerText = document.getElementById('LoginLoading').innerText+JSON.stringify(e);
-      }
-    );*/
+  doGoogleLogin() {
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
@@ -70,34 +58,41 @@ export class LoginPage {
   }
 
   watchLogin() {
-    let head = {'Content-Type': 'text/plain'};
-    let headers    = new Headers(head);
-    let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
-    .subscribe(res =>
-      {
-        let resp = res.json();
-        if(resp.Ok == 0) {
-          clearInterval(this.watch);
-          this.loginProvider.setToken(resp.Token);
-          this.loginProvider.setType("GOOGLE");
-          this.loginProvider.name = resp.Name;
-          this.loginProvider.profilePic = resp.Picture;
-          this.loginProvider.teamName = resp.TeamName;
-          this.loginProvider.team = resp.Team;
+    if(this.geoLocationProvider.getHasData()) {
+      let head = {'Content-Type': 'text/plain'};
+      let headers    = new Headers(head);
+      let options    = new RequestOptions({headers: headers});
 
-          document.getElementById('LoginLoading').innerText = "Verified";
-          //this.browser.close();
-          this.navCtrl.setRoot(QuestPage);
-        } else {
-          if(resp.Ok == 1) {
+      let geoData = this.geoLocationProvider.getLocation();
+
+      this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE", Lat: geoData.latitude, Long: geoData.longitude}), options)
+      .subscribe(res =>
+        {
+          let resp = res.json();
+          if(resp.Ok == 0) {
             clearInterval(this.watch);
-            document.getElementById('LoginLoading').innerText = "Error. Try again!";
-            this.canlogin = true;
+            this.loginProvider.setToken(resp.Token);
+            this.loginProvider.setType("GOOGLE");
+            this.loginProvider.name = resp.Name;
+            this.loginProvider.profilePic = resp.Picture;
+            this.loginProvider.teamName = resp.TeamName;
+            this.loginProvider.team = resp.Team;
+
+            document.getElementById('LoginLoading').innerText = "Verified";
+            //this.browser.close();
+            this.navCtrl.setRoot(QuestPage);
+          } else {
+            if(resp.Ok == 1) {
+              clearInterval(this.watch);
+              document.getElementById('LoginLoading').innerText = "Error. Try again!";
+              this.canlogin = true;
+            }
           }
         }
-      }
-    );
+      );
+    } else {
+      document.getElementById('LoginLoading').innerText = "Searching for location data...";
+    }
   }
 
   ionViewDidLoad() {

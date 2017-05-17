@@ -53,11 +53,11 @@ export class MapTab {
     let location = this.locationProvider.getLocation();
     let latLng = new google.maps.LatLng(location.latitude, location.longitude);
     console.log(latLng);
-    let yourMarker = new google.maps.Marker({
+    /*let yourMarker = new google.maps.Marker({
       position: latLng,
       map: this.map,
       title: 'Your position'
-    });
+    });*/
     console.log('Centering Map');
     this.map.panTo(latLng);
   }

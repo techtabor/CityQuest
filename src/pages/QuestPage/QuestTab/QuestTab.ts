@@ -93,6 +93,7 @@ export class QuestTab {
       this.quest = this.shareService.getQuest();
       this.currentQuestion = this.shareService.getCurrentQuestion();
       this.questId = this.quest.header.Id;
+      this.navCtrl.setRoot(QuestionTab);
     }
   }
 }

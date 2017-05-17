@@ -17,12 +17,12 @@ module.exports = function() {
     return text;
   }
 
-  this.createAccount = function(type, foreignid, user, callback) {
+  this.createAccount = function(type, foreignid, user, callback, lat, long) {
     switch (type) {
       case "GOOGLE":
         var selfTeamName = user.Name + "'s private team";
         base.maindb.wquery(
-          "INSERT INTO Users (SubId, Name, Email) VALUES (?, ?, ?)",
+          "INSERT INTO Users (SubId, Name, Email, Type, CheckinLong, CheckinLat, CheckinTime) VALUES (?, ?, ?, 1, 0, 0, '1970-0-0')",
           function(err, sqlres) { //UserID
             base.maindb.wquery(
               "INSERT INTO TeamData (Leader, Quest, Name, Type) VALUES (?, 0, ?, 1)",
@@ -53,7 +53,7 @@ module.exports = function() {
     }
   }
 
-  this.getProfile = function(token, type, callbackok, callbackerr) { //Check login
+  this.getProfile = function(token, type, callbackok, callbackerr, lat, long ) { //Check login
     //callback(accepted, internal ID, name, email, language, email verified, image)
     switch(type) {
       case "GOOGLE":
