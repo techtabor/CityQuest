@@ -11,6 +11,7 @@ import { ServerIpProvider } from '../providers/ServerIpProvider';
 
 import { StatsPage } from '../pages/StatsPage/StatsPage';
 import { QuestPage } from '../pages/QuestPage/QuestPage';
+import { QuestionPage } from '../pages/QuestionPage/QuestionPage';
 import { LoginPage } from '../pages/LoginPage/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
@@ -25,9 +26,9 @@ import { AddFriendsTab } from '../pages/FriendPage/AddFriendsTab/AddFriendsTab';
 import { FriendsTab } from '../pages/FriendPage/FriendsTab/FriendsTab';
 import { PendingFriendsTab } from '../pages/FriendPage/PendingFriendsTab/PendingFriendsTab';
 
-import { QuestTab } from '../pages/QuestPage/QuestTab/QuestTab';
-import { MapTab } from '../pages/QuestPage/MapTab/MapTab';
-import { QuestionTab } from '../pages/QuestPage/QuestionTab/QuestionTab';
+
+import { MapTab } from '../pages/QuestionPage/MapTab/MapTab';
+import { QuestionTab } from '../pages/QuestionPage/QuestionTab/QuestionTab';
 
 import { QuestShareService } from '../services/QuestShareService';
 
@@ -48,9 +49,9 @@ import { QuestShareService } from '../services/QuestShareService';
     MyApp,
     StatsPage,
     QuestPage,
-    QuestTab,
     MapTab,
     QuestionTab,
+    QuestionPage,
     LoginPage,
     LogoutPage,
     CreatePage,
@@ -72,9 +73,9 @@ import { QuestShareService } from '../services/QuestShareService';
     MyApp,
     StatsPage,
     QuestPage,
-    QuestTab,
     MapTab,
     QuestionTab,
+    QuestionPage,
     LoginPage,
     LogoutPage,
     CreatePage,

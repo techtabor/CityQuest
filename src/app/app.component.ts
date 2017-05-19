@@ -5,6 +5,7 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { StatsPage } from '../pages/StatsPage/StatsPage';
 import { QuestPage } from '../pages/QuestPage/QuestPage';
+import { QuestionPage } from '../pages/QuestionPage/QuestionPage';
 import { LoginPage } from '../pages/LoginPage/LoginPage';
 import { LogoutPage } from '../pages/LogoutPage/LogoutPage';
 import { CreatePage } from '../pages/CreatePage/CreatePage';
@@ -32,6 +33,7 @@ export class MyApp {
 
     this.pages = [
       {title: 'Quest', component: QuestPage, icon_name: 'navigate'},
+      {title: 'Question', component: QuestionPage, icon_name: 'help'},
       {title: 'Stats', component: StatsPage, icon_name: 'stats'},
       {title: 'Team', component: TeamPage, icon_name: 'people'},
       {title: 'Friends', component: FriendPage, icon_name: 'contacts'},
