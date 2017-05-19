@@ -69,7 +69,7 @@ module.exports = function() {
       params.id_token, params.id_token_type,
       function(user) {
         base.maindb.query(
-          "SELECT TeamMembers.Team AS Team, TeamMembers.Members AS Members, TeamData.Name AS Name, Users.Name AS LeaderName, Users.Email AS LeaderEmail, TeamData.Quest AS Quest FROM ( ( ( SELECT Team, COUNT(User) AS Members FROM Teams WHERE User = ? GROUP BY Team ) TeamMembers INNER JOIN TeamData ON TeamMembers.Team = TeamData.Id ) INNER JOIN Users ON Users.Id = TeamData.Leader )",
+          "SELECT TeamMembers.Team AS Team, TeamMembers.Members AS Members, TeamData.Name AS Name, Users.Name AS LeaderName, Users.Email AS LeaderEmail, TeamData.Quest AS Quest FROM ( ( ( SELECT TeamsA.Team AS Team, COUNT(TeamsB.User) AS Members FROM Teams AS TeamsA INNER JOIN Teams AS TeamsB ON TeamsA.Team = TeamsB.Team WHERE TeamsA.User = ? GROUP BY TeamsA.Team ) TeamMembers INNER JOIN TeamData ON TeamMembers.Team = TeamData.Id ) INNER JOIN Users ON Users.Id = TeamData.Leader)",
           function(err,sqlres) {
             res.write(JSON.stringify({Ok:0, Members: sqlres}));
             res.end();
