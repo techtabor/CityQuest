@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+      Friends
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+	<h2> Friends:</h2>
+    <ion-list >
+      <ion-row>
+        <ion-col>
+          Name
+        </ion-col>
+        <ion-col>
+          Email
+        </ion-col>
+        <ion-col>
+          Remove
+        </ion-col>
+      </ion-row>
+      <ion-item-divider></ion-item-divider>
+      <ion-row *ngFor="let s of myFriends">
+        <ion-col>
+          {{s.Name}}
+        </ion-col>
+        <ion-col>
+          {{s.Email}}
+        </ion-col>
+        <ion-col>
+          <button (click)="RemoveFriend(s.Email)">
+            Remove
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-list>
+</ion-content>

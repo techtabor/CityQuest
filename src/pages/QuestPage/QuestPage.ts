@@ -5,13 +5,15 @@ import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
 import { QuestHeader } from '../../models/QuestHeader';
 import { QuestionProvider } from '../../providers/QuestionProvider';
+import { LoginProvider } from '../../providers/LoginProvider';
+import { TeamPage } from '../TeamPage/TeamPage';
 import { QuestionPage } from '../QuestionPage/QuestionPage';
+
 
 import { QuestShareService } from '../../services/QuestShareService';
 
 /*
   Generated class for the Quest page.
-
   See http://ionicframework.com/docs/v2/components/#navigation for more info on
   Ionic pages and navigation.
 */
@@ -33,6 +35,7 @@ export class QuestPage {
   constructor(public navCtrl: NavController,
               public alertCtrl: AlertController,
               private questionProvider: QuestionProvider,
+              private loginProvider: LoginProvider,
               private shareService: QuestShareService) {
   }
 
@@ -74,14 +77,22 @@ export class QuestPage {
     );
   }
 
+  openProfile() {
+
+  }
+  openTeam() {
+    this.navCtrl.setRoot(TeamPage);
+  }
+
   ionViewDidLoad() {
     console.log('Hello QuestPage Page');
     this.getSuggestions();
 
-    if (this.shareService.getQuest() != undefined) {
+    /*if (this.shareService.getQuest() != undefined) {
       this.quest = this.shareService.getQuest();
       this.currentQuestion = this.shareService.getCurrentQuestion();
       this.questId = this.quest.header.Id;
-    }
+      this.navCtrl.setRoot(QuestionPage);
+    }*/
   }
 }

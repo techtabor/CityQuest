@@ -14,13 +14,19 @@ export class GeoLocationProvider {
   watchId: any = Geolocation.watchPosition()
                               .subscribe(position => {
   this.geoData = position.coords;
+  this.hasData = true;
 });
   geoData: any;
+  hasData: boolean;
   constructor(public http: Http) {
     console.log('Hello GeoLocation Provider');
+    this.hasData = false;
   }
 
   getLocation(): any {
     return this.geoData;
+  }
+  getHasData(): boolean {
+    return this.hasData;
   }
 }

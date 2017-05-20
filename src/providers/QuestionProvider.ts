@@ -24,7 +24,7 @@ export class QuestionProvider {
     private http: Http,
     private geoLocationProvider: GeoLocationProvider,
     private loginProvider: LoginProvider,
-    public serverIpProvider: ServerIpProvider
+    public serverIpProvider: ServerIpProvider,
   ) {
 
     console.log('Hello QuestionProvider Provider');

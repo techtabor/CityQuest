@@ -10,9 +10,13 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class LoginProvider {
-  token: string;
-  type: string;
-  pair: string;
+  token:      string;
+  type:       string;
+  pair:       string;
+  team:       any;
+  public teamName:   string = "AsdT";
+  public name:       string = "AsdN";
+  public profilePic: string = "https://lh3.googleusercontent.com/-v0soe-ievYE/AAAAAAAAAAI/AAAAAAADuxU/hxJUqul5Gqo/s60-p-no/photo.jpg";
   constructor(public http: Http) {
   }
 
@@ -26,6 +30,10 @@ export class LoginProvider {
 
   getPairCode(): string {
     return this.pair;
+  }
+
+  getTeam(): string {
+    return this.team;
   }
 
   setType(s): void {
@@ -42,8 +50,14 @@ export class LoginProvider {
     this.pair=s;
   }
 
+  setTeam(s): void {
+    localStorage.setItem("ChosenTeam", s);
+    this.team=s;
+  }
+
   load(): void {
     this.type = localStorage.getItem("AuthType");
     this.token = localStorage.getItem("AuthToken");
+    this.team = localStorage.getItem("ChosenTeam");
   }
 }

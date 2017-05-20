@@ -14,7 +14,7 @@
 
 
 <ion-content padding>
-  <button ion-button block color="danger" (click)="doGoogleLogin()">Google Login</button>
+  <button ion-button block color="danger" (click)="doGoogleLogin()" *ngIf="canlogin">Google Login</button>
   <ion-item>
     <ion-item id="LoginLoading">
       Please wait!

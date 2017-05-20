@@ -5,9 +5,14 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
   </head>
   <body>
-    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-    <div id="Resp1"></div>
-    <div id="Resp2"></div>
+    <h1 style="text-align: center">Cityquest login</h1>
+    <div style = "
+      margin: 0 auto;
+      width: 200px;
+      padding: 10px;">
+      <div id = "logindiv"><div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div></div>
+      <div id="Resp1"></div>
+    </div>
     <script>
       function findGetParameter(parameterName) {
         var result = null,
@@ -24,7 +29,8 @@
         var profile = googleUser.getBasicProfile();
         //console.log("ID: " + profile.getId()); // Don't send this directly to your server!
         //console.log('Full Name: ' + profile.getName());
-        document.getElementById("Resp1").innerText = "Welcome " + profile.getName() + "!";
+        document.getElementById("Resp1").innerText = "Welcome " + profile.getName() + "! Connecting to server.";
+        document.getElementById("logindiv").style.visibility = "hidden";
         //console.log('Given Name: ' + profile.getGivenName());
         //console.log('Family Name: ' + profile.getFamilyName());
         //console.log("Image URL: " + profile.getImageUrl());
@@ -39,9 +45,11 @@
           var resp = JSON.parse(xhr.response);
           if(resp.ok) {
             document.getElementById("Resp1").innerText = "You may now go back to the app.";
+            document.getElementById("logindiv").style.visibility = "hidden";
             window.close();
           } else {
             document.getElementById("Resp1").innerText = "There was an error. Try again!";
+            document.getElementById("logindiv").style.visibility = "shown";
           }
         };
 

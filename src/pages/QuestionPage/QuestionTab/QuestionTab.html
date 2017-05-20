@@ -1,3 +1,9 @@
+<!--
+  Generated template for the QuestionPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
 <ion-header>
   <ion-navbar >
     <button ion-button icon-only menuToggle>
@@ -19,11 +25,23 @@
 </ion-header>
 
 <ion-content padding>
-  <!--<button ion-button (click)="getSuggestions()">Get suggestions</button>-->
-  <ion-list *ngFor="let q of availableQuests">
-    <ion-card ion-item (click)="openQuest(q)">
-      <h1>{{q?.header.Name}}</h1>
-      <p>{{q?.header.Description}}</p>
+	<ion-card>
+      <ion-card-content>
+        <ion-card-title>
+          {{currentQuestion?.Question}}
+        </ion-card-title>
+        <p>
+          {{currentQuestion?.Question}}
+        </p>
+      </ion-card-content>
     </ion-card>
+	<ion-list *ngFor="let o of currentQuestion?.Options">
+      <ion-card (click)="checkAnswer(o)">
+        <ion-card-content>
+          <p>
+            {{o?.Choice}}
+          </p>
+        </ion-card-content>
+      </ion-card>
   </ion-list>
 </ion-content>

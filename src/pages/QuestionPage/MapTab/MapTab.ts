@@ -1,8 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 
-import { QuestShareService } from '../../services/QuestShareService';
-import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
+import { QuestShareService } from '../../../services/QuestShareService';
+import { GeoLocationProvider } from '../../../providers/GeoLocationProvider';
 
 declare var google;
 
@@ -13,10 +13,10 @@ declare var google;
   Ionic pages and navigation.
 */
 @Component({
-  selector: 'page-map',
-  templateUrl: 'MapPage.html'
+  selector: 'tab-map',
+  templateUrl: 'MapTab.html'
 })
-export class MapPage {
+export class MapTab {
 
   @ViewChild('map') mapElement: ElementRef;
   map: any;
@@ -26,7 +26,7 @@ export class MapPage {
               private locationProvider: GeoLocationProvider) { }
 
   ionViewDidLoad(){
-    console.log('Hello MapPage page');
+    console.log('Hello MapTab page');
     this.loadMap();
   }
 
@@ -53,11 +53,11 @@ export class MapPage {
     let location = this.locationProvider.getLocation();
     let latLng = new google.maps.LatLng(location.latitude, location.longitude);
     console.log(latLng);
-    let yourMarker = new google.maps.Marker({
+    /*let yourMarker = new google.maps.Marker({
       position: latLng,
       map: this.map,
       title: 'Your position'
-    });
+    });*/
     console.log('Centering Map');
     this.map.panTo(latLng);
   }
