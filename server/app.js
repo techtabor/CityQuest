@@ -35,7 +35,7 @@ function handleRequest(request, sqlresponse) {
 
 //Lets start our server
 server.listen(PORT, function() {
-  base.maindb = new dbapi.database("89.147.123.227", process.argv[2], process.argv[3], "Main", process.argv[4]);
+  base.maindb = new dbapi.database(process.argv[2], process.argv[3], process.argv[4], process.argv[5], process.argv[6]);
 
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);

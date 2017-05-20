@@ -17,9 +17,10 @@ export class GeoLocationProvider {
   this.hasData = true;
 });
   geoData: any;
-  hasData: boolean = false;
+  hasData: boolean;
   constructor(public http: Http) {
     console.log('Hello GeoLocation Provider');
+    this.hasData = false;
   }
 
   getLocation(): any {

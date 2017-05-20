@@ -58,12 +58,12 @@ export class LoginPage {
   }
 
   watchLogin() {
-    if(this.geoLocationProvider.getHasData()) {
+    if(this.geoLocationProvider.getHasData() == true) {
       let head = {'Content-Type': 'text/plain'};
       let headers    = new Headers(head);
       let options    = new RequestOptions({headers: headers});
 
-      let geoData = this.geoLocationProvider.getLocation();
+      var geoData    = this.geoLocationProvider.getLocation();
 
       this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE", Lat: geoData.latitude, Long: geoData.longitude}), options)
       .subscribe(res =>
