@@ -3,6 +3,9 @@ import { ServerIpProvider } from '../../../providers/ServerIpProvider';
 import { Quest } from '../../../models/Quest';
 import { LoginProvider } from '../../../providers/LoginProvider';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { NavController, AlertController } from 'ionic-angular';
+import { QuestPage } from '../../QuestPage/QuestPage';
+import { TeamPage } from '../../TeamPage/TeamPage';
 
 @Component({
   selector: 'FriendsTab',
@@ -14,8 +17,16 @@ export class FriendsTab {
   constructor(
   	public http: Http,
   	public serverIpProvider: ServerIpProvider,
+    public navCtrl: NavController,
   	public loginProvider: LoginProvider) {
 
+  }
+
+  openProfile() {
+    this.navCtrl.setRoot(QuestPage);
+  }
+  openTeams() {
+    this.navCtrl.setRoot(TeamPage);
   }
 
   RemoveFriend(femail) {
@@ -28,7 +39,7 @@ export class FriendsTab {
   }
 
   GetFriends() {
-    let head = {'Content-Type': 'text/plain'};
+    let head       = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
 

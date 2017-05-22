@@ -6,14 +6,16 @@
 
     <ion-title>{{pageName}}</ion-title>
 
-    <div (click)="openProfile()" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 30px;">
-      <img width="32" height="32" src="{{loginProvider.profilePic}}" />
-    </div>
-    <div (click)="openProfile()" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 30px;">
-      {{loginProvider.name}}
-    </div>
-    <div (click)="openTeam()" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 30px;">
-      Team: {{loginProvider.teamName}}
+    <div id="ProfileBar">
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+        <img width="32" height="32" src="{{loginProvider.profilePic}}" />
+      </div>
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+        {{loginProvider.name}}
+      </div>
+      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+        Team: {{loginProvider.teamName}}
+      </div>
     </div>
   </ion-navbar>
 </ion-header>

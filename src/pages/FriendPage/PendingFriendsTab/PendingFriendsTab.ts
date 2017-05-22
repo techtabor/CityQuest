@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
-import { AlertController } from 'ionic-angular';
 import { ServerIpProvider } from '../../../providers/ServerIpProvider';
 import { LoginProvider } from '../../../providers/LoginProvider';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { NavController, AlertController } from 'ionic-angular';
+import { QuestPage } from '../../QuestPage/QuestPage';
+import { TeamPage } from '../../TeamPage/TeamPage';
+
 
 @Component({
 	selector: 'PendingFriendsTab',
@@ -15,9 +18,17 @@ export class PendingFriendsTab {
 			public http: Http,
 		  public alertCtrl: AlertController,
   		public serverIpProvider: ServerIpProvider,
+			public navCtrl: NavController,
   		public loginProvider: LoginProvider) {
 
 	}
+
+	openProfile() {
+    this.navCtrl.setRoot(QuestPage);
+  }
+  openTeams() {
+    this.navCtrl.setRoot(TeamPage);
+  }
 
 	ConfirmRequest(femail, accept) {
 		let head = {'Content-Type': 'text/plain'};

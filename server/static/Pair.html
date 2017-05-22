@@ -14,6 +14,7 @@
       <div id="Resp1"></div>
     </div>
     <script>
+      var xhr;
       function findGetParameter(parameterName) {
         var result = null,
             tmp = [];
@@ -24,6 +25,7 @@
         }
         return result;
       }
+
       function onSignIn(googleUser) {
         // Useful data for your client-side scripts:
         var profile = googleUser.getBasicProfile();
@@ -37,24 +39,46 @@
         //console.log("Email: " + profile.getEmail());
 
         // The ID token you need to pass to your backend:
-        var id_token = googleUser.getAuthResponse().id_token;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/../LoginPairResp', true);
+        //document.getElementById("Resp1").innerText = "0";
 
-        xhr.onload = function () {
-          var resp = JSON.parse(xhr.response);
-          if(resp.ok) {
-            document.getElementById("Resp1").innerText = "You may now go back to the app.";
-            document.getElementById("logindiv").style.visibility = "hidden";
-            window.close();
-          } else {
-            document.getElementById("Resp1").innerText = "There was an error. Try again!";
-            document.getElementById("logindiv").style.visibility = "shown";
+        var id_token = googleUser.getAuthResponse().id_token;
+
+        xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function() {
+          if(this.readyState == 4 && this.status == 200) {
+
+            var resp = JSON.parse(this.response);
+
+            //document.getElementById("Resp1").innerText = "E";
+
+            if(resp.ok) {
+              document.getElementById("Resp1").innerText = "You may now go back to the app.";
+              document.getElementById("logindiv").style.visibility = "hidden";
+              //window.close();
+            } else {
+              document.getElementById("Resp1").innerText = "There was an error. Try again!";
+              document.getElementById("logindiv").style.visibility = "shown";
+            }
           }
         };
 
+        /*xhr.addEventListener("error", function() {
+          document.getElementById("Resp1").innerText = "E";
+        });*/
+
+        //document.getElementById("Resp1").innerText = "1";
+
+        xhr.open('POST', '../LoginPairResp', true);
+
+        //document.getElementById("Resp1").innerText = "A";
+
+        //document.getElementById("Resp1").innerText = "B";
+
         xhr.send(JSON.stringify({token: id_token, type: "GOOGLE", stoken: findGetParameter("c")}));
-      };
+
+        //document.getElementById("Resp1").innerText = "C";
+      }
     </script>
   </body>
 </html>

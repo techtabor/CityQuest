@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { AlertController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 import { ServerIpProvider } from '../../../providers/ServerIpProvider';
 import { Quest } from '../../../models/Quest';
 import { LoginProvider } from '../../../providers/LoginProvider';
 import { Http, Headers, RequestOptions } from '@angular/http';
+
+import { QuestPage } from '../../QuestPage/QuestPage';
+import { TeamPage } from '../../TeamPage/TeamPage';
 
 @Component({
   selector: 'AddFriendsTab',
@@ -16,8 +19,16 @@ export class AddFriendsTab {
   	public http: Http,
   	public serverIpProvider: ServerIpProvider,
     public alertCtrl: AlertController,
+    public navCtrl: NavController,
   	public loginProvider: LoginProvider){
 
+  }
+
+  openProfile() {
+    this.navCtrl.setRoot(QuestPage);
+  }
+  openTeams() {
+    this.navCtrl.setRoot(TeamPage);
   }
 
   AddFriend() {

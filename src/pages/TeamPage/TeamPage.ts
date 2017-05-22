@@ -10,6 +10,9 @@ import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
 import { QuestHeader } from '../../models/QuestHeader';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
+
+import { QuestPage } from '../QuestPage/QuestPage';
+
 /*
   Generated class for the Team page.
 
@@ -42,6 +45,13 @@ export class TeamPage {
     this.newMembers = [];
     this.newName = "";
     this.selectedPage = 0;
+  }
+
+  openProfile() {
+    this.navCtrl.setRoot(QuestPage);
+  }
+  openTeams() {
+    this.navCtrl.setRoot(TeamPage);
   }
 
   AddMember() {
@@ -126,12 +136,6 @@ export class TeamPage {
     this.ChooseTeamId(this.selectedTeam.Team);
   }
 
-  openProfile() {
-
-  }
-  openTeam() {
-    this.navCtrl.setRoot(TeamPage);
-  }
 
   ChooseTeamId(id) {
     let head = {'Content-Type': 'text/plain'};

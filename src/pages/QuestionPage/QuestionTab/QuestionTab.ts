@@ -6,10 +6,11 @@ import { Option } from '../../../models/Option';
 import { Question } from '../../../models/Question';
 import { QuestionProvider } from '../../../providers/QuestionProvider';
 import { LoginProvider } from '../../../providers/LoginProvider';
-import { QuestPage } from '../../QuestPage/QuestPage';
-import { TeamPage } from '../../TeamPage/TeamPage';
 
 import { QuestShareService } from '../../../services/QuestShareService';
+
+import { QuestPage } from '../../QuestPage/QuestPage';
+import { TeamPage } from '../../TeamPage/TeamPage';
 
 /*
   Generated class for the QuestionPage page.
@@ -27,23 +28,23 @@ export class QuestionTab {
 
   constructor(
     public navCtrl: NavController,
-    private shareService: QuestShareService,
-    private alertCtrl: AlertController,
-    private loginProvider: LoginProvider,
-    private questionProvider: QuestionProvider
+    public shareService: QuestShareService,
+    public alertCtrl: AlertController,
+    public loginProvider: LoginProvider,
+
+    public questionProvider: QuestionProvider
   ) { }
+
+  openProfile() {
+    this.navCtrl.setRoot(QuestPage);
+  }
+  openTeams() {
+    this.navCtrl.setRoot(TeamPage);
+  }
 
   ionViewDidLoad() {
   	this.currentQuestion = this.shareService.getCurrentQuestion();
   }
-
-  openProfile() {
-
-  }
-  openTeam() {
-    this.navCtrl.setRoot(TeamPage);
-  }
-
 
   checkAnswer(o:Option) {
     let title:string, subTitle:string;

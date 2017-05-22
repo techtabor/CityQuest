@@ -4,6 +4,9 @@ import { Quest } from '../../../models/Quest';
 import { QuestHeader } from '../../../models/QuestHeader';
 import { LoginProvider } from '../../../providers/LoginProvider';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { NavController, AlertController } from 'ionic-angular';
+import { QuestPage } from '../../QuestPage/QuestPage';
+import { TeamPage } from '../../TeamPage/TeamPage';
 
 @Component({
 	selector: 'PlayerStatsTab',
@@ -14,9 +17,17 @@ export class PlayerStatsTab {
 
 	constructor(
 		public http: Http,
-  		public serverIpProvider: ServerIpProvider,
-  		public loginProvider: LoginProvider) {
+  	public serverIpProvider: ServerIpProvider,
+    public navCtrl: NavController,
+  	public loginProvider: LoginProvider) {
 
+	}
+
+	openProfile() {
+		this.navCtrl.setRoot(QuestPage);
+	}
+	openTeams() {
+		this.navCtrl.setRoot(TeamPage);
 	}
 
 	GetPlayerStats() {
@@ -27,7 +38,7 @@ export class PlayerStatsTab {
     	this.http.post(`${this.serverIpProvider.getServerIp()}/GetPlayedStats`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
             .subscribe(res => {this.myPlayerStats = res.json()});
   	}
-	
+
 	ionViewDidLoad(){
 		this.GetPlayerStats();
 	}

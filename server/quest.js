@@ -37,7 +37,6 @@ module.exports = function() {
       }
     );
   }
-
   this.GetQuestHeader = function(req, res) {
     res.writeHead(200, base.head);
     let params = JSON.parse(req.body);
@@ -59,7 +58,6 @@ module.exports = function() {
       }
     );
   }
-
   this.SubmitQuestionSolution = function(req, res) {
     res.writeHead(200, base.head);
     let params = JSON.parse(req.body);
@@ -111,7 +109,6 @@ module.exports = function() {
       }
     );
   }
-
   this.GetOneQuestion = function(req, res) {
     res.writeHead(200, base.head);
     let params = JSON.parse(req.body);
@@ -138,7 +135,6 @@ module.exports = function() {
       }
     );
   }
-
   this.GetSuggestions = function(req, res) {
     res.writeHead(200, base.head);
     let params = JSON.parse(req.body);
@@ -168,7 +164,6 @@ module.exports = function() {
       }
     );
   }
-
   this.Create = function(req, res) {
 
     //console.log(req.params);

@@ -22,7 +22,7 @@ module.exports = function() {
       case "GOOGLE":
         var selfTeamName = user.Name + "'s private team";
         base.maindb.wquery(
-          "INSERT INTO Users (SubId, Name, Email, Type, CheckinLong, CheckinLat, CheckinTime) VALUES (?, ?, ?, 1, 0, 0, '1970-0-0')",
+          "INSERT INTO Users (SubId, Name, Email, Type, CheckinLong, CheckinLat, CheckinTime) VALUES (?, ?, ?, 1, 0, 0, '1970/01/01 00:00:00')",
           function(err, sqlres) { //UserID
             base.maindb.wquery(
               "INSERT INTO TeamData (Leader, Quest, Name, Type) VALUES (?, 0, ?, 1)",
@@ -148,22 +148,28 @@ module.exports = function() {
     //console.log(params);
     switch(params.type) {
       case "GOOGLE":
+        //console.log('A');
         GoogleClient.verifyIdToken(
           params.token,
           GOOGLE_CLIENT_ID,
           function(e, login) {
+            //console.log('B');
             if (e != null && e != undefined && e != "" && e != false) {
               res.write(JSON.stringify({ok: false}));
               res.end();
+              //console.log('C');
             } else {
+              //console.log('D');
               base.maindb.query(
                 "INSERT INTO Tokens (SessionToken, AuthToken, AuthType, Expires) VALUES (?,?,?,"+
                 /*"date('now', '+1 hour')"+*/ //SQLITE
                 "DATE_ADD(NOW(), INTERVAL 1 HOUR)"+ //MYSQL
                 ")",
                 function(err, sqlres) {
+                  //console.log('E');
                   res.write(JSON.stringify({ok: true}));
                   res.end();
+                  //console.log('F');
                 },
                 [[params.stoken, params.token, params.type]]
               );
@@ -191,8 +197,8 @@ module.exports = function() {
           "DELETE FROM Tokens WHERE SessionToken = ? AND AuthType = ?",
           function(errd, sqlresd) {
             if(sqlres.length == 1) {
-              console.log(params.type);
-              console.log(sqlres[0].AuthToken);
+              //console.log(params.type);
+              //console.log(sqlres[0].AuthToken);
               getProfile(
                 sqlres[0].AuthToken, params.type,
                 function(user) {

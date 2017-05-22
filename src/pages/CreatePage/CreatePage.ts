@@ -7,6 +7,9 @@ import { Question } from '../../models/Question';
 import { QuestHeader } from '../../models/QuestHeader'
 import { QuestionProvider } from '../../providers/QuestionProvider';
 import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
+import { LoginProvider } from '../../providers/LoginProvider';
+import { QuestPage } from '../QuestPage/QuestPage';
+import { TeamPage } from '../TeamPage/TeamPage';
 
 declare var google;
 
@@ -33,7 +36,17 @@ export class CreatePage {
   			      public navParams: NavParams,
               public alertCtrl: AlertController,
               public geoLocationProvider: GeoLocationProvider,
-              private questionProvider: QuestionProvider) {}
+              public loginProvider: LoginProvider,
+              public questionProvider: QuestionProvider) {
+
+  }
+
+  openProfile() {
+    this.navCtrl.setRoot(QuestPage);
+  }
+  openTeams() {
+    this.navCtrl.setRoot(TeamPage);
+  }
 
   loadMap() {
   	console.log('Loading map');

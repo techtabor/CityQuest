@@ -3,6 +3,11 @@ import { NavController } from 'ionic-angular';
 
 import { QuestShareService } from '../../../services/QuestShareService';
 import { GeoLocationProvider } from '../../../providers/GeoLocationProvider';
+import { LoginProvider } from '../../../providers/LoginProvider';
+
+import { QuestPage } from '../../QuestPage/QuestPage';
+import { TeamPage } from '../../TeamPage/TeamPage';
+
 
 declare var google;
 
@@ -22,12 +27,20 @@ export class MapTab {
   map: any;
 
   constructor(public navCtrl: NavController,
-              private shareService: QuestShareService,
-              private locationProvider: GeoLocationProvider) { }
+              public shareService: QuestShareService,
+              public locationProvider: GeoLocationProvider,
+              public loginProvider: LoginProvider) { }
 
   ionViewDidLoad(){
     console.log('Hello MapTab page');
     this.loadMap();
+  }
+
+  openProfile() {
+    this.navCtrl.setRoot(QuestPage);
+  }
+  openTeams() {
+    this.navCtrl.setRoot(TeamPage);
   }
 
   loadMap(){

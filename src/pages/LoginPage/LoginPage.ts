@@ -5,7 +5,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { ServerIpProvider } from '../../providers/ServerIpProvider';
 import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
-import {InAppBrowser} from 'ionic-native';
+import { InAppBrowser } from 'ionic-native';
+
 /*
   Generated class for the LoginPage page.
 
@@ -21,6 +22,7 @@ export class LoginPage {
   state: number;
   browser: any;
   canlogin: boolean;
+  iter: number;
   constructor(
     public http: Http,
     public navCtrl: NavController,
@@ -44,6 +46,7 @@ export class LoginPage {
         this.browser = new InAppBrowser(encodeURI(`${this.serverIpProvider.getServerIp()}/static/Pair.html?c=` + resp.code), '_system', 'hardwareback=no');
         document.getElementById('LoginLoading').innerText = "Verifying login...";
         this.canlogin = false;
+        this.iter = 0;
         this.watch = setInterval(
           (
             function(self) {         //Self-executing func which takes 'this' as self
@@ -58,6 +61,11 @@ export class LoginPage {
   }
 
   watchLogin() {
+    document.getElementById('LoginLoading').innerText = "Verifying login..." + this.iter + " / 30";
+    ++this.iter;
+    if(this.iter > 30) {
+      clearInterval(this.watch);
+    }
     if(this.geoLocationProvider.getHasData() == true) {
       let head = {'Content-Type': 'text/plain'};
       let headers    = new Headers(head);
@@ -65,7 +73,7 @@ export class LoginPage {
 
       var geoData    = this.geoLocationProvider.getLocation();
 
-      this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE", Lat: geoData.latitude, Long: geoData.longitude}), options)
+      this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
       .subscribe(res =>
         {
           let resp = res.json();
