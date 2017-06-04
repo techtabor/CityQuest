@@ -1,5 +1,17 @@
 FriendsTab {
+	ion-header {
+		ion-navbar {
+			ion-title {
+			}
+		}
+	}
 	ion-content {
 		margin: 10px;
+	}
+
+	h1 {
+		color: $title-color;
+		text-align: center;
+		margin-bottom: 5%;
 	}
 }

@@ -1,3 +1,28 @@
-page-login {
-
+.ios, .md, .wp {
+  page-login {
+    #login {
+      background: #fff9da;
+    }
+    #login-title {
+      margin-top: 5%;
+      font-size: 400%;
+      color: #2a4377;
+      text-align: center;
+      text-shadow: 2px 2px 2px rgba(150, 150, 150, 0.4);
+    }
+    #login-button {
+      margin: auto;
+      width: 70%;
+      background-color: map-get($colors, danger);
+    }
+    #login-img {
+      display: block;
+      margin-top: 50%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #LoginLoading {
+      //display: none;
+    }
+  }
 }

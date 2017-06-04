@@ -1,5 +1,15 @@
-FriendStatsTab {
-	ion-content {
-		margin: 10px;
+.ios,.md,.wp{
+		FriendStatsTab {
+		ion-content {
+			margin: 10px;
+			ion-list {
+		//		color: $paragraph-color;
+			}
+		}
+
+		h1 {
+			color: $title-color;
+			text-align: center;
+		}
 	}
 }
