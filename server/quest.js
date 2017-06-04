@@ -43,7 +43,7 @@ module.exports = function() {
     getProfile(
       params.id_token, params.id_token_type,
       function(user) {
-        console.log(params.Id);
+        //console.log(params.Id);
         base.maindb.rquery(
           "SELECT Id, Name, Description, Start, Latitude, Longitude FROM Quests WHERE Id = ?",
           function(err, sqlres) {

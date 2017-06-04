@@ -158,3 +158,32 @@ FROM
   )
 
 SELECT TeamMembers.Team AS Team, TeamMembers.Members AS Members, TeamData.Name AS Name, Users.Name AS LeaderName, Users.Email AS LeaderEmail, TeamData.Quest AS Quest FROM ( ( ( SELECT TeamsA.Team AS Team, COUNT(TeamsB.User) AS Members FROM Teams AS TeamsA INNER JOIN Teams AS TeamsB ON TeamsA.Team = TeamsB.Team WHERE TeamsA.User = ? GROUP BY TeamsA.Team ) TeamMembers INNER JOIN TeamData ON TeamMembers.Team = TeamData.Id ) INNER JOIN Users ON Users.Id = TeamData.Leader)
+
+##################################
+Add team member
+
+INSERT INTO
+  Teams
+  (User, Team)
+VALUES
+  (
+    SELECT
+      Id,
+      ? AS TeamId
+    FROM
+      Users
+    WHERE
+        Email = ?
+      AND
+        Id
+          NOT IN (
+            SELECT
+              User
+            FROM
+              Teams
+            WHERE
+              Team = ?
+          )
+  )
+
+INSERT INTO Teams (User, Team) VALUES (SELECT Id, ? AS TeamId FROM Users WHERE Email = ? AND Id NOT IN (SELECT User FROM Teams WHERE Team = ?))

@@ -4,6 +4,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { NavController, AlertController } from 'ionic-angular';
+//import { Geolocation } from 'ionic-native';
 
 import { QuestionProvider } from '../providers/QuestionProvider';
 import { GeoLocationProvider } from '../providers/GeoLocationProvider';

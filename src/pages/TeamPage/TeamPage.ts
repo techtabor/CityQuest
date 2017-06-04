@@ -27,6 +27,7 @@ export class TeamPage {
   myTeams: any;
   myTeamMembers: any;
   newName: string;
+  addedEmail: string;
   newMembers: any;
   selectedPage: number;
   selectedTeam: any;
@@ -57,6 +58,67 @@ export class TeamPage {
   AddMember() {
     var mem = {email: ""};
     this.newMembers.push(mem);
+  }
+
+  AddExistingMember() {
+    let head = {'Content-Type': 'text/plain'};
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+    this.http.post(`${this.serverIpProvider.getServerIp()}/AddTeamMembers`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team, email: this.addedEmail}), options)
+            .subscribe(res => {
+              var ress = res.json();
+              var alert;
+              if(ress.Ok == 0) {
+                alert = this.alertCtrl.create({
+                  title: 'Ok',
+                  subTitle: 'If there is a user on that email, they have been successfully!',
+                  buttons: ['OK']
+                });
+              } else {
+                alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: 'There was an error with the team!\n' + ress.Message,
+                  buttons: ['OK']
+                });
+              }
+              alert.present();
+              this.ViewMembers(this.selectedTeam);
+              this.GetTeams();
+            });
+  }
+
+  RemoveExistingMember(memail) {
+    /*let head = {'Content-Type': 'text/plain'};
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+    this.http.post(`${this.serverIpProvider.getServerIp()}/AddTeamMembers`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team, email: this.addedEmail}), options)
+            .subscribe(res => {
+              var ress = res.json();
+              var alert;
+              if(ress.Ok == 0) {
+                alert = this.alertCtrl.create({
+                  title: 'Ok',
+                  subTitle: 'Member removed successfully!',
+                  buttons: ['OK']
+                });
+              } else {
+                alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: 'There was an error with the team!\n' + ress.Message,
+                  buttons: ['OK']
+                });
+              }
+              alert.present();
+              this.ViewMembers(this.selectedTeam);
+              this.GetTeams();
+            });*/
+    var alert;
+    alert = this.alertCtrl.create({
+      title: 'Error',
+      subTitle: 'Feature not implemented!',
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
   DeleteMember(mem) {
@@ -135,7 +197,6 @@ export class TeamPage {
   ChooseTeam() {
     this.ChooseTeamId(this.selectedTeam.Team);
   }
-
 
   ChooseTeamId(id) {
     let head = {'Content-Type': 'text/plain'};

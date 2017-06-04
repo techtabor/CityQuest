@@ -1,7 +1,7 @@
 
 var dbapi = require('./dbmysql.js');
-var maindb;
-var logindb;
+//var maindb;
+//var logindb;
 
 var http = require('http');
 var httpdispatcher = require('./httpdispatcher.js');
@@ -25,7 +25,7 @@ var server = http.createServer(handleRequest);
 function handleRequest(request, sqlresponse) {
   try {
     //log the request on console
-    console.log(request.url);
+    console.log(Date() + " " + request.url);
     //Disptach
     dispatcher.dispatch(request, sqlresponse);
   } catch (err) {
@@ -33,10 +33,24 @@ function handleRequest(request, sqlresponse) {
   }
 }
 
+var onTimeWatch;
+
 //Lets start our server
 server.listen(PORT, function() {
   base.maindb = new dbapi.database(process.argv[2], process.argv[3], process.argv[4], process.argv[5], process.argv[6]);
-
+  onTimeWatch = setInterval(
+	function () {
+	  base.maindb.query( //get internal user id
+        "UPDATE Vars SET Val = ? WHERE Name = 'LastTime'",
+        function(err, sqlres) {
+          if(err) {
+			console.log("ERROR IN TIME UPDATE AT" + Date());
+		  }
+        },
+        [[Date().toString()]]
+	  );
+	}
+  ,60000);
   //Callback triggered when server is successfully listening. Hurray!
   console.log("Server listening on: http://localhost:%s", PORT);
 });
@@ -89,6 +103,8 @@ dispatcher.onPost("/GetTeamMembers", GetTeamMembers);
 dispatcher.onPost("/GetTeams", GetTeams);
 
 dispatcher.onPost("/LeaveTeam", LeaveTeam);
+
+dispatcher.onPost("/AddTeamMembers", AddTeamMembers);
 
 dispatcher.onPost("/SetTeam", SetTeam);
 

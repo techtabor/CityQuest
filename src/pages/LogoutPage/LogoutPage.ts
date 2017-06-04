@@ -4,6 +4,7 @@ import { LoginProvider } from '../../providers/LoginProvider';
 import { NavController, NavParams } from 'ionic-angular';
 import {InAppBrowser} from 'ionic-native';
 import { ServerIpProvider } from '../../providers/ServerIpProvider';
+import { GeoLocationProvider} from '../../providers/GeoLocationProvider';
 /*
   Generated class for the Logout page.
 
@@ -19,6 +20,7 @@ export class LogoutPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public serverIpProvider: ServerIpProvider,
+    public geoLocationProvider: GeoLocationProvider,
     public loginProvider: LoginProvider
   ) {
   }
@@ -34,6 +36,7 @@ export class LogoutPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LogoutPage');
+    document.getElementById("geoGataDiv").innerText = JSON.stringify(this.geoLocationProvider.getHasData()) + "; " + JSON.stringify(this.geoLocationProvider.getLocation());
   }
 
 }
