@@ -152,6 +152,56 @@ module.exports = function() {
       }
     );
   }
+  this.AddTeamMembers = function(req, res) {
+    res.writeHead(200, base.head);
+    let params = JSON.parse(req.body);
+    getProfile(
+      params.id_token, params.id_token_type,
+      function(user) {
+        base.maindb.query(
+          "SELECT Type, Leader, COUNT(Teams.User) AS Members FROM TeamData INNER JOIN Teams ON Teams.Team = TeamData.Id WHERE TeamData.Id = ? GROUP BY Teams.Team",
+          function(err1,sqlres1) {
+            console.log(sqlres1);
+            if(sqlres1.length == 1 && sqlres1[0].Members < 32 && sqlres1[0].Type != 1) {
+              base.maindb.query(
+                "INSERT INTO Teams (User, Team) (SELECT Id, ? AS TeamId FROM Users WHERE Email = ? AND Id NOT IN (SELECT User FROM Teams WHERE Team = ?))",
+                function(err2,sqlres2) {
+                  res.write(JSON.stringify({Ok:0, Message: ""}));
+                  res.end();
+                },
+                [[params.team, params.email, params.team]]
+              );
+            }
+            else {
+              if(sqlres1.length != 1) {
+                res.write(JSON.stringify({Ok:1, Message: "Invalid team."}));
+              }
+              else {
+                if(sqlres1[0].Members >= 32) {
+                  res.write(JSON.stringify({Ok:1, Message: "Team full."}));
+
+                }
+                else {
+                  if(sqlres1[0].Type == 1) {
+                    res.write(JSON.stringify({Ok:1, Message: "Can not add members to private team."}));
+                  }
+                  else {
+                    res.write(JSON.stringify({Ok:1, Message: "Unknown error."}));
+                  }
+                }
+                res.end();
+              }
+            }
+          },
+          [params.team]
+        );
+      },
+      function() {
+        res.write(JSON.stringify({Ok:1}));
+        res.end();
+      }
+    );
+  }
   this.SetTeam = function(req, res) {
     res.writeHead(200, base.head);
     let params = JSON.parse(req.body);

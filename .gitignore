@@ -29,6 +29,7 @@ plugins/ios.json
 www/
 $RECYCLE.BIN/
 server/login.db
+server/upload.sh
 
 .DS_Store
 Thumbs.db
