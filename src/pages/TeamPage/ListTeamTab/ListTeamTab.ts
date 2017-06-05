@@ -1,43 +1,32 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
-import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
-import { LoginProvider } from '../../providers/LoginProvider';
-import { QuestShareService } from '../../services/QuestShareService';
-import { TeamShareService } from '../../services/TeamShareService';
-import { ServerIpProvider } from '../../providers/ServerIpProvider';
-import { QuestionProvider } from '../../providers/QuestionProvider';
+import { GeoLocationProvider } from '../../../providers/GeoLocationProvider';
+import { LoginProvider } from '../../../providers/LoginProvider';
+import { QuestShareService } from '../../../services/QuestShareService';
+import { TeamShareService } from '../../../services/TeamShareService';
+import { ServerIpProvider } from '../../../providers/ServerIpProvider';
+import { QuestionProvider } from '../../../providers/QuestionProvider';
+import { TeamPage } from '../TeamPage';
 //import { QuestionTab } from '../QuestionPage/QuestionTab/QuestionTab';
 import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
 import { QuestHeader } from '../../models/QuestHeader';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
-import { QuestPage } from '../QuestPage/QuestPage';
+import { QuestPage } from '../../QuestPage/QuestPage';
 
-import { YourTeamsTab } from './YourTeamsTab/YourTeamsTab';
-import { NewTeamTab } from './NewTeamTab/NewTeamTab';
-import { ListTeamTab } from './ListTeamTab/ListTeamTab';
-
-/*
-  Generated class for the Team page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
-  selector: 'page-team',
-  templateUrl: 'TeamPage.html'
+  selector: 'ListTeamTab',
+	templateUrl: 'ListTeamTab.html'
 })
-export class TeamPage {
+export class ListTeamTab {
   myTeams: any;
   myTeamMembers: any;
   newName: string;
   addedEmail: string;
   newMembers: any;
+  selectedPage: number;
   selectedTeam: any;
-  yourTeamsTab: any;
-  newTeamTab: any;
-  listTeamTab: any;
   constructor(
     public http: Http,
     public navCtrl: NavController,
@@ -46,16 +35,14 @@ export class TeamPage {
     public shareService: QuestShareService,
     public questionProvider: QuestionProvider,
     public loginProvider: LoginProvider,
+    public teamShareService: TeamShareService,
     public serverIpProvider: ServerIpProvider
 ) {
     this.myTeams = [];
     this.myTeamMembers = [];
     this.newMembers = [];
     this.newName = "";
-
-    this.yourTeamsTab = YourTeamsTab;
-    this.newTeamTab = NewTeamTab;
-    this.listTeamTab = ListTeamTab;
+    this.selectedPage = 0;
   }
 
   openProfile() {
@@ -71,30 +58,33 @@ export class TeamPage {
   }
 
   AddExistingMember() {
-    let head = {'Content-Type': 'text/plain'};
-    let headers    = new Headers(head);
-    let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/AddTeamMembers`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team, email: this.addedEmail}), options)
-            .subscribe(res => {
-              var ress = res.json();
-              var alert;
-              if(ress.Ok == 0) {
-                alert = this.alertCtrl.create({
-                  title: 'Ok',
-                  subTitle: 'If there is a user on that email, they have been successfully!',
-                  buttons: ['OK']
-                });
-              } else {
-                alert = this.alertCtrl.create({
-                  title: 'Error',
-                  subTitle: 'There was an error with the team!\n' + ress.Message,
-                  buttons: ['OK']
-                });
-              }
-              alert.present();
-              this.ViewMembers(this.selectedTeam);
-              this.GetTeams();
-            });
+    this.selectedTeam = this.teamShareService.getTeam();
+    if (this.selectedTeam != null) {
+      let head = {'Content-Type': 'text/plain'};
+      let headers    = new Headers(head);
+      let options    = new RequestOptions({headers: headers});
+      this.http.post(`${this.serverIpProvider.getServerIp()}/AddTeamMembers`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team, email: this.addedEmail}), options)
+              .subscribe(res => {
+                var ress = res.json();
+                var alert;
+                if(ress.Ok == 0) {
+                  alert = this.alertCtrl.create({
+                    title: 'Ok',
+                    subTitle: 'If there is a user on that email, they have been successfully!',
+                    buttons: ['OK']
+                  });
+                } else {
+                  alert = this.alertCtrl.create({
+                    title: 'Error',
+                    subTitle: 'There was an error with the team!\n' + ress.Message,
+                    buttons: ['OK']
+                  });
+                }
+                alert.present();
+                this.ViewMembers(this.selectedTeam);
+                this.GetTeams();
+              });
+    }
   }
 
   RemoveExistingMember(memail) {
@@ -171,7 +161,7 @@ export class TeamPage {
   }
 
   ViewMembers(t) {
-    this.selectedTeam = t;
+    this.selectedTeam = this.teamShareService.getTeam();
     let head = {'Content-Type': 'text/plain'};
     let headers    = new Headers(head);
     let options    = new RequestOptions({headers: headers});
@@ -182,28 +172,35 @@ export class TeamPage {
   }
 
   LeaveTeam() {
-    let head = {'Content-Type': 'text/plain'};
-    let headers    = new Headers(head);
-    let options    = new RequestOptions({headers: headers});
-    this.http.post(`${this.serverIpProvider.getServerIp()}/LeaveTeam`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team}), options)
-            .subscribe(res => {
-              var resp = res.json();
-              if(resp.Ok == 0) {
-                this.GetTeams();
-              }
-              else {
-                var alert = this.alertCtrl.create({
-                  title: 'Error',
-                  subTitle: 'There was an error with the team!\n' + resp.Message,
-                  buttons: ['OK']
-                });
-                alert.present();
-              }
-            });
+    this.selectedTeam = this.teamShareService.getTeam();
+    if (this.selectedTeam != null)
+    {
+      let head = {'Content-Type': 'text/plain'};
+      let headers    = new Headers(head);
+      let options    = new RequestOptions({headers: headers});
+      this.http.post(`${this.serverIpProvider.getServerIp()}/LeaveTeam`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: this.selectedTeam.Team}), options)
+              .subscribe(res => {
+                var resp = res.json();
+                if(resp.Ok == 0) {
+                  this.GetTeams();
+                }
+                else {
+                  var alert = this.alertCtrl.create({
+                    title: 'Error',
+                    subTitle: 'There was an error with the team!\n' + resp.Message,
+                    buttons: ['OK']
+                  });
+                  alert.present();
+                }
+              });
+    }
   }
 
   ChooseTeam() {
-    this.ChooseTeamId(this.selectedTeam.Team);
+    this.selectedTeam = this.teamShareService.getTeam();
+    if (this.selectedTeam != null) {
+      this.ChooseTeamId(this.selectedTeam.Team);
+    }
   }
 
   ChooseTeamId(id) {
@@ -229,7 +226,8 @@ export class TeamPage {
   }
 
   ionViewDidLoad() {
-    this.GetTeams();
-    console.log('Hello StatsPage Page');
+    //this.GetTeams();
+
+    console.log('Hello ListTeamTab Page');
   }
 }

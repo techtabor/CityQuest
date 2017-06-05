@@ -1,27 +1,12 @@
-<ion-header>
-  <ion-navbar >
-    <button ion-button icon-only menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
+<ion-tabs>
+  <ion-tab tabIcon="contacts" [root]="yourTeamsTab"></ion-tab>
+  <ion-tab tabIcon="add" [root]="newTeamTab"></ion-tab>
+  <ion-tab tabIcon="list" [root]="listTeamTab"></ion-tab>
+</ion-tabs>
 
-    <ion-title>{{pageName}}</ion-title>
-
-    <div id="ProfileBar">
-      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
-        <img width="32" height="32" src="{{loginProvider.profilePic}}" />
-      </div>
-      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
-        {{loginProvider.name}}
-      </div>
-      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
-        Team: {{loginProvider.teamName}}
-      </div>
-    </div>
-  </ion-navbar>
-</ion-header>
-
+<!--
 <ion-content padding>
-	<h1>TeamPage</h1>
+	<h1>Teams</h1>
   <ion-row>
     <ion-col>
       <button ion-button (click)="selectedPage = 0">
@@ -36,79 +21,11 @@
   </ion-row>
   <div *ngIf="0 == selectedPage">
     <h2>Your teams:</h2>
-    <ion-list >
-      <ion-row>
-        <ion-col>
-          Name
-        </ion-col>
-        <ion-col>
-          Members
-        </ion-col>
-        <ion-col>
-          Leader Name
-        </ion-col>
-        <ion-col>
-          Leader Email
-        </ion-col>
-        <ion-col>
-        </ion-col>
-      </ion-row>
-      <ion-item-divider></ion-item-divider>
-      <ion-row *ngFor="let t of myTeams">
 
-        <ion-col (click)="ViewMembers(t)">
-          {{t.Name}}
-        </ion-col>
-        <ion-col (click)="ViewMembers(t)">
-          {{t.Members}}
-        </ion-col>
-        <ion-col (click)="ViewMembers(t)">
-          {{t.LeaderName}}
-        </ion-col>
-        <ion-col (click)="ViewMembers(t)">
-          {{t.LeaderEmail}}
-        </ion-col>
-        <ion-col>
-          <button ion-button block (click)="ChooseTeamId(t.Team)" *ngIf="t.Team != this.loginProvider.team">
-            Choose team
-          </button>
-        </ion-col>
-      </ion-row>
-    </ion-list>
   </div>
 
   <div *ngIf="1 == selectedPage">
-    <h2>New team:</h2>
-    <button ion-button icon-only (click)="AddMember()">
-      <ion-icon name="add">
-      </ion-icon>
-    </button>
-    <button ion-button (click)="Submit()">
-      Submit
-    </button>
-    <ion-input placeholder="Team name" type="text" [(ngModel)]="newName"></ion-input>
-    <ion-list>
-      <ion-row>
-        <ion-col>
-          Email address
-        </ion-col>
-        <ion-col>
 
-        </ion-col>
-      </ion-row>
-      <ion-item-divider></ion-item-divider>
-      <ion-row *ngFor="let m of newMembers">
-        <ion-col>
-          <ion-input placeholder="Email address" type="email" [(ngModel)]="m.email"></ion-input>
-        </ion-col>
-        <ion-col>
-          <button ion-button icon-only (click)="DeleteMember(m)">
-            <ion-icon name="trash">
-            </ion-icon>
-          </button>
-        </ion-col>
-      </ion-row>
-    </ion-list>
   </div>
 
   <div *ngIf="2 == selectedPage">
@@ -156,4 +73,4 @@
       </ion-row>
     </ion-list>
   </div>
-</ion-content>
+</ion-content>-->

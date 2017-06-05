@@ -28,10 +28,14 @@ import { AddFriendsTab } from '../pages/FriendPage/AddFriendsTab/AddFriendsTab';
 import { FriendsTab } from '../pages/FriendPage/FriendsTab/FriendsTab';
 import { PendingFriendsTab } from '../pages/FriendPage/PendingFriendsTab/PendingFriendsTab';
 
+import { YourTeamsTab } from '../pages/TeamPage/YourTeamsTab/YourTeamsTab';
+import { NewTeamTab } from '../pages/TeamPage/NewTeamTab/NewTeamTab';
+import { ListTeamTab } from '../pages/TeamPage/ListTeamTab/ListTeamTab';
 
 import { MapTab } from '../pages/QuestionPage/MapTab/MapTab';
 import { QuestionTab } from '../pages/QuestionPage/QuestionTab/QuestionTab';
 
+import { TeamShareService } from '../services/TeamShareService';
 import { QuestShareService } from '../services/QuestShareService';
 
 /*const cloudSettings: CloudSettings = {
@@ -64,7 +68,10 @@ import { QuestShareService } from '../services/QuestShareService';
     FriendStatsTab,
     AddFriendsTab,
     FriendsTab,
-    PendingFriendsTab
+    PendingFriendsTab,
+    YourTeamsTab,
+    NewTeamTab,
+    ListTeamTab
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -88,8 +95,11 @@ import { QuestShareService } from '../services/QuestShareService';
     FriendStatsTab,
     AddFriendsTab,
     FriendsTab,
-    PendingFriendsTab
+    PendingFriendsTab,
+    YourTeamsTab,
+    NewTeamTab,
+    ListTeamTab
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider, TeamShareService]
 })
 export class AppModule {}

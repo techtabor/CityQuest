@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>
+    </ion-title>
+
+    <div id="ProfileBar">
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+        <img width="32" height="32" src="{{loginProvider.profilePic}}" />
+      </div>
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
+        {{loginProvider.name}}
+      </div>
+      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
+        Team: {{loginProvider.teamName}}
+      </div>
+    </div>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <h1>New Team</h1>
+  <ion-input placeholder="Team name" type="text" [(ngModel)]="newName"></ion-input>
+  <button color="danger" ion-button (click)="AddMember()">
+    Add
+  </button>
+  <button color="danger" ion-button (click)="Submit()">
+    Submit
+  </button>
+  <ion-list>
+    <ion-row>
+      <ion-col>
+        Email address
+      </ion-col>
+      <ion-col>
+
+      </ion-col>
+    </ion-row>
+    <ion-item-divider></ion-item-divider>
+    <ion-row *ngFor="let m of newMembers">
+      <ion-col>
+        <ion-input placeholder="Email address" type="email" [(ngModel)]="m.email"></ion-input>
+      </ion-col>
+      <ion-col>
+        <button ion-button icon-only (click)="DeleteMember(m)">
+          <ion-icon name="trash">
+          </ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-list>
+</ion-content>

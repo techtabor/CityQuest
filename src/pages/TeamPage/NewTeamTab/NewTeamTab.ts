@@ -1,43 +1,31 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
-import { GeoLocationProvider } from '../../providers/GeoLocationProvider';
-import { LoginProvider } from '../../providers/LoginProvider';
-import { QuestShareService } from '../../services/QuestShareService';
-import { TeamShareService } from '../../services/TeamShareService';
-import { ServerIpProvider } from '../../providers/ServerIpProvider';
-import { QuestionProvider } from '../../providers/QuestionProvider';
+import { GeoLocationProvider } from '../../../providers/GeoLocationProvider';
+import { LoginProvider } from '../../../providers/LoginProvider';
+import { QuestShareService } from '../../../services/QuestShareService';
+import { ServerIpProvider } from '../../../providers/ServerIpProvider';
+import { QuestionProvider } from '../../../providers/QuestionProvider';
+import { TeamPage } from '../TeamPage';
 //import { QuestionTab } from '../QuestionPage/QuestionTab/QuestionTab';
 import { Question } from '../../models/Question';
 import { Quest } from '../../models/Quest';
 import { QuestHeader } from '../../models/QuestHeader';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
-import { QuestPage } from '../QuestPage/QuestPage';
+import { QuestPage } from '../../QuestPage/QuestPage';
 
-import { YourTeamsTab } from './YourTeamsTab/YourTeamsTab';
-import { NewTeamTab } from './NewTeamTab/NewTeamTab';
-import { ListTeamTab } from './ListTeamTab/ListTeamTab';
-
-/*
-  Generated class for the Team page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
-  selector: 'page-team',
-  templateUrl: 'TeamPage.html'
+  selector: 'NewTeamTab',
+	templateUrl: 'NewTeamTab.html'
 })
-export class TeamPage {
+export class NewTeamTab {
   myTeams: any;
   myTeamMembers: any;
   newName: string;
   addedEmail: string;
   newMembers: any;
+  selectedPage: number;
   selectedTeam: any;
-  yourTeamsTab: any;
-  newTeamTab: any;
-  listTeamTab: any;
   constructor(
     public http: Http,
     public navCtrl: NavController,
@@ -52,10 +40,7 @@ export class TeamPage {
     this.myTeamMembers = [];
     this.newMembers = [];
     this.newName = "";
-
-    this.yourTeamsTab = YourTeamsTab;
-    this.newTeamTab = NewTeamTab;
-    this.listTeamTab = ListTeamTab;
+    this.selectedPage = 0;
   }
 
   openProfile() {
@@ -178,6 +163,7 @@ export class TeamPage {
     this.http.post(`${this.serverIpProvider.getServerIp()}/GetTeamMembers`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType(), team: t.Team}), options)
             .subscribe(res => {
               this.myTeamMembers = res.json().Members;
+              this.selectedPage = 2;
             });
   }
 
@@ -190,6 +176,7 @@ export class TeamPage {
               var resp = res.json();
               if(resp.Ok == 0) {
                 this.GetTeams();
+                this.selectedPage = 0;
               }
               else {
                 var alert = this.alertCtrl.create({

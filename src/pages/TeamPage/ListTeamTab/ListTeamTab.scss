@@ -1,0 +1,14 @@
+.ios,.md,.wp {
+  ListTeamTab {
+    ion-content {
+      div#buttons {
+        margin: auto;
+        width: 75%;
+
+        button {
+          background-color: map-get($colors, danger);
+        }
+      }
+    }
+  }
+}

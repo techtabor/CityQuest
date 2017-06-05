@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-title>{{pageName}}</ion-title>
+
+    <div id="ProfileBar">
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+        <img width="32" height="32" src="{{loginProvider.profilePic}}" />
+      </div>
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
+        {{loginProvider.name}}
+      </div>
+      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
+        Team: {{loginProvider.teamName}}
+      </div>
+    </div>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <h1>Your Teams</h1>
+  <ion-list>
+    <ion-row>
+      <ion-col>
+        Name
+      </ion-col>
+      <ion-col>
+        Members
+      </ion-col>
+      <ion-col>
+        Leader Name
+      </ion-col>
+      <!--<ion-col>
+        Leader Email
+      </ion-col>-->
+      <!--<ion-col>
+      </ion-col>-->
+    </ion-row>
+    <ion-item-divider></ion-item-divider>
+    <ion-row *ngFor="let t of myTeams">
+
+      <ion-col (click)="ViewMembers(t)">
+        {{t.Name}}
+      </ion-col>
+      <ion-col (click)="ViewMembers(t)">
+        {{t.Members}}
+      </ion-col>
+      <ion-col (click)="ViewMembers(t)">
+        {{t.LeaderName}}
+      </ion-col>
+      <!--<ion-col (click)="ViewMembers(t)">
+        {{t.LeaderEmail}}
+      </ion-col>-->
+      <!--<ion-col>
+        <button ion-button block (click)="ChooseTeamId(t.Team)" *ngIf="t.Team != this.loginProvider.team">
+          Choose team
+        </button>
+      </ion-col>-->
+    </ion-row>
+  </ion-list>
+</ion-content>
