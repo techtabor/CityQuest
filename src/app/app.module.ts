@@ -100,10 +100,7 @@ import { QuestShareService } from '../services/QuestShareService';
     NewTeamTab,
     ListTeamTab
   ],
-<<<<<<< HEAD
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider, TeamShareService]
-=======
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, Geolocation, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]
->>>>>>> 154b729103cde4dc0228779afebbb13690b8483c
+  
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, Geolocation, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider, TeamShareService]
 })
 export class AppModule {}
