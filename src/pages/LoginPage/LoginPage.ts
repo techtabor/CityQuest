@@ -18,6 +18,7 @@ import { InAppBrowser } from 'ionic-native';
   templateUrl: 'LoginPage.html'
 })
 export class LoginPage {
+  Gwatch: any;
   watch: any;
   state: number;
   browser: any;
@@ -66,35 +67,60 @@ export class LoginPage {
     if(this.iter > 30) {
       clearInterval(this.watch);
     }
+    let head = {'Content-Type': 'text/plain'};
+    let headers    = new Headers(head);
+    let options    = new RequestOptions({headers: headers});
+
+    var geoData    = this.geoLocationProvider.getLocation();
+
+    this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
+    .subscribe(res =>
+      {
+        let resp = res.json();
+        if(resp.Ok == 0) {
+          clearInterval(this.watch);
+          this.loginProvider.setToken(resp.Token);
+          this.loginProvider.setType("GOOGLE");
+          this.loginProvider.name = resp.Name;
+          this.loginProvider.profilePic = resp.Picture;
+          this.loginProvider.teamName = resp.TeamName;
+          this.loginProvider.team = resp.Team;
+
+          document.getElementById('LoginLoading').innerText = "Verified";
+          //this.browser.close();
+          this.navCtrl.setRoot(QuestPage);
+        } else {
+          if(resp.Ok == 1) {
+            clearInterval(this.watch);
+            document.getElementById('LoginLoading').innerText = "Error. Try again!";
+            this.canlogin = true;
+          }
+        }
+      }
+    );
+  }
+
+  watchGps() {
     if(this.geoLocationProvider.getHasData() == true) {
+      clearInterval(this.Gwatch);
       let head = {'Content-Type': 'text/plain'};
       let headers    = new Headers(head);
       let options    = new RequestOptions({headers: headers});
-
-      var geoData    = this.geoLocationProvider.getLocation();
-
-      this.http.post(`${this.serverIpProvider.getServerIp()}/LoginPairCheck`, JSON.stringify({stoken: this.loginProvider.getPairCode(), type: "GOOGLE"}), options)
+      this.loginProvider.load();
+      this.http.post(`${this.serverIpProvider.getServerIp()}/VerifyLogin`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
       .subscribe(res =>
         {
           let resp = res.json();
           if(resp.Ok == 0) {
-            clearInterval(this.watch);
-            this.loginProvider.setToken(resp.Token);
-            this.loginProvider.setType("GOOGLE");
             this.loginProvider.name = resp.Name;
             this.loginProvider.profilePic = resp.Picture;
             this.loginProvider.teamName = resp.TeamName;
             this.loginProvider.team = resp.Team;
-
-            document.getElementById('LoginLoading').innerText = "Verified";
-            //this.browser.close();
+            document.getElementById('LoginLoading').innerText = "Success! Redirecting...";
             this.navCtrl.setRoot(QuestPage);
           } else {
-            if(resp.Ok == 1) {
-              clearInterval(this.watch);
-              document.getElementById('LoginLoading').innerText = "Error. Try again!";
-              this.canlogin = true;
-            }
+            document.getElementById('LoginLoading').innerText = "Please log in!";
+            this.canlogin = true;
           }
         }
       );
@@ -105,27 +131,15 @@ export class LoginPage {
 
   ionViewDidLoad() {
     this.canlogin = false;
-    let head = {'Content-Type': 'text/plain'};
-    let headers    = new Headers(head);
-    let options    = new RequestOptions({headers: headers});
-    this.loginProvider.load();
-    this.http.post(`${this.serverIpProvider.getServerIp()}/VerifyLogin`, JSON.stringify({id_token: this.loginProvider.getToken(), id_token_type: this.loginProvider.getType()}), options)
-    .subscribe(res =>
-      {
-        let resp = res.json();
-        if(resp.Ok == 0) {
-          this.loginProvider.name = resp.Name;
-          this.loginProvider.profilePic = resp.Picture;
-          this.loginProvider.teamName = resp.TeamName;
-          this.loginProvider.team = resp.Team;
-          document.getElementById('LoginLoading').innerText = "Success! Redirecting...";
-          this.navCtrl.setRoot(QuestPage);
-        } else {
-          document.getElementById('LoginLoading').innerText = "Please log in!";
-          this.canlogin = true;
-        }
-      }
-    );
+    this.Gwatch = setInterval(
+      (
+        function(self) {         //Self-executing func which takes 'this' as self
+         return function() {   //Return a function in the context of 'self'
+           self.watchGps(); //Thing you wanted to run as non-window 'this'
+         }
+       }
+     )(this),
+    500);
     console.log('ionViewDidLoad LoginPage');
   }
 

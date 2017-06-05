@@ -4,7 +4,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { NavController, AlertController } from 'ionic-angular';
-//import { Geolocation } from 'ionic-native';
+import { Geolocation } from '@ionic-native/geolocation';
 
 import { QuestionProvider } from '../providers/QuestionProvider';
 import { GeoLocationProvider } from '../providers/GeoLocationProvider';
@@ -100,6 +100,10 @@ import { QuestShareService } from '../services/QuestShareService';
     NewTeamTab,
     ListTeamTab
   ],
+<<<<<<< HEAD
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider, TeamShareService]
+=======
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, Geolocation, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]
+>>>>>>> 154b729103cde4dc0228779afebbb13690b8483c
 })
 export class AppModule {}

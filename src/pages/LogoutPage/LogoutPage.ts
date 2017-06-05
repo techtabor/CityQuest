@@ -36,7 +36,7 @@ export class LogoutPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LogoutPage');
-    document.getElementById("geoGataDiv").innerText = JSON.stringify(this.geoLocationProvider.getHasData()) + "; " + JSON.stringify(this.geoLocationProvider.getLocation());
+    //document.getElementById("geoGataDiv").innerText = JSON.stringify(this.geoLocationProvider.getHasData()) + "; " + JSON.stringify(this.geoLocationProvider.getLocation());
   }
 
 }

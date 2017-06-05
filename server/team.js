@@ -21,7 +21,7 @@ module.exports = function() {
             var ok = 0;
             //console.log(arr);
             base.maindb.query(
-              "INSERT INTO Teams (User, Team) (SELECT Id, ? AS TeamId FROM Users WHERE Email = ?)",
+              "INSERT INTO Teams (User, Team) (SELECT Id, ? FROM Users WHERE Email = ? )",
               function(err2,sqlres2) {
                 //console.log(sqlres2);
                 if(sqlres2.affectedRows == 1) {
@@ -161,7 +161,7 @@ module.exports = function() {
         base.maindb.query(
           "SELECT Type, Leader, COUNT(Teams.User) AS Members FROM TeamData INNER JOIN Teams ON Teams.Team = TeamData.Id WHERE TeamData.Id = ? GROUP BY Teams.Team",
           function(err1,sqlres1) {
-            console.log(sqlres1);
+            //console.log(sqlres1);
             if(sqlres1.length == 1 && sqlres1[0].Members < 32 && sqlres1[0].Type != 1) {
               base.maindb.query(
                 "INSERT INTO Teams (User, Team) (SELECT Id, ? AS TeamId FROM Users WHERE Email = ? AND Id NOT IN (SELECT User FROM Teams WHERE Team = ?))",

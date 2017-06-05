@@ -32,7 +32,11 @@ export class QuestionPage {
     this.mapTab = MapTab;
   }
 
-  ionViewDidLoad() {
+  reloadQuestions() {
+    this.mapTab.loadMap();
+  }
 
+  ionViewDidLoad() {
+    this.reloadQuestions();
   }
 }

@@ -70,6 +70,7 @@ export class QuestionTab {
             this.questionProvider.loadQuestion(this.currentQuestion.Id, this.currentQuestion.HashID).subscribe(
               question => {
                 this.currentQuestion = question;
+                this.shareService.setCurrentQuestion(this.currentQuestion);
               }
             );
           }
