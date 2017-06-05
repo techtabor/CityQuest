@@ -2,4 +2,8 @@ GlobalStatsTab {
 	ion-content {
 		margin: 10px;
 	}
+	h1 {
+		color: $title-color;
+		text-align: center;
+	}
 }

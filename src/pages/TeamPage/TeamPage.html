@@ -10,10 +10,10 @@
       <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
         <img width="32" height="32" src="{{loginProvider.profilePic}}" />
       </div>
-      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
         {{loginProvider.name}}
       </div>
-      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
         Team: {{loginProvider.teamName}}
       </div>
     </div>
@@ -21,7 +21,7 @@
 </ion-header>
 
 <ion-content padding>
-	<h2>TeamPage</h2>
+	<h1>TeamPage</h1>
   <ion-row>
     <ion-col>
       <button ion-button (click)="selectedPage = 0">

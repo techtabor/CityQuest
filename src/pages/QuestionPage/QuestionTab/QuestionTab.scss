@@ -1,3 +1,19 @@
+.ios, .md, .wp {
+	tab-question {
+		ion-content {
+			ion-card {
+				ion-card-title {
+					color: $title-color;
+				}
+				p {
+					color: $paragraph-color
+				}
+			}
+		}
+	}
+}
+
+
 tab-question .answer-input
 {
 	color: grey;

@@ -3,25 +3,22 @@
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>
-      Friends
-    </ion-title>
 
     <div id="ProfileBar">
       <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
         <img width="32" height="32" src="{{loginProvider.profilePic}}" />
       </div>
-      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+      <div (click)="openProfile();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
         {{loginProvider.name}}
       </div>
-      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px;">
+      <div (click)="openTeams();" style="float: right; height: 32px; line-height: 32px; vertical-align: middle; padding-right: 10px; color: white">
         Team: {{loginProvider.teamName}}
       </div>
     </div>
   </ion-navbar>
 </ion-header>
 <ion-content>
-	<h2> Friends:</h2>
+	<h1>Friends:</h1>
     <ion-list >
       <ion-row>
         <ion-col>

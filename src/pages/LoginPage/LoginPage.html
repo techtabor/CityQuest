@@ -7,17 +7,15 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>LoginPage</ion-title>
   </ion-navbar>
 
 </ion-header>
 
-
-<ion-content padding>
-  <button ion-button block color="danger" (click)="doGoogleLogin()" *ngIf="canlogin">Google Login</button>
-  <ion-item>
-    <ion-item id="LoginLoading">
-      Please wait!
-    </ion-item>
+<ion-content padding id="login">
+  <img src="assets/img/bp.png" id="login-img" />
+  <h1 id="login-title">CityQuest</h1>
+  <button ion-button block (click)="doGoogleLogin()" *ngIf="canlogin" id="login-button">Login</button>
+  <ion-item id="LoginLoading">
+    Please wait!
   </ion-item>
 </ion-content>
