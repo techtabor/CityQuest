@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Geolocation } from 'ionic-native';
+import { Geolocation } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/map';
 
 /*
@@ -11,18 +11,32 @@ import 'rxjs/add/operator/map';
 */
 @Injectable()
 export class GeoLocationProvider {
-  geoData: any;
+  geoData: any = false;
   hasData: boolean;
-  watch: any = Geolocation.watchPosition().subscribe(position => {
-      this.geoData = position.coords;
-      this.hasData = true;
-    }
-  );
+  watch: any;
   constructor(
-    public http: Http
+    public http: Http,
+    public geoLocation : Geolocation
   ) {
     console.log('Hello GeoLocation Provider');
     this.hasData = false;
+    /*this.watch = this.geoLocation.watchPosition();
+    this.watch.subscribe((data) => {
+     this.geoData = data.coords;
+     this.hasData = true;
+   });*/
+    if (navigator.geolocation) {
+      var options = {
+        enableHighAccuracy: true
+      };
+
+      navigator.geolocation.watchPosition(position=> {
+        this.geoData = position.coords;
+        this.hasData = true;
+      }, error => {
+        alert(error);
+      }, options);
+    }
   }
 
   getLocation(): any {

@@ -6,7 +6,10 @@ import { LoginProvider } from '../../../providers/LoginProvider';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { NavController, AlertController } from 'ionic-angular';
 import { QuestPage } from '../../QuestPage/QuestPage';
+import { QuestionTab } from '../../QuestionPage/QuestionTab/QuestionTab';
 import { TeamPage } from '../../TeamPage/TeamPage';
+import { QuestionProvider } from '../../../providers/QuestionProvider';
+import { QuestShareService } from '../../../services/QuestShareService';
 
 @Component({
 	selector: 'PlayerStatsTab',
@@ -19,7 +22,9 @@ export class PlayerStatsTab {
 		public http: Http,
   	public serverIpProvider: ServerIpProvider,
     public navCtrl: NavController,
-  	public loginProvider: LoginProvider) {
+  	public loginProvider: LoginProvider,
+		public questionProvider: QuestionProvider,
+		public shareService: QuestShareService) {
 
 	}
 
@@ -28,6 +33,29 @@ export class PlayerStatsTab {
 	}
 	openTeams() {
 		this.navCtrl.setRoot(TeamPage);
+	}
+
+	openQuest(id) {
+		///Code copied from QuestPage loadQuest. Change there too!!!!!
+		var quest: Quest = new Quest();
+		if (id != '') {
+			console.log('Loading quest with id', id);
+			this.questionProvider.loadQuestHeader(id).subscribe(
+				questHeader => {
+					if(questHeader.length) {
+						quest.header = questHeader[0];
+						this.questionProvider.loadQuestion(questHeader[0].Start, "00000000000000000000000000000000").subscribe(
+							question => {
+								this.shareService.setQuest(quest);
+								this.shareService.setCurrentQuestion(question);
+								this.navCtrl.setRoot(QuestionTab);
+								console.log('Our current question: ' + question.Question);
+							}
+						);
+					}
+				}
+			);
+		}
 	}
 
 	GetPlayerStats() {

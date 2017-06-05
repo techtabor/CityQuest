@@ -4,7 +4,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { NavController, AlertController } from 'ionic-angular';
-//import { Geolocation } from 'ionic-native';
+import { Geolocation } from '@ionic-native/geolocation';
 
 import { QuestionProvider } from '../providers/QuestionProvider';
 import { GeoLocationProvider } from '../providers/GeoLocationProvider';
@@ -90,6 +90,6 @@ import { QuestShareService } from '../services/QuestShareService';
     FriendsTab,
     PendingFriendsTab
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, Geolocation, QuestionProvider, QuestShareService, GeoLocationProvider, LoginProvider, ServerIpProvider]
 })
 export class AppModule {}
